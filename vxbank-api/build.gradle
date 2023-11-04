@@ -1,0 +1,63 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.4.4'
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.0-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.1.3'
+	id 'com.google.cloud.tools.appengine' version '2.4.4'
+}
+
+group = 'eu.vxbank'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	mavenLocal()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.projectlombok:lombok:1.18.28'
+	annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+	implementation 'eu.vxbank:datastore:0.0.001'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+apply plugin: 'com.google.cloud.tools.appengine-appyaml'
+
+springBoot {
+	mainClass = 'eu.vxbank.api.ApiApplication'
+}
+
+appengine {  // App Engine tasks configuration
+	stage {
+		artifact = 'build/libs/'  + archivesBaseName + '-' + version + '.jar'
+	}
+
+	deploy {   // deploy configuration
+		projectId = 'vxbank-eu-dev' // gcloud config set project
+		version = '0-00-001'   // gcloud to generate a version
+		stopPreviousVersion = true // default - stop the current version
+		promote = true // default - & make this the current version
+	}
+}
