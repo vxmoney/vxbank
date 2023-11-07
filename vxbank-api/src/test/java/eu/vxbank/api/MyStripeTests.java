@@ -40,4 +40,6 @@ public class MyStripeTests {
         Price price = Price.create(params);
         System.out.println("Success! Here is your starter subscription price id: " + price.getId());
     }
+
+    void
 }
