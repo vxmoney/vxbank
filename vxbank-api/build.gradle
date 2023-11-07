@@ -37,6 +37,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
 	implementation 'eu.vxbank:datastore:0.0.001'
+
+	// https://mvnrepository.com/artifact/com.stripe/stripe-java
+	implementation 'com.stripe:stripe-java:24.1.0'
+
 }
 
 tasks.named('test') {
