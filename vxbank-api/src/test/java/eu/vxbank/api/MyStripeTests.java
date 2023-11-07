@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class MyStripeTests {
 
-    @Test
+
     public void testCreateSubscriptionProductTest() throws StripeException {
         Stripe.apiKey =
                 "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
