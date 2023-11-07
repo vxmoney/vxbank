@@ -21,3 +21,5 @@ gcloud beta emulators datastore start --project=my-project-id --no-store-on-disk
 ```
 
 
+# stripe notes
+[stripe setup quickstart](https://stripe.com/docs/development/quickstart)
