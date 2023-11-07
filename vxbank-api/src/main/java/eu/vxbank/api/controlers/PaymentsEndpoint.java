@@ -1,8 +1,12 @@
 package eu.vxbank.api.controlers;
 
+
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +16,9 @@ public class PaymentsEndpoint {
 
     @PostMapping("/payments/create-checkout-session")
     public ResponseEntity<String> createCheckoutSession() throws StripeException {
+
+        Stripe.apiKey = "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
+
         String YOUR_DOMAIN = "http://localhost:4242";
         SessionCreateParams params =
                 SessionCreateParams.builder()
@@ -30,6 +37,8 @@ public class PaymentsEndpoint {
                                         .build())
                         .build();
         Session session = Session.create(params);
+
+
         String response = session.getUrl();
         response = "Hello checkout response: " + response;
         return ResponseEntity.ok(response);

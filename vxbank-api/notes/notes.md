@@ -13,6 +13,7 @@ curl localhost:8080/testDatastore
 curl localhost:8080/testSimpleService
 curl localhost:8080/testExampleService
 ```
+[checkout](http://localhost:8080/checkout.html)
 
 
 # start datastore emulator needed for tests

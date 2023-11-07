@@ -11,6 +11,11 @@ import org.junit.jupiter.api.Test;
 public class MyStripeTests {
 
 
+    /**
+     * Success! Here is your starter subscription product id: prod_OxtTkNOpZkOhNU
+     * Success! Here is your starter subscription price id: price_1O9xgQB6aHGAQTGCliE3NECU
+     */
+
     //@Test
     public void testCreateSubscriptionProductTest() throws StripeException {
         Stripe.apiKey =
