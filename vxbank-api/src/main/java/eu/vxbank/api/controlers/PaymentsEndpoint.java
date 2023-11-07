@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class PaymentEndpoints {
+public class PaymentsEndpoint {
 
     @PostMapping("/payments/create-checkout-session")
     public String createCheckoutSession(){
