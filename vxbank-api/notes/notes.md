@@ -393,3 +393,32 @@ curl https://api.stripe.com/v1/payment_intents \
   -d "status"="succeeded"
 
 ```
+
+
+## lets find out the collected fee
+
+timeStamp: `1699647266991`
+sessionId: `cs_test_a1wYz2BavhP0ATB5SaBWEEk27w4guQ4COkHlef3l7Xgxhto9VkAwqIW6sm`
+paymentIntentId: `pi_3OB17aB6aHGAQTGC0hTBzewV`
+balanceTransactionId: `txn_3OB17aB6aHGAQTGC0ijmhsog`
+
+To find out the collected fee you have to:
+- get the session by sessionId
+- get the paymentIntent by paymentIntentId
+- get the balanceTransaction by balanceTransactionId
+- You find hte fee in the fee field In this example fee is 1.23 Euro: Example  "fee": 123, 
+
+```bash
+# get session by id
+curl https://api.stripe.com/v1/checkout/sessions/cs_test_a1wYz2BavhP0ATB5SaBWEEk27w4guQ4COkHlef3l7Xgxhto9VkAwqIW6sm \
+-u sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b:
+
+## get intent
+curl https://api.stripe.com/v1/payment_intents/pi_3OB17aB6aHGAQTGC0hTBzewV \
+  -u sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b:
+
+
+curl https://api.stripe.com/v1/balance_transactions/txn_3OB17aB6aHGAQTGC0ijmhsog -u sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b:
+```
+
+

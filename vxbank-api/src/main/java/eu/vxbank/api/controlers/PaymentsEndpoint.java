@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class PaymentsEndpoint {
@@ -72,7 +69,8 @@ public class PaymentsEndpoint {
         // Line item details
         Map<String, Object> priceData = new HashMap<>();
         priceData.put("currency", "eur");
-        priceData.put("product_data", Map.of("name", "Test Product 2 Name"));
+        Long timeStamp = new Date().getTime();
+        priceData.put("product_data", Map.of("name", "IntegrationTest_"+timeStamp));
         priceData.put("unit_amount", 3000);
 
         Map<String, Object> lineItem = new HashMap<>();
