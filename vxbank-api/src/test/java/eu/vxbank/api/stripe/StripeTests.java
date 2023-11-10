@@ -1,7 +1,7 @@
 package eu.vxbank.api.stripe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.vxbank.api.controlers.response.VxStripeResponse;
+import eu.vxbank.api.controlers.response.PingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,9 @@ public class StripeTests {
                 .andReturn().getResponse().getContentAsString();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        VxStripeResponse stripeResponse = objectMapper.readValue(firstResponse, VxStripeResponse.class);
+        PingResponse stripeResponse = objectMapper.readValue(firstResponse, PingResponse.class);
 
-        Assertions.assertEquals("Public key message", stripeResponse.publicKeyMessage);
-        Assertions.assertEquals("Secret key message", stripeResponse.secretKeyMessage);
+        Assertions.assertEquals("test", stripeResponse.systemEnvironment);
 
         System.out.println("End of test");
     }

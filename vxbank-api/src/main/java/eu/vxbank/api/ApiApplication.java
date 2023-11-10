@@ -1,6 +1,6 @@
 package eu.vxbank.api;
 
-import eu.vxbank.api.controlers.response.VxStripeResponse;
+import eu.vxbank.api.controlers.response.PingResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -45,10 +45,9 @@ public class ApiApplication {
 
 	@GetMapping("/testStripe")
 	@ResponseBody
-	public VxStripeResponse testStripe() {
-		VxStripeResponse response = new VxStripeResponse();
-		response.publicKeyMessage = "Public key message";
-		response.secretKeyMessage = "Secret key message";
+	public PingResponse testStripe() {
+		PingResponse response = new PingResponse();
+		response.systemEnvironment = systemService.getApplicationEnvironment();
 		return response;
 	}
 }

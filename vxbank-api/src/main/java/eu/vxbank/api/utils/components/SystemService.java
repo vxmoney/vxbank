@@ -5,6 +5,7 @@ import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.enums.Environment;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.VxBankDatastore.ConnectionType;
@@ -15,6 +16,9 @@ import java.util.Optional;
 @Service
 @Getter
 public class SystemService {
+
+    @Value("${system.environment}")
+    String applicationEnvironment;
     Environment environment;
     String projectId;
     VxBankDatastore VxBankDatastore;
@@ -31,6 +35,7 @@ public class SystemService {
                 .getOrDefault(ApiConstants.GAE_APPLICATION, ApiConstants.APPLICATION_ID_LOCALHOST);
 
         System.out.println("initEnvironment projectId=" + projectId);
+        System.out.println("initEnvironment applicationEnvironment=" + applicationEnvironment);
         switch (projectId) {
             case ApiConstants.APPLICATION_ID_LOCALHOST:
                 environment = Environment.LOCALHOST;
@@ -78,5 +83,7 @@ public class SystemService {
                 throw new IllegalStateException("Not supported credentials for env: " + environment);
         }
     }
+
+
 }
 
