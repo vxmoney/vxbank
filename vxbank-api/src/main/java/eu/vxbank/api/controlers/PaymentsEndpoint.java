@@ -3,13 +3,12 @@ package eu.vxbank.api.controlers;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 
 
 import eu.vxbank.api.controlers.models.createpaymentintent.CreatePaymentIntentParams;
-import eu.vxbank.api.controlers.models.createpaymentintent.CreatePaymentIntentResponse;
+import eu.vxbank.api.controlers.models.createpaymentintent.StripeSessionResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +60,7 @@ public class PaymentsEndpoint {
 
     @PostMapping("/payments/create-payment-intent")
     @ResponseBody
-    public CreatePaymentIntentResponse createPaymentIntentIntent(
+    public StripeSessionResponse createPaymentIntentIntent(
             @RequestBody CreatePaymentIntentParams createParams
     ) throws StripeException {
 
@@ -92,8 +91,13 @@ public class PaymentsEndpoint {
 
         Session session = Session.create(params);
         System.out.println("Checkout Session URL: " + session.getUrl());
+        System.out.println("StripeSessionId = " + session.getId());
 
-        throw new IllegalStateException("Please finish this");
+        StripeSessionResponse stripeSessionResponse = new StripeSessionResponse();
+        stripeSessionResponse.url = session.getUrl();
+        stripeSessionResponse.stripeSessionId = session.getId();
+
+        return stripeSessionResponse;
     }
 
 }

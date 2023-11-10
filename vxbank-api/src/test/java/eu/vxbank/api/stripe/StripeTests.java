@@ -2,7 +2,7 @@ package eu.vxbank.api.stripe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.controlers.models.createpaymentintent.CreatePaymentIntentParams;
-import eu.vxbank.api.controlers.models.createpaymentintent.CreatePaymentIntentResponse;
+import eu.vxbank.api.controlers.models.createpaymentintent.StripeSessionResponse;
 import eu.vxbank.api.controlers.response.PingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class StripeTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        CreatePaymentIntentResponse stripeResponse = objectMapper.readValue(stringResponse, CreatePaymentIntentResponse.class);
+        StripeSessionResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionResponse.class);
         Assertions.assertNotNull(stripeResponse);
     }
 
