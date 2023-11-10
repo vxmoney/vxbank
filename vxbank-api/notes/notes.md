@@ -291,7 +291,7 @@ curl https://api.stripe.com/v1/checkout/sessions \
 ## Stripe Checkout Session with line items
 ```bash
 curl https://api.stripe.com/v1/checkout/sessions \
-  -u sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b: \
+  -u sk_test_secret_key: \
   --data-urlencode success_url="https://checkout.stripe.com/success" \
   --data-urlencode cancel_url="https://checkout.stripe.com/cancel" \
   -d "payment_method_types[]=card" \
@@ -384,4 +384,12 @@ curl https://api.stripe.com/v1/checkout/sessions \
   "ui_mode": "hosted",
   "url": "https://checkout.stripe.com/c/pay/cs_test_a1wB7ja7EtYUlSERFXr76gE2hphr9up4Bjj8R0Rc8s8WoOwgjSbFgsJU0A#fidkdWxOYHwnPyd1blpxYHZxWjA0Sjw2c05HM2RNQkRUUUJGQmNBckNiUnJdNWpfYVJiMDBmSX1fUXFGfHxzQXZNMkFjfXNOYFc3Z1RUcUtfSn9fUUNBZ1FMNExMSXc2PVBwVGFrX3VpS18wNTVUYE12SlwwdycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"
 }
+```
+
+# get suceeded payments
+```bash
+curl https://api.stripe.com/v1/payment_intents \
+  -u sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b: \
+  -d "status"="succeeded"
+
 ```

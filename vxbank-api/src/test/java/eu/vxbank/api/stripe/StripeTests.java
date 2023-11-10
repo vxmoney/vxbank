@@ -1,6 +1,8 @@
 package eu.vxbank.api.stripe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.vxbank.api.controlers.models.createpaymentintent.CreatePaymentIntentParams;
+import eu.vxbank.api.controlers.models.createpaymentintent.CreatePaymentIntentResponse;
 import eu.vxbank.api.controlers.response.PingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,27 @@ public class StripeTests {
         Assertions.assertEquals("test", stripeResponse.systemEnvironment);
 
         System.out.println("End of test");
+    }
+
+    @Test
+    void createPaymentIntentTest()throws Exception{
+
+        CreatePaymentIntentParams createParams = new CreatePaymentIntentParams();
+        createParams.productId="id_01";
+        createParams.productTitle= "Test title";
+        createParams.productDescription = "Test description";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper.writeValueAsString(createParams);
+
+        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payments/create-payment-intent")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        CreatePaymentIntentResponse stripeResponse = objectMapper.readValue(stringResponse, CreatePaymentIntentResponse.class);
+        Assertions.assertNotNull(stripeResponse);
     }
 
 }
