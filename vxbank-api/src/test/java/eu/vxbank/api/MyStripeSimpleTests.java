@@ -7,8 +7,10 @@ import com.stripe.param.ProductCreateParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.model.Price;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-public class MyStripeTests {
+@SpringBootTest
+public class MyStripeSimpleTests {
 
 
     /**
@@ -41,5 +43,8 @@ public class MyStripeTests {
         System.out.println("Success! Here is your starter subscription price id: " + price.getId());
     }
 
-    void
+    @Test
+    public void testVxStripeInit(){
+
+    }
 }

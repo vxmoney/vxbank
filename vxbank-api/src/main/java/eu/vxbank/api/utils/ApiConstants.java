@@ -1,5 +1,7 @@
 package eu.vxbank.api.utils;
 
+
+
 public class ApiConstants {
     public static final String GAE_APPLICATION = "GAE_APPLICATION";
 
