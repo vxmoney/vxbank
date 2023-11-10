@@ -2,8 +2,8 @@ package eu.vxbank.api.utils.stripe;
 
 
 public class VxStripe {
-    private String publicKey = "pk_test_51O93vKB6aHGAQTGCGfDwFgWwX0oZdWg55cLxZTtCyyvDsH7DfxvKeR2bQQtNZOzZTFDbTI1IILr38UuQdnZplNZ500QeHsOY5r";
-    private String secretKey = "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
+    private String publicKey;
+    private String secretKey;
 
     private boolean initialized = false;
 
