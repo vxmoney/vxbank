@@ -15,13 +15,12 @@ import {
   Badge,
   Code,
   Center,
+  Link,
 } from "@chakra-ui/react";
 
-export default function CancelPage({searchParams}){
-    let { stripeSessionId, projectId, clubId, curencyId, sessionValue } =
+export default function CancelPage({ searchParams }) {
+  let { stripeSessionId, projectId, clubId, curencyId, sessionValue } =
     searchParams;
-
-
 
   const formBackground = useColorModeValue("gray.100", "gray.700");
 
@@ -30,7 +29,9 @@ export default function CancelPage({searchParams}){
       <Flex direction="column" background={formBackground} p={12} rounded={6}>
         <Card>
           <CardHeader>
-            <Heading size="md">Sucess report</Heading>
+            <Heading size="md">
+              <Badge colorScheme="red">Session canceled</Badge>
+            </Heading>
           </CardHeader>
           <CardBody>
             <Stack divider={<StackDivider />} spacing={4}>
@@ -76,9 +77,11 @@ export default function CancelPage({searchParams}){
                   <Code ml={5}>{sessionValue}</Code>
                 </Text>
               </Box>
-              <Center >
+              <Center>
                 <Box alignItems={"center"}>
-                  <Button>OK</Button>
+                  <Link href="/">
+                    <Button>Ok</Button>
+                  </Link>
                 </Box>
               </Center>
             </Stack>

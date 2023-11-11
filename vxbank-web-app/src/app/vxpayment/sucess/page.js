@@ -15,13 +15,12 @@ import {
   Badge,
   Code,
   Center,
+  Link,
 } from "@chakra-ui/react";
 
 export default function SuccessPage({ searchParams }) {
   let { stripeSessionId, projectId, clubId, curencyId, sessionValue } =
     searchParams;
-
-
 
   const formBackground = useColorModeValue("gray.100", "gray.700");
 
@@ -76,9 +75,11 @@ export default function SuccessPage({ searchParams }) {
                   <Code ml={5}>{sessionValue}</Code>
                 </Text>
               </Box>
-              <Center >
+              <Center>
                 <Box alignItems={"center"}>
-                  <Button>OK</Button>
+                  <Link href="/">
+                    <Button>Ok</Button>
+                  </Link>
                 </Box>
               </Center>
             </Stack>
