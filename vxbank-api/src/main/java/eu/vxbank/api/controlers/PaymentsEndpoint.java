@@ -84,7 +84,8 @@ public class PaymentsEndpoint {
         // Session parameters
         Map<String, Object> params = new HashMap<>();
         params.put("line_items", lineItems);
-        params.put("success_url", "https://example.com/success");
+        params.put("success_url", "https://checkout.stripe.com/success");
+        params.put("cancel_url", "https://checkout.stripe.com/cancel");
         params.put("mode", "payment");
 
         Session session = Session.create(params);
