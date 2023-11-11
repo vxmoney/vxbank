@@ -1,10 +1,30 @@
+"use client";
+import { Flex, useColorMode, useColorModeValue } from "@chakra-ui/react";
+
 export default function SuccessPage({ searchParams }) {
   let { stripeSessionId, projectId, clubId } = searchParams;
-  
+
   console.log(stripeSessionId);
   console.log(projectId);
   console.log(clubId);
   //console.log(router.query);
 
-  return <p>Hello vxpayment/success/page page</p>;
+  const formBackground = useColorModeValue("gray.100", "gray.700");
+
+  return;
+  <Flex height="100vh" alignItems="center" justifyContent="center">
+    <Flex direction="column" background={formBackground} p={12} rounded={6}>
+      <Heading mb={6}>Log in</Heading>
+      <Input
+        placeholder="bogdan.oloeriu@gmail.com"
+        variant="filled"
+        mb={3}
+        type="email"
+      />
+      <Input placeholder="**********" variant="filled" mb={6} type="password" />
+      <Button colorScheme="teal" mb={6}>
+        Log in
+      </Button>
+    </Flex>
+  </Flex>;
 }
