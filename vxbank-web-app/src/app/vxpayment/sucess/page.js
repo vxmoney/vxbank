@@ -13,7 +13,7 @@ import {
   Box,
   Text,
   Badge,
-  Code
+  Code,
 } from "@chakra-ui/react";
 
 export default function SuccessPage({ searchParams }) {
@@ -29,7 +29,6 @@ export default function SuccessPage({ searchParams }) {
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center">
       <Flex direction="column" background={formBackground} p={12} rounded={6}>
-       
         <Card>
           <CardHeader>
             <Heading size="md">Sucess report</Heading>
@@ -47,13 +46,13 @@ export default function SuccessPage({ searchParams }) {
               </Box>
               <Box>
                 <Text fontSize="xl" fontWeight="bold">
-                stripeSessionId:  
+                  stripeSessionId:
                   <Code ml={5}>{stripeSessionId}</Code>
                 </Text>
               </Box>
               <Box>
                 <Text fontSize="xl" fontWeight="bold">
-                projectId: 
+                  projectId:
                   <Code ml={5}>{projectId}</Code>
                 </Text>
               </Box>
