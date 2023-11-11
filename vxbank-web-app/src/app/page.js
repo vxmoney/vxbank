@@ -11,6 +11,7 @@ import {
   useColorModeValue,
   Box,
   Stack,
+  Divider,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
@@ -43,6 +44,23 @@ export default function Page() {
             >
               Success
             </Link>
+            <Divider/>
+
+            <Link
+              href={{
+                pathname: "/vxpayment/cancel",
+                query: {
+                  stripeSessionId: "testSessionId",
+                  projectId: "chessoutId",
+                  clubId: "leuvenId",
+                  curencyId: "eur",
+                  sessionValue: 2500
+                },
+              }}
+            >
+              Cancel
+            </Link>
+            <Divider mr={2}/>
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>
