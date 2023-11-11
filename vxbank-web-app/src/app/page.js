@@ -36,6 +36,8 @@ export default function Page() {
                   stripeSessionId: "testSessionId",
                   projectId: "chessoutId",
                   clubId: "leuvenId",
+                  curencyId: "eur",
+                  sessionValue: 2500
                 },
               }}
             >

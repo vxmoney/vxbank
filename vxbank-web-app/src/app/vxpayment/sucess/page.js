@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 
 export default function SuccessPage({ searchParams }) {
-  let { stripeSessionId, projectId, clubId } = searchParams;
+  let { stripeSessionId, projectId, clubId, curencyId,sessionValue } = searchParams;
 
   console.log(stripeSessionId);
   console.log(projectId);
