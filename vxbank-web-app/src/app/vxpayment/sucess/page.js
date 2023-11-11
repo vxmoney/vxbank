@@ -1,5 +1,20 @@
 "use client";
-import { Flex, Heading, Input,Button, useColorModeValue } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  Stack,
+  Input,
+  Button,
+  StackDivider,
+  useColorModeValue,
+  Card,
+  CardHeader,
+  CardBody,
+  Box,
+  Text,
+  Badge,
+  Code
+} from "@chakra-ui/react";
 
 export default function SuccessPage({ searchParams }) {
   let { stripeSessionId, projectId, clubId } = searchParams;
@@ -14,22 +29,37 @@ export default function SuccessPage({ searchParams }) {
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center">
       <Flex direction="column" background={formBackground} p={12} rounded={6}>
-        <Heading mb={6}>Sucess</Heading>
-        <Input
-          placeholder="bogdan.oloeriu@gmail.com"
-          variant="filled"
-          mb={3}
-          type="email"
-        />
-        <Input
-          placeholder="**********"
-          variant="filled"
-          mb={6}
-          type="password"
-        />
-        <Button colorScheme="teal" mb={6}>
-          Log in
-        </Button>
+       
+        <Card>
+          <CardHeader>
+            <Heading size="md">Sucess report</Heading>
+          </CardHeader>
+          <CardBody>
+            <Stack divider={<StackDivider />} spacing={4}>
+              <Box>
+                <Heading size="xs" textTransform="uppercase">
+                  Summary
+                </Heading>
+                <Text pt="2" fontSize="sm">
+                  Congratulations! You have succesfuly completed the payment
+                  flow.
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize="xl" fontWeight="bold">
+                stripeSessionId:  
+                  <Code ml={5}>{stripeSessionId}</Code>
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize="xl" fontWeight="bold">
+                projectId: 
+                  <Code ml={5}>{projectId}</Code>
+                </Text>
+              </Box>
+            </Stack>
+          </CardBody>
+        </Card>
       </Flex>
     </Flex>
   );
