@@ -34,3 +34,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Deploy to appengine
+```bash
+# list current account
+gcloud config list account --format "value(core.account)"
+
+# authenticate if needed
+gcloud auth login
+
+# check current project
+gcloud config get-value project
+
+# set current project
+gcloud config set project vxbank-eu-dev
+
+# deploy specific project
+gcloud app deploy
+```
