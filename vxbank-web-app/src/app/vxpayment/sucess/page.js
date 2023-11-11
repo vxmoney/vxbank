@@ -21,10 +21,7 @@ export default function SuccessPage({ searchParams }) {
   let { stripeSessionId, projectId, clubId, curencyId, sessionValue } =
     searchParams;
 
-  console.log(stripeSessionId);
-  console.log(projectId);
-  console.log(clubId);
-  //console.log(router.query);
+
 
   const formBackground = useColorModeValue("gray.100", "gray.700");
 
