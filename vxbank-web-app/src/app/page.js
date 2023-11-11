@@ -12,6 +12,7 @@ import {
   Box,
   Stack,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import theme from "./theme";
 
@@ -28,6 +29,7 @@ export default function Page() {
           <Box>Main home page</Box>
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}></Stack>
+            <Link href='/vxpayment/sucess'>Success</Link>
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>
