@@ -84,8 +84,8 @@ public class PaymentsEndpoint {
         // Session parameters
         Map<String, Object> params = new HashMap<>();
         params.put("line_items", lineItems);
-        params.put("success_url", "https://checkout.stripe.com/success");
-        params.put("cancel_url", "https://checkout.stripe.com/cancel");
+        params.put("success_url", "http://localhost:3000/vxpayment/sucess?stripeSessionId=testSessionId&projectId=chessoutId&clubId=leuvenId&curencyId=eur&sessionValue=2500");
+        params.put("cancel_url", "http://localhost:3000/vxpayment/cancel?stripeSessionId=testSessionId&projectId=chessoutId&clubId=leuvenId&curencyId=eur&sessionValue=2500");
         params.put("mode", "payment");
 
         Session session = Session.create(params);
