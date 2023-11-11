@@ -13,10 +13,10 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import theme from "./theme";
+import theme from "@/app/theme";
 
 // this is the top page
-export default function Page() {
+export default function VxTopNav() {
   const { colorMode, toggleColorMode } = useColorMode();
   const barBackground = useColorModeValue("gray.100", "gray.900");
 
@@ -25,7 +25,7 @@ export default function Page() {
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Box background={barBackground} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Box>Main home page</Box>
+          <Box>Logo</Box>
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}></Stack>
             <Button onClick={toggleColorMode}>
