@@ -32,7 +32,11 @@ export default function Page() {
             <Link
               href={{
                 pathname: "/vxpayment/sucess",
-                query: { stripeSessionId: "testSessionId" },
+                query: {
+                  stripeSessionId: "testSessionId",
+                  projectId: "chessoutId",
+                  clubId: "leuvenId",
+                },
               }}
             >
               Success
