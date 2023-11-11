@@ -14,10 +14,12 @@ import {
   Text,
   Badge,
   Code,
+  Center,
 } from "@chakra-ui/react";
 
 export default function SuccessPage({ searchParams }) {
-  let { stripeSessionId, projectId, clubId, curencyId,sessionValue } = searchParams;
+  let { stripeSessionId, projectId, clubId, curencyId, sessionValue } =
+    searchParams;
 
   console.log(stripeSessionId);
   console.log(projectId);
@@ -56,6 +58,32 @@ export default function SuccessPage({ searchParams }) {
                   <Code ml={5}>{projectId}</Code>
                 </Text>
               </Box>
+
+              <Box>
+                <Text fontSize="xl" fontWeight="bold">
+                  clubId:
+                  <Code ml={5}>{clubId}</Code>
+                </Text>
+              </Box>
+
+              <Box>
+                <Text fontSize="xl" fontWeight="bold">
+                  curencyId:
+                  <Code ml={5}>{curencyId}</Code>
+                </Text>
+              </Box>
+
+              <Box>
+                <Text fontSize="xl" fontWeight="bold">
+                  sessionValue:
+                  <Code ml={5}>{sessionValue}</Code>
+                </Text>
+              </Box>
+              <Center >
+                <Box alignItems={"center"}>
+                  <Button>OK</Button>
+                </Box>
+              </Center>
             </Stack>
           </CardBody>
         </Card>
