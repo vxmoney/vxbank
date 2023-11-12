@@ -1,6 +1,7 @@
 package vxbank.datastore;
 
 import com.googlecode.objectify.Key;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vxbank.datastore.data.models.VxDataTestEntity;
 import vxbank.datastore.data.models.VxServiceIntegration;
@@ -20,6 +21,7 @@ public class TestVxServiceIntegration {
         vxServiceIntegration.title = "chessout-integration-test";
         vxServiceIntegration.description = "Integration test description";
         Key<VxServiceIntegration> key = ds.ofy.save().entity(vxServiceIntegration).now();
+        Assertions.assertNotNull(key);
 
     }
 }
