@@ -15,6 +15,14 @@ import java.util.Optional;
 
 public class VxBankDatastore {
 
+    public static VxBankDatastore init(String projectId,
+                                       ConnectionType connectionType,
+                                       Optional<InputStream> optionalCredentialsInputStream) {
+        VxBankDatastore vxBankDatastore = new VxBankDatastore();
+        vxBankDatastore.initObjectify(projectId, connectionType, optionalCredentialsInputStream);
+        return vxBankDatastore;
+    }
+
     public enum ConnectionType {
         localhost, connectedToAppEngine
     }
@@ -25,9 +33,9 @@ public class VxBankDatastore {
     public Objectify ofy;
     private Boolean initialized = false;
 
-    public void initObjectify(String projectId,
-                              ConnectionType connectionType,
-                              Optional<InputStream> optionalCredentialsInputStream) throws VxBankDatastoreException {
+    private void initObjectify(String projectId,
+                               ConnectionType connectionType,
+                               Optional<InputStream> optionalCredentialsInputStream) throws VxBankDatastoreException {
 
         this.connectionType = connectionType;
         this.datastoreProjectId = projectId;

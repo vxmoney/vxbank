@@ -4,10 +4,11 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 @Entity
-public class VxService {
+public class VxServiceIntegration {
 
     @Id
-    public String id;
+    public Long id;
     public String title;
     public String description;
+    public String vxbankSecret;
 }

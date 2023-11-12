@@ -12,8 +12,7 @@ class InitObjectifyTest {
 
     @Test
     void initObjectifyTest() throws VxBankDatastoreException {
-        VxBankDatastore pd = new VxBankDatastore();
-        pd.initObjectify("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+        VxBankDatastore pd = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
         Assertions.assertTrue(pd.getInitialized());
 
         VxDataTestEntity PDMyTestEntity = new VxDataTestEntity();
