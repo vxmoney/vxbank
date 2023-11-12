@@ -1,4 +1,4 @@
-package eu.vxbank.api.controlers.response;
+package eu.vxbank.api.endpoints.response;
 
 public class PingResponse {
     public String systemEnvironment;

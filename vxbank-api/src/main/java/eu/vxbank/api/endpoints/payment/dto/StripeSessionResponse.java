@@ -1,4 +1,4 @@
-package eu.vxbank.api.controlers.models.createpaymentintent;
+package eu.vxbank.api.endpoints.payment.dto;
 
 public class StripeSessionResponse {
     public String url;

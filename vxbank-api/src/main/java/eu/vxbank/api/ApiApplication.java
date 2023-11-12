@@ -1,6 +1,6 @@
 package eu.vxbank.api;
 
-import eu.vxbank.api.controlers.response.PingResponse;
+import eu.vxbank.api.endpoints.response.PingResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -43,13 +43,6 @@ public class ApiApplication {
 		return "Managed to persist new VxBankDatastore";
 	}
 
-	@GetMapping("/testStripe")
-	@ResponseBody
-	public PingResponse testStripe() {
-		PingResponse response = new PingResponse();
-		response.systemEnvironment = systemService.getApplicationEnvironment();
-		return response;
-	}
 
 
 }
