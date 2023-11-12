@@ -3,7 +3,6 @@ package eu.vxbank.api.payment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.endpoints.payment.dto.CreatePaymentIntentParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionResponse;
-import eu.vxbank.api.endpoints.response.PingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
