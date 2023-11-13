@@ -8,6 +8,7 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import vxbank.datastore.data.models.VxDataTestEntity;
 import vxbank.datastore.data.models.VxServiceIntegration;
+import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.exceptions.VxBankDatastoreException;
 
 import java.io.IOException;
@@ -89,6 +90,7 @@ public class VxBankDatastore {
     void registerDatastoreEntities(ObjectifyFactory factory) {
         factory.register(VxDataTestEntity.class);
         factory.register(VxServiceIntegration.class);
+        factory.register(VxUser.class);
     }
 
     public Boolean getInitialized() {

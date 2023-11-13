@@ -1,8 +1,9 @@
-package vxbank.datastore;
+package vxbank.datastore.data.models;
 
 import com.googlecode.objectify.Key;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxDataTestEntity;
 import vxbank.datastore.data.models.VxServiceIntegration;
 
