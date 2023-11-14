@@ -13,4 +13,9 @@ public class VxService {
         ds.ofy.save().entity(vxModel).now();
         return vxModel;
     }
+
+    public static <T> T get(Long modelId, Class<T> vxClass, VxBankDatastore ds){
+        T vxModel = ds.ofy.load().type(vxClass).id(modelId).now();
+        return vxModel;
+    }
 }

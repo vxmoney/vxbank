@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxService;
 
 import java.util.*;
 
@@ -79,6 +82,11 @@ public class PaymentEndpoint {
 
         Stripe.apiKey =
                 "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        VxUser vxUser = VxService.get(params.vxUserId,VxUser.class,ds);
+
+
         throw new IllegalStateException("Please finish this");
     }
 

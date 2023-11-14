@@ -1,6 +1,5 @@
 package eu.vxbank.api.payment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxModel;
 import vxbank.datastore.data.models.VxPayment;
 import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
@@ -28,7 +26,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PaymentTests {
+public class TestPayment {
 
     @Autowired
     private MockMvc mockMvc;
