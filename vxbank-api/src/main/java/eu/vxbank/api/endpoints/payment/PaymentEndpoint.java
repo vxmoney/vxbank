@@ -8,6 +8,7 @@ import com.stripe.model.checkout.Session;
 
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
-public class PaymentsEndpoint {
+public class PaymentEndpoint {
 
     @Autowired
     SystemService systemService;
@@ -37,12 +38,11 @@ public class PaymentsEndpoint {
                 "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
 
 
-
         // Line item details
         Map<String, Object> priceData = new HashMap<>();
         priceData.put("currency", "eur");
         Long timeStamp = new Date().getTime();
-        priceData.put("product_data", Map.of("name", "IntegrationTest_"+timeStamp));
+        priceData.put("product_data", Map.of("name", "IntegrationTest_" + timeStamp));
         priceData.put("unit_amount", 3000);
 
         Map<String, Object> lineItem = new HashMap<>();
@@ -69,6 +69,17 @@ public class PaymentsEndpoint {
         stripeSessionResponse.stripeSessionId = session.getId();
 
         return stripeSessionResponse;
+    }
+
+    @PostMapping("/payment")
+    @ResponseBody
+    public DeprecatedStripeSessionResponse create(
+            @RequestBody PaymentCreateParams params
+    ) throws StripeException {
+
+        Stripe.apiKey =
+                "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
+        throw new IllegalStateException("Please finish this");
     }
 
 }

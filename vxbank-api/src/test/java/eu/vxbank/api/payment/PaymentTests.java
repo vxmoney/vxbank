@@ -110,7 +110,7 @@ public class PaymentTests {
         String requestBody = objectMapper.writeValueAsString(createParams);
 
 
-        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payments/create-payment")
+        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
