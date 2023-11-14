@@ -29,12 +29,6 @@ public class VxPayment {
     @Index
     public Long vxServiceIntegrationId;
 
-    /**
-     * company userId
-     */
-    @Index
-    public Long serviceIntegrationUserId;
-
     @Index
     public State state;
     public Long createTimeStamp;

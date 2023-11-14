@@ -50,13 +50,21 @@ public class PaymentTests {
         Assertions.assertNotNull(stripeResponse);
     }
 
-    @Test
-    void createPaymentTest() {
-
+    private String generateString(){
         boolean useLetters = true;
         boolean useNumbers = false;
-        String generatedString = RandomStringUtils.random(10, useLetters, useNumbers);
-        String mail = String.format("%s@mail.com", generatedString);
+        String randomString = RandomStringUtils.random(10, useLetters, useNumbers);
+        return randomString;
+    }
+
+    private String generateMail(){
+        String randomString = generateString();
+        String mail = String.format("%s@mail.com", randomString);
+        return mail;
+    }
+    @Test
+    void createPaymentTest() {
+        String mail = generateMail();
 
         VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
 
@@ -64,7 +72,7 @@ public class PaymentTests {
 
         SetupUtils.createVxUser(vxUser, ds);
 
-        String serviceTitle = RandomStringUtils.random(10, useLetters, useNumbers);
+        String serviceTitle = generateString();
         VxServiceIntegration serviceIntegration = VxServiceIntegration.builder()
                 .userId(vxUser.id)
                 .title(serviceTitle)
@@ -72,8 +80,6 @@ public class PaymentTests {
         SetupUtils.persistVxModel(serviceIntegration,ds);
 
         Assertions.assertNotNull(serviceIntegration.id);
-
-
     }
 
 }
