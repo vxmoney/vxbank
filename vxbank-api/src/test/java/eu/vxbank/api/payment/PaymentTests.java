@@ -1,8 +1,11 @@
 package eu.vxbank.api.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.vxbank.api.endpoints.payment.dto.CreatePaymentIntentParams;
-import eu.vxbank.api.endpoints.payment.dto.StripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
+import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
+import eu.vxbank.api.testutils.BuildUtils;
+import eu.vxbank.api.testutils.SetupUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxUser;
+
+import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -22,9 +29,9 @@ public class PaymentTests {
 
 
     @Test
-    void createPaymentIntentTest()throws Exception{
+    void deprecatedPaymentTest()throws Exception{
 
-        CreatePaymentIntentParams createParams = new CreatePaymentIntentParams();
+        DeprecatedCreatePaymentIntentParams createParams = new DeprecatedCreatePaymentIntentParams();
         createParams.productId="id_01";
         createParams.productTitle= "Test title";
         createParams.productDescription = "Test description";
@@ -38,8 +45,23 @@ public class PaymentTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        StripeSessionResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionResponse.class);
+        DeprecatedStripeSessionResponse stripeResponse = objectMapper.readValue(stringResponse, DeprecatedStripeSessionResponse.class);
         Assertions.assertNotNull(stripeResponse);
+    }
+
+    @Test
+    void createPaymentTest(){
+
+        boolean useLetters = true;
+        boolean useNumbers = false;
+        String generatedString = RandomStringUtils.random(10, useLetters , useNumbers);
+        String mail = String.format("%s@mail.com",generatedString);
+        VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
+
+        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+
+        vxUser = SetupUtils.sideCreateVxUser(vxUser,ds);
+        Assertions.assertNotNull(vxUser.id);
     }
 
 }

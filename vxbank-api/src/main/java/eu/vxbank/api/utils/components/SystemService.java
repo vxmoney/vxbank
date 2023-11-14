@@ -21,7 +21,7 @@ public class SystemService {
     String applicationEnvironment;
     Environment environment;
     String projectId;
-    VxBankDatastore VxBankDatastore;
+    VxBankDatastore vxBankDatastore;
 
     @PostConstruct
     public void init() {
@@ -57,16 +57,14 @@ public class SystemService {
             case LOCALHOST:
                 VxBankDatastore localDatastore = new VxBankDatastore();
                 ConnectionType connectionType = ConnectionType.localhost;
-                localDatastore.initObjectify("my-project", ConnectionType.localhost, Optional.empty());
-                VxBankDatastore = localDatastore;
+                vxBankDatastore = VxBankDatastore.init("my-project", ConnectionType.localhost, Optional.empty());
                 break;
             case DEVELOPMENT:
                 InputStream credentialsStream = getDatastoreCredentialsInputStream();
                 VxBankDatastore devDatastore = new VxBankDatastore();
-                devDatastore.initObjectify(projectId,
+                vxBankDatastore = VxBankDatastore.init(projectId,
                         ConnectionType.connectedToAppEngine,
                         Optional.of(credentialsStream));
-                VxBankDatastore = devDatastore;
                 break;
             default:
                 throw new IllegalStateException("Not supported initDatastore for env: " + environment);

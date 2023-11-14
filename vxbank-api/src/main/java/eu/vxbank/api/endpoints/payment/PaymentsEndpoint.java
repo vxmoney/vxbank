@@ -4,15 +4,12 @@ package eu.vxbank.api.endpoints.payment;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
 
 
-import eu.vxbank.api.endpoints.payment.dto.CreatePaymentIntentParams;
-import eu.vxbank.api.endpoints.payment.dto.StripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
+import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,10 +23,14 @@ public class PaymentsEndpoint {
     @Autowired
     SystemService systemService;
 
+    /**
+     * This is deprecated and should not be used anymore
+     */
+    @Deprecated
     @PostMapping("/payments/create-payment-intent")
     @ResponseBody
-    public StripeSessionResponse createPaymentIntentIntent(
-            @RequestBody CreatePaymentIntentParams createParams
+    public DeprecatedStripeSessionResponse createPaymentIntentIntent(
+            @RequestBody DeprecatedCreatePaymentIntentParams createParams
     ) throws StripeException {
 
         Stripe.apiKey =
@@ -63,7 +64,7 @@ public class PaymentsEndpoint {
         System.out.println("Checkout Session URL: " + session.getUrl());
         System.out.println("StripeSessionId = " + session.getId());
 
-        StripeSessionResponse stripeSessionResponse = new StripeSessionResponse();
+        DeprecatedStripeSessionResponse stripeSessionResponse = new DeprecatedStripeSessionResponse();
         stripeSessionResponse.url = session.getUrl();
         stripeSessionResponse.stripeSessionId = session.getId();
 

@@ -41,6 +41,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.stripe/stripe-java
 	implementation 'com.stripe:stripe-java:24.1.0'
 
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation 'org.apache.commons:commons-lang3:3.13.0'
+
+
 }
 
 tasks.named('test') {
