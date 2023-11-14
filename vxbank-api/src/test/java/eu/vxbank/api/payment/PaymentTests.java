@@ -1,8 +1,10 @@
 package eu.vxbank.api.payment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.testutils.BuildUtils;
 import eu.vxbank.api.testutils.SetupUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -67,7 +69,7 @@ public class PaymentTests {
     }
 
     @Test
-    void createPaymentTest() {
+    void createPaymentTest() throws Exception {
         String mail = generateMail();
 
         VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
@@ -97,6 +99,22 @@ public class PaymentTests {
                 .build();
         SetupUtils.persistVxModel(vxPayment, ds);
         Assertions.assertNotNull(vxPayment.id);
+
+        PaymentCreateParams createParams = PaymentCreateParams.builder()
+                .vxUserId(vxUser.id)
+                .vxServiceIntegrationId(vxServiceIntegration.id)
+                .vxPaymentId(vxPayment.id)
+                .build();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestBody = objectMapper.writeValueAsString(createParams);
+
+
+        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payments/create-payment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse().getContentAsString();
 
     }
 
