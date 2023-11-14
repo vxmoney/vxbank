@@ -72,6 +72,8 @@ public class PaymentTests {
         SetupUtils.persistVxModel(serviceIntegration,ds);
 
         Assertions.assertNotNull(serviceIntegration.id);
+
+
     }
 
 }
