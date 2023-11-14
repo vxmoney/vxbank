@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class VxPayment {
+public class VxPayment implements VxModel {
 
     public enum State {
         pending, processed
@@ -28,7 +28,8 @@ public class VxPayment {
      */
     @Index
     public Long vxServiceIntegrationId;
-
+    @Index
+    public String stripeSessionId;
     @Index
     public State state;
     public Long createTimeStamp;
@@ -42,7 +43,5 @@ public class VxPayment {
     public Long valueAvailableToUser;
     public String valueCollectedByStripe;
     public String valueCollectedByVxbank;
-
-    public String stripeSessionId;
 
 }

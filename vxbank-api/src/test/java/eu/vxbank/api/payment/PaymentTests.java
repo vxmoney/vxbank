@@ -16,9 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxModel;
+import vxbank.datastore.data.models.VxPayment;
 import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
 
+import java.util.Date;
 import java.util.Optional;
 
 @SpringBootTest
@@ -50,18 +53,19 @@ public class PaymentTests {
         Assertions.assertNotNull(stripeResponse);
     }
 
-    private String generateString(){
+    private String generateString() {
         boolean useLetters = true;
         boolean useNumbers = false;
         String randomString = RandomStringUtils.random(10, useLetters, useNumbers);
         return randomString;
     }
 
-    private String generateMail(){
+    private String generateMail() {
         String randomString = generateString();
         String mail = String.format("%s@mail.com", randomString);
         return mail;
     }
+
     @Test
     void createPaymentTest() {
         String mail = generateMail();
@@ -73,13 +77,27 @@ public class PaymentTests {
         SetupUtils.createVxUser(vxUser, ds);
 
         String serviceTitle = generateString();
-        VxServiceIntegration serviceIntegration = VxServiceIntegration.builder()
+        VxServiceIntegration vxServiceIntegration = VxServiceIntegration.builder()
                 .userId(vxUser.id)
                 .title(serviceTitle)
                 .build();
-        SetupUtils.persistVxModel(serviceIntegration,ds);
+        SetupUtils.persistVxModel(vxServiceIntegration, ds);
 
-        Assertions.assertNotNull(serviceIntegration.id);
+        Assertions.assertNotNull(vxServiceIntegration.id);
+
+        Long timeStamp = new Date().getTime();
+        VxPayment vxPayment = VxPayment.builder()
+                .vxUserId(vxUser.id)
+                .vxServiceIntegrationId(vxServiceIntegration.id)
+                .state(VxPayment.State.pending)
+                .createTimeStamp(timeStamp)
+                .currency("eur")
+                .productName("Random product name")
+                .valuePayedByUser(1000L) // 10 Euro
+                .build();
+        SetupUtils.persistVxModel(vxPayment, ds);
+        Assertions.assertNotNull(vxPayment.id);
+
     }
 
 }
