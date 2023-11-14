@@ -10,12 +10,15 @@ import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxPayment;
+import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxService;
 
@@ -84,7 +87,14 @@ public class PaymentEndpoint {
                 "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        VxUser vxUser = VxService.get(params.vxUserId,VxUser.class,ds);
+        VxUser vxUser = VxService.get(params.vxUserId, VxUser.class, ds);
+        VxServiceIntegration vxServiceIntegration = VxService.get(
+                params.vxServiceIntegrationId,
+                VxServiceIntegration.class,
+                ds);
+        VxPayment vxPayment = VxService.get(params.vxPaymentId, VxPayment.class, ds);
+
+        VxStripeUtil.createStripeSession(vxUser,vxServiceIntegration,vxPayment,Stripe.apiKey);
 
 
         throw new IllegalStateException("Please finish this");
