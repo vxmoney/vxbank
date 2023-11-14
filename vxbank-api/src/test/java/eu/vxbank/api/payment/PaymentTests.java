@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.Optional;
@@ -29,11 +30,11 @@ public class PaymentTests {
 
 
     @Test
-    void deprecatedPaymentTest()throws Exception{
+    void deprecatedPaymentTest() throws Exception {
 
         DeprecatedCreatePaymentIntentParams createParams = new DeprecatedCreatePaymentIntentParams();
-        createParams.productId="id_01";
-        createParams.productTitle= "Test title";
+        createParams.productId = "id_01";
+        createParams.productTitle = "Test title";
         createParams.productDescription = "Test description";
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -50,18 +51,27 @@ public class PaymentTests {
     }
 
     @Test
-    void createPaymentTest(){
+    void createPaymentTest() {
 
         boolean useLetters = true;
         boolean useNumbers = false;
-        String generatedString = RandomStringUtils.random(10, useLetters , useNumbers);
-        String mail = String.format("%s@mail.com",generatedString);
+        String generatedString = RandomStringUtils.random(10, useLetters, useNumbers);
+        String mail = String.format("%s@mail.com", generatedString);
+
         VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
 
         VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
 
-        vxUser = SetupUtils.sideCreateVxUser(vxUser,ds);
-        Assertions.assertNotNull(vxUser.id);
+        SetupUtils.createVxUser(vxUser, ds);
+
+        String serviceTitle = RandomStringUtils.random(10, useLetters, useNumbers);
+        VxServiceIntegration serviceIntegration = VxServiceIntegration.builder()
+                .userId(vxUser.id)
+                .title(serviceTitle)
+                .build();
+        SetupUtils.persistVxModel(serviceIntegration,ds);
+
+        Assertions.assertNotNull(serviceIntegration.id);
     }
 
 }
