@@ -4,10 +4,8 @@ these are just notes for this project
 
 # some usefull curl
 ```bash
-curl https://vxbank-eu-dev.ew.r.appspot.com
-curl https://vxbank-eu-dev.ew.r.appspot.com/testDatastore
-curl https://vxbank-eu-dev.ew.r.appspot.com/testSimpleService
-curl https://vxbank-eu-dev.ew.r.appspot.com/testStripe
+curl https://backend-dot-vxbank-eu-dev.ew.r.appspot.com/
+curl https://backend-dot-vxbank-eu-dev.ew.r.appspot.com/stripeWebhook
 
 curl localhost:8080
 curl localhost:8080/testDatastore
