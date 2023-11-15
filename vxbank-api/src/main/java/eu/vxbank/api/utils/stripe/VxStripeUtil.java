@@ -2,7 +2,7 @@ package eu.vxbank.api.utils.stripe;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
-import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import vxbank.datastore.data.models.VxPayment;
 import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
@@ -10,8 +10,8 @@ import vxbank.datastore.data.models.VxUser;
 import java.util.*;
 
 public class VxStripeUtil {
-    public static void createStripeSession(VxUser vxUser, VxServiceIntegration vxServiceIntegration, VxPayment vxPayment,
-                                           String stripeApiKey) throws StripeException {
+    public static StripeSessionCreateResponse createStripeSession(VxUser vxUser, VxServiceIntegration vxServiceIntegration, VxPayment vxPayment,
+                                                                  String stripeApiKey) throws StripeException {
 
         // Line item details
         Map<String, Object> priceData = new HashMap<>();
@@ -28,19 +28,25 @@ public class VxStripeUtil {
         List<Object> lineItems = new ArrayList<>();
         lineItems.add(lineItem);
 
+        String successUrl = String.format("http://localhost:3000/vxpayment/sucess?paymentId=%s", vxPayment.id);
+        String cancelUrl = String.format("http://localhost:3000/vxpayment/cancel?paymentId=%s", vxPayment.id);
+
         // Session parameters
         Map<String, Object> params = new HashMap<>();
         params.put("line_items", lineItems);
-        params.put("success_url", "http://localhost:3000/vxpayment/sucess?stripeSessionId=testSessionId&projectId=chessoutId&clubId=leuvenId&curencyId=eur&sessionValue=2500");
-        params.put("cancel_url", "http://localhost:3000/vxpayment/cancel?stripeSessionId=testSessionId&projectId=chessoutId&clubId=leuvenId&curencyId=eur&sessionValue=2500");
+        params.put("success_url", successUrl);
+        params.put("cancel_url", cancelUrl);
         params.put("mode", "payment");
 
         Session session = Session.create(params);
         System.out.println("Checkout Session URL: " + session.getUrl());
         System.out.println("StripeSessionId = " + session.getId());
+        System.out.println("paymentId");
 
-        DeprecatedStripeSessionResponse stripeSessionResponse = new DeprecatedStripeSessionResponse();
+        StripeSessionCreateResponse stripeSessionResponse = new StripeSessionCreateResponse();
+        stripeSessionResponse.vxPaymentId = vxPayment.id;
         stripeSessionResponse.url = session.getUrl();
         stripeSessionResponse.stripeSessionId = session.getId();
+        return stripeSessionResponse;
     }
 }

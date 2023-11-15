@@ -7,7 +7,7 @@ import com.stripe.model.checkout.Session;
 
 
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
-import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
@@ -36,7 +36,7 @@ public class PaymentEndpoint {
     @Deprecated
     @PostMapping("/payments/create-payment-intent")
     @ResponseBody
-    public DeprecatedStripeSessionResponse createPaymentIntentIntent(
+    public StripeSessionCreateResponse createPaymentIntentIntent(
             @RequestBody DeprecatedCreatePaymentIntentParams createParams
     ) throws StripeException {
 
@@ -70,7 +70,7 @@ public class PaymentEndpoint {
         System.out.println("Checkout Session URL: " + session.getUrl());
         System.out.println("StripeSessionId = " + session.getId());
 
-        DeprecatedStripeSessionResponse stripeSessionResponse = new DeprecatedStripeSessionResponse();
+        StripeSessionCreateResponse stripeSessionResponse = new StripeSessionCreateResponse();
         stripeSessionResponse.url = session.getUrl();
         stripeSessionResponse.stripeSessionId = session.getId();
 
@@ -79,7 +79,7 @@ public class PaymentEndpoint {
 
     @PostMapping("/payment")
     @ResponseBody
-    public DeprecatedStripeSessionResponse create(
+    public StripeSessionCreateResponse create(
             @RequestBody PaymentCreateParams params
     ) throws StripeException {
 
@@ -94,10 +94,10 @@ public class PaymentEndpoint {
                 ds);
         VxPayment vxPayment = VxService.get(params.vxPaymentId, VxPayment.class, ds);
 
-        VxStripeUtil.createStripeSession(vxUser,vxServiceIntegration,vxPayment,Stripe.apiKey);
+        StripeSessionCreateResponse stripeSessionCreateResponse =
+                VxStripeUtil.createStripeSession(vxUser,vxServiceIntegration,vxPayment,Stripe.apiKey);
 
-
-        throw new IllegalStateException("Please finish this");
+        return stripeSessionCreateResponse;
     }
 
 }

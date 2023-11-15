@@ -2,7 +2,7 @@ package eu.vxbank.api.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
-import eu.vxbank.api.endpoints.payment.dto.DeprecatedStripeSessionResponse;
+import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.testutils.BuildUtils;
 import eu.vxbank.api.testutils.SetupUtils;
@@ -49,7 +49,7 @@ public class TestPayment {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        DeprecatedStripeSessionResponse stripeResponse = objectMapper.readValue(stringResponse, DeprecatedStripeSessionResponse.class);
+        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionCreateResponse.class);
         Assertions.assertNotNull(stripeResponse);
     }
 
@@ -113,6 +113,10 @@ public class TestPayment {
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn().getResponse().getContentAsString();
+
+        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionCreateResponse.class);
+        Assertions.assertNotNull(stripeResponse);
+        Assertions.assertEquals(vxPayment.id, stripeResponse.vxPaymentId);
 
     }
 
