@@ -2,8 +2,8 @@ package eu.vxbank.api.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
-import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
+import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.testutils.BuildUtils;
 import eu.vxbank.api.testutils.SetupUtils;
 import org.apache.commons.lang3.RandomStringUtils;
