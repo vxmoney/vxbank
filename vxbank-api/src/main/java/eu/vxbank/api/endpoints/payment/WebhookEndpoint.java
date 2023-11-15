@@ -1,5 +1,8 @@
 package eu.vxbank.api.endpoints.payment;
 
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.model.Event;
+import com.stripe.net.Webhook;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +23,12 @@ public class WebhookEndpoint {
 
     @PostMapping("/stripeWebhook")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
-                                                      @RequestHeader("Stripe-Signature") String stripeSignature) {
+                                                      @RequestHeader("Stripe-Signature") String stripeSignature) throws
+            SignatureVerificationException {
         // Verify the Stripe webhook signature
+        Event event = Webhook.constructEvent(payload, stripeSignature, vxStripeKeys.webhookSigningSecret);
+
+
         // Process the Stripe event based on the payload
         // Update your system based on the event
 
