@@ -1,6 +1,7 @@
 package eu.vxbank.api.endpoints.payment;
 
 import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.components.VxStripeKeys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,9 @@ public class WebhookEndpoint {
 
     @Autowired
     SystemService systemService;
+
+    @Autowired
+    VxStripeKeys vxStripeKeys;
 
     @PostMapping("/stripeWebhook")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
