@@ -46,10 +46,14 @@ public class TestPayment {
         String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payments/create-payment-intent")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionCreateResponse.class);
+        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse,
+                StripeSessionCreateResponse.class);
         Assertions.assertNotNull(stripeResponse);
     }
 
@@ -72,7 +76,9 @@ public class TestPayment {
 
         VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
 
-        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
 
         SetupUtils.createVxUser(vxUser, ds);
 
@@ -111,13 +117,18 @@ public class TestPayment {
         String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionCreateResponse.class);
+        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse,
+                StripeSessionCreateResponse.class);
         Assertions.assertNotNull(stripeResponse);
         Assertions.assertEquals(vxPayment.id, stripeResponse.vxPaymentId);
-        System.out.println("stripeResponse.url");
+        System.out.println("stripeResponse.stripeSessionId= " + stripeResponse.stripeSessionId);
+        System.out.println("stripeResponse.url= ");
         System.out.println(stripeResponse.url);
 
     }

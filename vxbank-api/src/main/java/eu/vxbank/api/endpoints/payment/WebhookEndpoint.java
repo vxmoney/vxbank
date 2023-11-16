@@ -2,6 +2,7 @@ package eu.vxbank.api.endpoints.payment;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -34,6 +35,15 @@ public class WebhookEndpoint {
         String id = event.getId();
         String type = event.getType();
         System.out.println("Signature validated: id="+id+", type="+type);
+
+        if ("checkout.session.completed".equals(event.getType())) {
+            // Access the session ID from the event data
+            Session session = (Session) event.getDataObjectDeserializer().getObject().get();
+            String sessionId = session.getId();
+
+            // Now you have the session ID, and you can use it as needed
+            System.out.println("Session ID: " + sessionId);
+        }
 
         return ResponseEntity.ok("Webhook received and processed.");
     }
