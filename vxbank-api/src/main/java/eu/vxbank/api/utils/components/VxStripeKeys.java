@@ -16,10 +16,14 @@ public class VxStripeKeys {
     public void init() {
         switch (systemService.environment) {
             case LOCALHOST:
+                this.secretKey =
+                    "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
+                this.webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
+                return;
             case DEVELOPMENT:
                 this.secretKey =
                         "sk_test_51O93vKB6aHGAQTGCjNsNa75J2T8ilFFZpS4a441LBEceglDwUnll3GvpzaeIvCkw6nnWgFxsQY2J34ex4oJjoinm00TmBT4a0b";
-                this.webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
+                this.webhookSigningSecret = "whsec_J71Mv8Nl89K2iCgaXjmOXazVlktirOPv";
                 return;
             default:
                 throw new IllegalStateException("Not supported environment: " + systemService.environment);

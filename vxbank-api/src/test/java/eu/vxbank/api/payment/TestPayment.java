@@ -117,6 +117,8 @@ public class TestPayment {
         StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse, StripeSessionCreateResponse.class);
         Assertions.assertNotNull(stripeResponse);
         Assertions.assertEquals(vxPayment.id, stripeResponse.vxPaymentId);
+        System.out.println("stripeResponse.url");
+        System.out.println(stripeResponse.url);
 
     }
 
