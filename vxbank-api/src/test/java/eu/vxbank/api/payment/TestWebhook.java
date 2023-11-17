@@ -1,6 +1,5 @@
 package eu.vxbank.api.payment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.stripe.model.Event;
@@ -46,7 +45,8 @@ public class TestWebhook {
 
         String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
 
-        String stripeSignature = Webhook.Util.computeHmacSha256(webhookSigningSecret, requestBody);
+        String stripeSignature = Webhook.Util.computeHmacSha256(webhookSigningSecret, getRequestBody());
+
 
 
 
