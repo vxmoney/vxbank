@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Date;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TestWebhook {
@@ -45,22 +47,27 @@ public class TestWebhook {
 
         String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
 
-        String stripeSignature = Webhook.Util.computeHmacSha256(webhookSigningSecret, getRequestBody());
-
-
+        String body = getRequestBody();
+        long timeStamp = (new Date()).getTime();
+        String payload = timeStamp + "." + body;
+        String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
+        String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
 
 
         String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/stripeWebhook")
-                        .header("Stripe-Signature", getRequestSignature())
+                        .header("Stripe-Signature", stripeSignature)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getRequestBody()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse().getContentAsString();
+                        .content(body))
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
         System.out.println(stringResponse);
 
     }
 
-    private String getRequestBody(){
+    private String getRequestBody() {
         String body = "{\n" + "  \"id\": \"evt_3ODQD5B6aHGAQTGC0gFdv2nU\",\n" + "  \"object\": \"event\",\n" +
                 "  \"api_version\": \"2023-10-16\",\n" + "  \"created\": 1700220464,\n" + "  \"data\": {\n" +
                 "    \"object\": {\n" + "      \"id\": \"ch_3ODQD5B6aHGAQTGC0HCOpZHT\",\n" +
@@ -105,7 +112,9 @@ public class TestWebhook {
                 "          \"three_d_secure\": null,\n" + "          \"wallet\": null\n" + "        },\n" +
                 "        \"type\": \"card\"\n" + "      },\n" + "      \"receipt_email\": null,\n" +
                 "      \"receipt_number\": null,\n" +
-                "      \"receipt_url\": \"https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xTzkzdktCNmFIR0FRVEdDKLCc3aoGMgYUY7Vtd8o6LBaODTXgIzTj3RMybaZ7bw8GrbZnUvJs1ltysOqF7kETjllU8Zu228YLOOn5\",\n" +
+                "      \"receipt_url\": \"https://pay.stripe" +
+                ".com/receipts/payment" +
+                "/CAcaFwoVYWNjdF8xTzkzdktCNmFIR0FRVEdDKLCc3aoGMgYUY7Vtd8o6LBaODTXgIzTj3RMybaZ7bw8GrbZnUvJs1ltysOqF7kETjllU8Zu228YLOOn5\",\n" +
                 "      \"refunded\": false,\n" + "      \"review\": null,\n" + "      \"shipping\": null,\n" +
                 "      \"source\": null,\n" + "      \"source_transfer\": null,\n" +
                 "      \"statement_descriptor\": null,\n" + "      \"statement_descriptor_suffix\": null,\n" +
@@ -116,8 +125,10 @@ public class TestWebhook {
                 "  \"type\": \"charge.succeeded\"\n" + "}";
         return body;
     }
-    private String getRequestSignature(){
-        String signature = "t=1700220464,v1=568ce3831b530347a261580d6b47c1794aefe54b70a9d12a6d359a0d53ac84af,v0=af1ab02ff14c9c243e2e62951a80fc904f4f9073ef32140c860f336d86cd7b62";
+
+    private String getRequestSignature() {
+        String signature = "t=1700220464,v1=568ce3831b530347a261580d6b47c1794aefe54b70a9d12a6d359a0d53ac84af," +
+                "v0=af1ab02ff14c9c243e2e62951a80fc904f4f9073ef32140c860f336d86cd7b62";
         return signature;
     }
 }
