@@ -27,18 +27,23 @@ public class WebhookEndpoint {
                                                       @RequestHeader("Stripe-Signature") String stripeSignature) throws
             SignatureVerificationException {
         // Verify the Stripe webhook signature
-        Event event = Webhook.constructEvent(payload, stripeSignature, vxStripeKeys.webhookSigningSecret, 300);
+        Event event = Webhook.constructEvent(payload,
+                stripeSignature,
+                vxStripeKeys.webhookSigningSecret,
+                vxStripeKeys.tolerance);
 
 
         // Process the Stripe event based on the payload
         // Update your system based on the event
         String id = event.getId();
         String type = event.getType();
-        System.out.println("Signature validated: id="+id+", type="+type);
+        System.out.println("Signature validated: id=" + id + ", type=" + type);
 
         if ("checkout.session.completed".equals(event.getType())) {
             // Access the session ID from the event data
-            Session session = (Session) event.getDataObjectDeserializer().getObject().get();
+            Session session = (Session) event.getDataObjectDeserializer()
+                    .getObject()
+                    .get();
             String sessionId = session.getId();
 
             // Now you have the session ID, and you can use it as needed
