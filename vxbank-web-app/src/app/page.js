@@ -23,50 +23,8 @@ export default function Page() {
   const barBackground = useColorModeValue("gray.100", "gray.900");
 
   return (
-    <>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Box background={barBackground} px={4}>
-        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Box>Main home page</Box>
-          <Flex alignItems={"center"}>
-            <Stack direction={"row"} spacing={7}></Stack>
-            <Link
-              href={{
-                pathname: "/vxpayment/sucess",
-                query: {
-                  stripeSessionId: "testSessionId",
-                  projectId: "chessoutId",
-                  clubId: "leuvenId",
-                  curencyId: "eur",
-                  sessionValue: 2500
-                },
-              }}
-            >
-              Success
-            </Link>
-            <Divider/>
-
-            <Link
-              href={{
-                pathname: "/vxpayment/cancel",
-                query: {
-                  stripeSessionId: "testSessionId",
-                  projectId: "chessoutId",
-                  clubId: "leuvenId",
-                  curencyId: "eur",
-                  sessionValue: 2500
-                },
-              }}
-            >
-              Cancel
-            </Link>
-            <Divider mr={2}/>
-            <Button onClick={toggleColorMode}>
-              {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-            </Button>
-          </Flex>
-        </Flex>
-      </Box>
-    </>
+    <main className="p-4">
+      <h1>Home page</h1>
+    </main>
   );
 }
