@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-
+import { UserAuth } from "../context/AuthContext";
 import {
   Button,
   Flex,
@@ -23,6 +23,10 @@ import Link from "next/link";
 export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const barBackground = useColorModeValue("gray.100", "gray.900");
+
+  const { user } = UserAuth();
+
+  console.log(user);
 
   return (
     <>

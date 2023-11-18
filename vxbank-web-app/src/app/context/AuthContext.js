@@ -4,7 +4,9 @@ import { useContext, createContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  return <AuthContext.Provider>{children}</AuthContext.Provider>;
+  const [user, setUser] = useState("Bogdan")
+  
+  return <AuthContext.Provider value={{user}}>{children}</AuthContext.Provider>;
 };
 
 export const UserAuth = () => {
