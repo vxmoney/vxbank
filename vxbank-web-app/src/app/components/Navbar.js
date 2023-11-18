@@ -24,11 +24,19 @@ export default function Navbar() {
   const { colorMode, toggleColorMode } = useColorMode();
   const barBackground = useColorModeValue("gray.100", "gray.900");
 
-  const { user, googleSignIn, logout } = UserAuth();
+  const { user, googleSignIn, logOut } = UserAuth();
 
   const handleSignIn = async () => {
     try {
       await googleSignIn();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logOut();
     } catch (error) {
       console.log(error);
     }
@@ -77,8 +85,15 @@ export default function Navbar() {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              <Text onClick={handleSignIn}>Login</Text>
-              <Text>Logout</Text>
+              {!user ? (
+                <Button onClick={handleSignIn}>Login</Button>
+              ) : (
+                <HStack>
+                    <Text>{user.displayName}</Text>
+                  <Button onClick={handleSignOut}>Logout</Button>
+                </HStack>
+              )}
+
               <Button onClick={toggleColorMode}>
                 {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               </Button>
