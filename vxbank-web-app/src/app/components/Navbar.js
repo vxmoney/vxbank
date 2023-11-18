@@ -13,6 +13,7 @@ import {
   Stack,
   Spacer,
   HStack,
+  Text,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import theme from "@/app/theme";
@@ -59,9 +60,17 @@ export default function Navbar() {
           </Box>
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}></Stack>
-            <Button onClick={toggleColorMode}>
-              {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-            </Button>
+            <HStack
+              as={"nav"}
+              spacing={4}
+              display={{ base: "none", md: "flex" }}
+            >
+              <Text>Login</Text>
+              <Text>Logout</Text>
+              <Button onClick={toggleColorMode}>
+                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+              </Button>
+            </HStack>
           </Flex>
         </Flex>
       </Box>
