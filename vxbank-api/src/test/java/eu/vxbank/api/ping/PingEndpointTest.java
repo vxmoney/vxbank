@@ -21,7 +21,7 @@ class PingEndpointTest {
     private MockMvc mockMvc;
 
     @Test
-    void getEnvironment() throws Exception {
+    void getEnvironmentTest() throws Exception {
         String rawResponse = mockMvc.perform(MockMvcRequestBuilders.get("/ping/getEnvironment"))
                 .andExpect(MockMvcResultMatchers.status()
                         .isOk())
@@ -34,6 +34,23 @@ class PingEndpointTest {
         PingResponse pingResponse = objectMapper.readValue(rawResponse, PingResponse.class);
         Assertions.assertNotNull(pingResponse);
 
+
+    }
+
+    @Test
+    void getSecuredPingTest() throws Exception {
+        String rawResponse = mockMvc.perform(MockMvcRequestBuilders.get("/ping/getSecuredPing"))
+                .andExpect(MockMvcResultMatchers.status()
+                        .isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        PingResponse pingResponse = objectMapper.readValue(rawResponse, PingResponse.class);
+        Assertions.assertNotNull(pingResponse);
+        Assertions.assertEquals("Hello from secured ping", pingResponse.message);
 
     }
 }

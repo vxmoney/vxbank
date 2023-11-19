@@ -1,4 +1,4 @@
-package eu.vxbank.api.ping;
+package eu.vxbank.api.endpoints.ping;
 
 import eu.vxbank.api.endpoints.ping.PingResponse;
 import eu.vxbank.api.utils.components.SystemService;
@@ -22,5 +22,14 @@ public class PingEndpoint {
     }
 
 
+    @GetMapping("/ping/getSecuredPing")
+    @ResponseBody
+    public PingResponse getSecuredPing(){
+        PingResponse pingResponse = new PingResponse();
+        pingResponse.environment = systemService.getEnvironment();
+        pingResponse.projectId = systemService.getProjectId();
+        pingResponse.message = "Hello from secured ping";
+        return pingResponse;
+    }
 
 }
