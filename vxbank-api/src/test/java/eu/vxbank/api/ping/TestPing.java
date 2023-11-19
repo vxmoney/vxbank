@@ -31,8 +31,6 @@ class TestPing {
 
         PingResponse pingResponse = objectMapper.readValue(rawResponse, PingResponse.class);
         Assertions.assertNotNull(pingResponse);
-
-
     }
 
     @Test
