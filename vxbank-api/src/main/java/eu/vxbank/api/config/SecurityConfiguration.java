@@ -1,6 +1,7 @@
 package eu.vxbank.api.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -24,6 +25,7 @@ public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment"};
 
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         try {
             http.csrf(AbstractHttpConfigurer::disable)
