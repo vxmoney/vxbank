@@ -20,7 +20,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
 
 
-    private final AuthenticationProvider authenticationProvider; // from spring
+    private final AuthenticationProvider authenticationProvider; // my ApplicationConfig.authenticationProvider
     private final JwtAuthenticationFilter jwtAuthFilter; // my filter
 
     private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment"};
