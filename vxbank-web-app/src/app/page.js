@@ -23,7 +23,25 @@ import { UserAuth } from "./context/AuthContext";
 export default function Page() {
   const { colorMode, toggleColorMode } = useColorMode();
   const barBackground = useColorModeValue("gray.100", "gray.900");
-  const { user } = UserAuth();
+  const { user, googleSignIng, logOut  } = UserAuth();
+
+  const handleSignIn = async () =>{
+    try {
+      await googleSignIng()
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleSignOut = async () =>{
+    try{
+      await logOut();
+    }catch (error){
+      console.log(error)
+    }
+  }
+
+
 
   console.log(user);
 
@@ -66,8 +84,15 @@ export default function Page() {
               Cancel
             </Link>
             <Divider mr={2} />
-            <Text>Login</Text>
+            <Box>
+              <Button onClick={handleSignIn}>Login</Button>
+            </Box>
+            
             <Divider mr={2} />
+            <Box>
+              <Button onClick={handleSignOut}>Logout</Button>
+            </Box>
+               <Divider mr={2} />
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>
