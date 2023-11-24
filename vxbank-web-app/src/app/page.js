@@ -23,25 +23,23 @@ import { UserAuth } from "./context/AuthContext";
 export default function Page() {
   const { colorMode, toggleColorMode } = useColorMode();
   const barBackground = useColorModeValue("gray.100", "gray.900");
-  const { user, googleSignIng, logOut  } = UserAuth();
+  const { user, googleSignIng, logOut } = UserAuth();
 
-  const handleSignIn = async () =>{
+  const handleSignIn = async () => {
     try {
-      await googleSignIng()
+      await googleSignIng();
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const handleSignOut = async () =>{
-    try{
+  const handleSignOut = async () => {
+    try {
       await logOut();
-    }catch (error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-  }
-
-
+  };
 
   console.log(user);
 
@@ -84,15 +82,29 @@ export default function Page() {
               Cancel
             </Link>
             <Divider mr={2} />
-            <Box>
-              <Button onClick={handleSignIn}>Login</Button>
-            </Box>
-            
+            {!user ? (
+              <Box>
+                <Button onClick={handleSignIn}>Login</Button>
+              </Box>
+            ) : null}
+
             <Divider mr={2} />
-            <Box>
-              <Button onClick={handleSignOut}>Logout</Button>
-            </Box>
-               <Divider mr={2} />
+            {user ? (
+              <Flex alignItems={"center"}>
+                <Box>
+                  <Text noOfLines={1} style={{ whiteSpace: "nowrap" }}>
+                    {user.displayName}
+                  </Text>
+                </Box>
+
+                <Divider mr={2} />
+                <Box>
+                  <Button onClick={handleSignOut}>Logout</Button>
+                </Box>
+              </Flex>
+            ) : null}
+
+            <Divider mr={2} />
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>
