@@ -12,6 +12,7 @@ import {
   Box,
   Stack,
   Divider,
+  Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
@@ -44,7 +45,7 @@ export default function Page() {
             >
               Success
             </Link>
-            <Divider/>
+            <Divider mr={2}/>
 
             <Link
               href={{
@@ -60,6 +61,8 @@ export default function Page() {
             >
               Cancel
             </Link>
+            <Divider mr={2}/>
+            <Text>Login</Text>
             <Divider mr={2}/>
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
