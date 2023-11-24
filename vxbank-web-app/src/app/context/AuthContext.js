@@ -11,9 +11,9 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [myFirebaseToken, setMyFirebaseToken] = useState(null);
 
   const googleSignIng = () => {
-    console.log("DEBUG begin google signin ")
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider);
   };
@@ -23,11 +23,21 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUseer) => {
-      setUser(currentUseer);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser != null) {
+        currentUser.getIdToken(true).then(function (idToken) {
+          setMyFirebaseToken(idToken);
+        });
+        let inlineIdToken = currentUser.getIdToken(true);
+      }
+      setUser(currentUser);
     });
     return () => unsubscribe();
   }, [user]);
+
+  useEffect(() => {
+    console.log("DEBUG line2 firebase token = ", myFirebaseToken);
+  },[myFirebaseToken]);
 
   return (
     <AuthContext.Provider value={{ user, googleSignIng, logOut }}>
