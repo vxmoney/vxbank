@@ -17,11 +17,15 @@ import {
 import Link from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import theme from "./theme";
+import { UserAuth } from "./context/AuthContext";
 
 // this is the top page
 export default function Page() {
   const { colorMode, toggleColorMode } = useColorMode();
   const barBackground = useColorModeValue("gray.100", "gray.900");
+  const { user } = UserAuth();
+
+  console.log(user);
 
   return (
     <>
@@ -39,13 +43,13 @@ export default function Page() {
                   projectId: "chessoutId",
                   clubId: "leuvenId",
                   curencyId: "eur",
-                  sessionValue: 2500
+                  sessionValue: 2500,
                 },
               }}
             >
               Success
             </Link>
-            <Divider mr={2}/>
+            <Divider mr={2} />
 
             <Link
               href={{
@@ -55,15 +59,15 @@ export default function Page() {
                   projectId: "chessoutId",
                   clubId: "leuvenId",
                   curencyId: "eur",
-                  sessionValue: 2500
+                  sessionValue: 2500,
                 },
               }}
             >
               Cancel
             </Link>
-            <Divider mr={2}/>
+            <Divider mr={2} />
             <Text>Login</Text>
-            <Divider mr={2}/>
+            <Divider mr={2} />
             <Button onClick={toggleColorMode}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>
