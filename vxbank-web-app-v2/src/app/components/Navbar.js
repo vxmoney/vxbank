@@ -36,10 +36,19 @@ export default function Navbar() {
         </li>
       </ul>
       <ul className="flex">
-        <li onClick={handleSignIn} className="p-2 cursor-pointer">
-          Login
-        </li>
-        <li onClick={handleSignOut} className="p-2 cursor-pointer">Logout</li>
+        {user ? (
+          <li className="p-2 cursor-pointer">{user.displayName}</li>
+        ) : (
+          <li onClick={handleSignIn} className="p-2 cursor-pointer">
+            Login
+          </li>
+        )}
+
+        {user ? (
+          <li onClick={handleSignOut} className="p-2 cursor-pointer">
+            Logout
+          </li>
+        ) : null}
       </ul>
     </div>
   );
