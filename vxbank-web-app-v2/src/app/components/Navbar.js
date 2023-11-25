@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { UserAuth } from "../context/AuthContext";
 
 export default function Navbar() {
+  const {user} = UserAuth();
+
+  console.log("Navbar user", user);
+
   return (
     <div className="h-20 w-full border-b-2 flex items-center justify-between p-2">
       <ul className="flex">
