@@ -1,6 +1,6 @@
-package eu.vxbank.api.ping;
+package eu.vxbank.api.endpoints.ping;
 
-import eu.vxbank.api.endpoints.ping.PingResponse;
+import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package eu.vxbank.api.endpoints.ping;
+package eu.vxbank.api.endpoints.ping.dto;
 
 import eu.vxbank.api.utils.enums.Environment;
 
