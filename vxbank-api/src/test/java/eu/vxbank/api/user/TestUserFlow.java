@@ -2,6 +2,7 @@ package eu.vxbank.api.user;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.*;
+import eu.vxbank.api.testutils.OauthUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,23 +34,16 @@ public class TestUserFlow {
 
         System.out.println("EMIL = " + email);
         UserRecord userRecord = createUserWithEmail(firebaseAuth, email);
+        String userId = userRecord.getUid();
+        System.out.println("userId=" + userId);
 
+        String customToken = firebaseAuth.createCustomToken(userRecord.getUid());
+        String idToken = OauthUtils.swapCustomTokenForIdToken(customToken);
 
+        System.out.println("idToken Token: " + idToken);
 
-        String customToken = generateCustomToken(firebaseAuth, userRecord.getUid());
-
-        System.out.println("Custom Token: " + customToken);
-
-        FirebaseToken decodedToken = firebaseAuth.verifyIdToken(customToken);
+        FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
         Assertions.assertEquals(userRecord.getUid(), decodedToken.getUid());
-
-        System.out.println("End of test");
-    }
-
-    private static String generateCustomToken(FirebaseAuth firebaseAuth, String uid) throws FirebaseAuthException {
-        Map<String, Object> claims = new HashMap<>();
-        //claims.put("aud", "vxbank-eu-dev");
-        return firebaseAuth.createCustomToken(uid, claims);
     }
 
     private static String getIdTokenFromSessionCookie(FirebaseAuth auth, String customToken)
@@ -59,7 +53,7 @@ public class TestUserFlow {
         SessionCookieOptions options = SessionCookieOptions.builder()
                 .setExpiresIn(expiresIn)
                 .build();
-        String sessionCookie = auth.createSessionCookie(customToken,options);
+        String sessionCookie = auth.createSessionCookie(customToken, options);
 
         // Verify the session cookie to obtain the ID token
         FirebaseToken decodedToken = auth.verifySessionCookie(sessionCookie, true);
