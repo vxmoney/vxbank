@@ -1,0 +1,15 @@
+/.next
+/config
+/node_modules
+/public
+/src
+
+.eslintrc.json
+.gitignore
+app.yaml
+jsconfig.json
+package-lock.json
+package.json
+postcss.config.js
+README.md
+tailwind.config.js
