@@ -30,10 +30,7 @@ public class TestUserFlow {
         UserRecord userRecord = createUserWithEmail(firebaseAuth, email);
         String customToken = generateCustomToken(firebaseAuth, userRecord.getUid());
 
-
         System.out.println("Custom Token: " + customToken);
-
-
 
         System.out.println("End of test");
     }
