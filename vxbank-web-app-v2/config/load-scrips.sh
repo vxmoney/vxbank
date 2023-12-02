@@ -13,4 +13,6 @@ deploy-on-dev(){
     rm -rf build
     gcloud config set project vxbank-eu-dev
     gcloud config get-value project
+    npm run build
+    gcloud app deploy --quiet
 }
