@@ -10,6 +10,7 @@ set-env-dev() {
 
 deploy-on-dev(){
     set-env-dev
+    rm -rf build
     gcloud config set project vxbank-eu-dev
     gcloud config get-value project
 }
