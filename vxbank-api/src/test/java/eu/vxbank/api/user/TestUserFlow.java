@@ -1,16 +1,14 @@
 package eu.vxbank.api.user;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
-import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class TestUserFlow {
 
@@ -33,7 +31,11 @@ public class TestUserFlow {
         long timeStamp = (new Date()).getTime();
         String email = String.format("user_%s@example.com", timeStamp);
 
+        System.out.println("EMIL = " + email);
         UserRecord userRecord = createUserWithEmail(firebaseAuth, email);
+
+
+
         String customToken = generateCustomToken(firebaseAuth, userRecord.getUid());
 
         System.out.println("Custom Token: " + customToken);
@@ -48,5 +50,19 @@ public class TestUserFlow {
         Map<String, Object> claims = new HashMap<>();
         //claims.put("aud", "vxbank-eu-dev");
         return firebaseAuth.createCustomToken(uid, claims);
+    }
+
+    private static String getIdTokenFromSessionCookie(FirebaseAuth auth, String customToken)
+            throws FirebaseAuthException {
+        // Create a session cookie from the custom token
+        long expiresIn = TimeUnit.DAYS.toMillis(5);
+        SessionCookieOptions options = SessionCookieOptions.builder()
+                .setExpiresIn(expiresIn)
+                .build();
+        String sessionCookie = auth.createSessionCookie(customToken,options);
+
+        // Verify the session cookie to obtain the ID token
+        FirebaseToken decodedToken = auth.verifySessionCookie(sessionCookie, true);
+        throw new IllegalStateException("Please implement this");
     }
 }
