@@ -25,7 +25,11 @@ public class TestUserFlow {
     @Test
     void testOauthValidationTools() throws Exception {
 
-        FirebaseApp.initializeApp();
+        try {
+            FirebaseApp.initializeApp();
+        }catch (Exception e){
+            // no need to initialize again
+        }
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         long timeStamp = (new Date()).getTime();
