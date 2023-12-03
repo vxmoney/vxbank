@@ -38,7 +38,7 @@ public class SecurityConfiguration {
     @Value("${jwt.private.key}")
     RSAPrivateKey priv;
 
-    private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment"};
+    private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment", "/user/login"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
