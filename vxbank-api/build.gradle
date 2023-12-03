@@ -33,31 +33,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'org.projectlombok:lombok:1.18.28'
-	annotationProcessor 'org.projectlombok:lombok:1.18.28'
-
 	implementation 'eu.vxbank:datastore:0.0.001'
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
-	// https://mvnrepository.com/artifact/com.stripe/stripe-java
 	implementation 'com.stripe:stripe-java:24.1.0'
 
-	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
+	implementation 'com.konghq:unirest-java:3.14.5'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
 
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	testCompileOnly 'org.projectlombok:lombok:1.18.30'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
-
-	// https://mvnrepository.com/artifact/com.google.code.gson/gson
-	implementation 'com.google.code.gson:gson:2.10.1'
-	implementation 'com.google.firebase:firebase-admin:9.2.0'
-
-	implementation 'com.konghq:unirest-java:3.14.5'
-	implementation 'com.fasterxml.jackson.core:jackson-core:2.16.0'
-
-
-
 
 }
 
