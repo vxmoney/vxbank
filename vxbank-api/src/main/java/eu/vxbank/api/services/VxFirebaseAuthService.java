@@ -23,7 +23,11 @@ public class VxFirebaseAuthService {
 
     @PostConstruct
     public void initializeFirebaseApp() {
-        FirebaseApp.initializeApp();
+        try {
+            FirebaseApp.initializeApp();
+        } catch (IllegalStateException e) {
+            System.out.println("Default app has already bean initialized " + e.getMessage());
+        }
     }
 
 
@@ -46,7 +50,7 @@ public class VxFirebaseAuthService {
                 .expiresAt(expiresAt)
                 .subject(uid)
                 .claim("email", email)
-                .claim("uid",uid)
+                .claim("uid", uid)
                 .build();
 
         String vxToken = this.encoder.encode(JwtEncoderParameters.from(claims))
