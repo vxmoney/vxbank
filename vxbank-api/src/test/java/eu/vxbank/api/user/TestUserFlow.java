@@ -1,15 +1,15 @@
 package eu.vxbank.api.user;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.testutils.OauthUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class TestUserFlow {
 
@@ -23,7 +23,7 @@ public class TestUserFlow {
     }
 
     @Test
-    void testOauth() throws Exception {
+    void testOauthValidationTools() throws Exception {
 
         String projectId = "vxbank-eu-dev";
         FirebaseApp.initializeApp();
@@ -46,17 +46,4 @@ public class TestUserFlow {
         Assertions.assertEquals(userRecord.getUid(), decodedToken.getUid());
     }
 
-    private static String getIdTokenFromSessionCookie(FirebaseAuth auth, String customToken)
-            throws FirebaseAuthException {
-        // Create a session cookie from the custom token
-        long expiresIn = TimeUnit.DAYS.toMillis(5);
-        SessionCookieOptions options = SessionCookieOptions.builder()
-                .setExpiresIn(expiresIn)
-                .build();
-        String sessionCookie = auth.createSessionCookie(customToken, options);
-
-        // Verify the session cookie to obtain the ID token
-        FirebaseToken decodedToken = auth.verifySessionCookie(sessionCookie, true);
-        throw new IllegalStateException("Please implement this");
-    }
 }
