@@ -2,13 +2,15 @@ package eu.vxbank.api.endpoints.user;
 
 
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.internal.FirebaseService;
 import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.endpoints.user.dto.TokenInfo;
 import eu.vxbank.api.endpoints.user.dto.UserResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
