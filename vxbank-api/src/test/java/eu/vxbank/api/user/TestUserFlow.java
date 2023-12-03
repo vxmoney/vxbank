@@ -25,7 +25,6 @@ public class TestUserFlow {
     @Test
     void testOauthValidationTools() throws Exception {
 
-        String projectId = "vxbank-eu-dev";
         FirebaseApp.initializeApp();
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
