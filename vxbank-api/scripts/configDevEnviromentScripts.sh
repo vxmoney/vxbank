@@ -59,5 +59,11 @@ stopDevEnvironment(){
   killProcessOnPort 8081
 }
 
+# ping stuff
+
+pingLocal(){
+  curl localhost:8080/ping/getEnvironment
+}
+
 
 
