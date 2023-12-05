@@ -4,6 +4,7 @@ import com.googlecode.objectify.Key;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.service.VxService;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -38,4 +39,21 @@ class VxUserTest {
         VxUser storedUser = ds.ofy.load().type(VxUser.class).id(userId).now();
         Assertions.assertEquals(vxUser.email, storedUser.email);
     }
+
+    @Test
+    void testGetByEmail(){
+        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+
+        VxUser vxUser = new VxUser();
+        String uuid = UUID.randomUUID().toString();
+        vxUser.email = String.format("$%s@mail.com",uuid);
+
+        ds.ofy.save().entity(vxUser).now();
+
+        Optional<VxUser> validUser = VxService.getUserByEmail(vxUser.email, ds );
+        Assertions.assertTrue(validUser.isPresent());
+        Optional<VxUser> invalidUser = VxService.getUserByEmail("fake-email",ds);
+        Assertions.assertTrue(invalidUser.isEmpty());
+    }
+
 }

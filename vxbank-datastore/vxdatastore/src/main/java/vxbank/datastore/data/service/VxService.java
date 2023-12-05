@@ -4,6 +4,8 @@ import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxModel;
 import vxbank.datastore.data.models.VxUser;
 
+import java.util.Optional;
+
 public class VxService {
     public static VxUser persist(VxUser vxUser, VxBankDatastore vd){
         vd.ofy.save().entity(vxUser).now();
@@ -17,5 +19,12 @@ public class VxService {
     public static <T> T get(Long modelId, Class<T> vxClass, VxBankDatastore ds){
         T vxModel = ds.ofy.load().type(vxClass).id(modelId).now();
         return vxModel;
+    }
+
+    public static Optional<VxUser> getUserByEmail(String email, VxBankDatastore ds) {
+
+        VxUser vxUser = ds.ofy.load().type(VxUser.class).filter("email", email).first().now();
+        return Optional.ofNullable(vxUser);
+
     }
 }
