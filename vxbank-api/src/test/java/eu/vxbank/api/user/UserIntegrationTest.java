@@ -8,11 +8,20 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginParams;
+import eu.vxbank.api.endpoints.user.dto.UserResponse;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxService;
 
@@ -21,7 +30,14 @@ import java.util.UUID;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserIntegrationTest {
 
-    private static  final String testPassword = "secured-test-password";
+    private static final String testPassword = "secured-test-password";
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
     private VxUser createUserParams() {
         VxUser vxUser = new VxUser();
         String uuid = UUID.randomUUID()
@@ -81,17 +97,40 @@ public class UserIntegrationTest {
     public void logInTest() throws FirebaseAuthException, JsonProcessingException {
 
 
-
-
-
         VxUser userParams = createUserParams();
 
         String firebaseIdToken = createFirebaseIdToken(userParams.email);
 
         Assertions.assertNotNull(firebaseIdToken);
+
+        LoginParams loginParams = new LoginParams();
+        loginParams.firebaseIdToken = firebaseIdToken;
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<LoginParams> requestEntity = new HttpEntity<>(loginParams, headers);
+
+        // Make the POST request
+        ResponseEntity<UserResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/login",
+                HttpMethod.POST,
+                requestEntity,
+                UserResponse.class
+        );
+
+        // Extract the response
+        UserResponse response = responseEntity.getBody();
+
+        // Example assertion (you should replace this with your actual assertions)
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(userParams.email, response.email);
+
+
+
     }
-
-
 
 
 }
