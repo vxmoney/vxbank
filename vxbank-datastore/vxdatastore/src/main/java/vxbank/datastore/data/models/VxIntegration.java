@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class VxServiceIntegration implements VxModel{
+public class VxIntegration implements VxModel {
 
 
-    public enum VxService {
-       vxgaming
+    public enum Type {
+        vxgaming, chessout
     }
 
     @Id
@@ -27,7 +27,7 @@ public class VxServiceIntegration implements VxModel{
     @Index
     public Long userId;
     @Index
-    public VxService vxService;
+    public Type type;
 
     public String title;
     public String description;

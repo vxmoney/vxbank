@@ -1,10 +1,15 @@
 package vxbank.datastore.data.service;
 
+import com.googlecode.objectify.cmd.Query;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxModel;
 import vxbank.datastore.data.models.VxUser;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 
 public class VxService {
     public static VxUser persist(VxUser vxUser, VxBankDatastore vd) {
@@ -57,5 +62,25 @@ public class VxService {
                 .entity(myObject)
                 .now();
         return myObject;
+    }
+
+    public static <T> List<T> getByUserId(Long userId,
+                                          Map<String, Object> filterList,
+                                          VxBankDatastore ds,
+                                          Class<T> vxClass) {
+
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("userId", userId);
+
+        for (Map.Entry<String, Object> entry : filterList.entrySet()) {
+            query = query.filter(entry.getKey(), entry.getValue());
+        }
+
+        query = query.chunkAll();
+        List<T> list = query.list();
+
+
+        return list;
     }
 }
