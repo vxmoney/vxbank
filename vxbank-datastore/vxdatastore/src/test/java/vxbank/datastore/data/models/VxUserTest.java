@@ -92,7 +92,24 @@ class VxUserTest {
 
         VxUser user = VxService.getById(vxUser.id, ds, VxUser.class);
         Assertions.assertNotNull(user);
+    }
 
+    @Test
+    void testPersistViaVxService() {
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
+
+        VxUser vxUser = new VxUser();
+        String uuid = UUID.randomUUID()
+                .toString();
+        vxUser.email = String.format("$%s@mail.com", uuid);
+
+
+        VxUser persistedUser = VxService.persist(vxUser, ds, VxUser.class);
+        Assertions.assertNotNull(persistedUser);
+        Assertions.assertNotNull(persistedUser.id);
+        Assertions.assertNotNull(vxUser.id);
     }
 
 }
