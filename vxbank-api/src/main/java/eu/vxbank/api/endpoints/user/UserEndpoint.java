@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxService;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -24,17 +28,37 @@ public class UserEndpoint {
     @Autowired
     SystemService systemService;
 
+    private VxUser createNewUser(String email, VxBankDatastore ds) {
+        VxUser vxUser = new VxUser();
+        vxUser.email = email;
+        VxUser persistedUser = VxService.persist(vxUser, ds, VxUser.class);
+        return persistedUser;
+    }
+
     @PostMapping("/login")
     public UserResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
 
         String email = vxFirebaseAuthService.validateFirebaseIdTokenAndGetEmail(loginParams.firebaseIdToken);
 
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        Optional<VxUser> optionalUser = VxService.getUserByEmail(email,ds);
+        if (optionalUser.isEmpty()){
+            VxUser user = createNewUser(email,ds);
+            optionalUser = Optional.of(user);
+        }
+
+        VxUser vxUser = optionalUser.get();
+
         UserResponse response = new UserResponse();
-        response.email = email;
+        response.id = vxUser.id;
+        response.email = vxUser.email;
         response.message = "all good";
         response.vxToken = "Not yet";
 
+
         return response;
     }
+
+
 
 }
