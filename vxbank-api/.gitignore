@@ -41,3 +41,4 @@ src/main/resources/vxbank-eu-dev-key.json
 src/main/resources/app.key
 src/main/resources/app.pub
 emulators
+nohup.out
