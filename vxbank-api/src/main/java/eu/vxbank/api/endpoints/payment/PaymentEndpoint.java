@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxPayment;
-import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxService;
 
@@ -88,9 +88,9 @@ public class PaymentEndpoint {
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         VxUser vxUser = VxService.get(params.vxUserId, VxUser.class, ds);
-        VxServiceIntegration vxServiceIntegration = VxService.get(
+        VxIntegration vxServiceIntegration = VxService.get(
                 params.vxServiceIntegrationId,
-                VxServiceIntegration.class,
+                VxIntegration.class,
                 ds);
         VxPayment vxPayment = VxService.get(params.vxPaymentId, VxPayment.class, ds);
 

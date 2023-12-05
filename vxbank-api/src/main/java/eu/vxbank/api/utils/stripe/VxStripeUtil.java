@@ -3,14 +3,14 @@ package eu.vxbank.api.utils.stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
+import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxPayment;
-import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.*;
 
 public class VxStripeUtil {
-    public static StripeSessionCreateResponse createStripeSession(VxUser vxUser, VxServiceIntegration vxServiceIntegration, VxPayment vxPayment,
+    public static StripeSessionCreateResponse createStripeSession(VxUser vxUser, VxIntegration vxServiceIntegration, VxPayment vxPayment,
                                                                   String stripeApiKey) throws StripeException {
 
         // Line item details

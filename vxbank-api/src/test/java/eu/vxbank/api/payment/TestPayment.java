@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxPayment;
-import vxbank.datastore.data.models.VxServiceIntegration;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.Date;
@@ -83,7 +83,7 @@ public class TestPayment {
         SetupUtils.createVxUser(vxUser, ds);
 
         String serviceTitle = generateString();
-        VxServiceIntegration vxServiceIntegration = VxServiceIntegration.builder()
+        VxIntegration vxServiceIntegration = VxIntegration.builder()
                 .userId(vxUser.id)
                 .title(serviceTitle)
                 .build();

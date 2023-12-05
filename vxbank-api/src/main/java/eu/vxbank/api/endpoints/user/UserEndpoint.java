@@ -22,7 +22,7 @@ public class UserEndpoint {
     @PostMapping("/login")
     public UserResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
 
-        TokenInfo tokenInfo = vxFirebaseAuthService.validateFirebaseToken(loginParams.firebaseToken);
+        TokenInfo tokenInfo = vxFirebaseAuthService.validateFirebaseToken(loginParams.firebaseIdToken);
 
         UserResponse response = new UserResponse();
         response.email = tokenInfo.email;
