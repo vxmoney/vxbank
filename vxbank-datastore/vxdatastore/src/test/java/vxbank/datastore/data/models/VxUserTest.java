@@ -105,7 +105,6 @@ class VxUserTest {
                 .toString();
         vxUser.email = String.format("$%s@mail.com", uuid);
 
-
         VxUser persistedUser = VxService.persist(vxUser, ds, VxUser.class);
         Assertions.assertNotNull(persistedUser);
         Assertions.assertNotNull(persistedUser.id);
