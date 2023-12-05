@@ -13,11 +13,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VxServiceIntegration implements VxModel{
 
+
+    public enum VxService {
+       vxgaming
+    }
+
     @Id
     public Long id;
+
+    /**
+     * This is the vxUserId that is responsible for this service.
+     */
     @Index
     public Long userId;
+    @Index
+    public VxService vxService;
+
     public String title;
     public String description;
-    public String vxbankSecret;
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,5 +20,22 @@ class VxUserTest {
         Key<VxUser> key = ds.ofy.save().entity(vxUser).now();
         Assertions.assertNotNull(key);
         Assertions.assertNotNull(vxUser.id);
+    }
+
+    @Test
+    void testGetById(){
+        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+
+        VxUser vxUser = new VxUser();
+        String uuid = UUID.randomUUID().toString();
+        vxUser.email = String.format("$%s@mail.com",uuid);
+
+        Key<VxUser> key = ds.ofy.save().entity(vxUser).now();
+        Long userId = vxUser.id;
+
+        Assertions.assertNotNull(userId);
+
+        VxUser storedUser = ds.ofy.load().type(VxUser.class).id(userId).now();
+        Assertions.assertEquals(vxUser.email, storedUser.email);
     }
 }

@@ -12,12 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VxUser {
+
+    public enum StripeConfigState {
+        configurationInitiated, active;
+    }
+
     @Id
     public Long id;
-    @Index
-    public Long vxServiceIntegrationId;
-    @Index
-    public Long serviceIntegrationUserId;
+
     @Index
     public String email;
+
+    public StripeConfigState active;
+
 }
