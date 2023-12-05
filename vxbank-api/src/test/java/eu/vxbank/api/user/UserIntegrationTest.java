@@ -115,7 +115,7 @@ public class UserIntegrationTest {
 
         // Make the POST request
         ResponseEntity<UserResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/login",
+                "http://localhost:" + port + "/user/login",
                 HttpMethod.POST,
                 requestEntity,
                 UserResponse.class

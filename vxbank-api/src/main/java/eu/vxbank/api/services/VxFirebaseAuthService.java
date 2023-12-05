@@ -37,7 +37,7 @@ public class VxFirebaseAuthService {
         String email = decodedToken.getEmail();
         String uid = decodedToken.getUid();
         String message = String.format("email=%s, uid=%s", email, uid);
-        System.out.println("DEBUG message: " + message);
+
 
         Instant now = Instant.now();
         long expiry = 36000L;
