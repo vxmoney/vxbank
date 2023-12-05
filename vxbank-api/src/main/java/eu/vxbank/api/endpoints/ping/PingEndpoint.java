@@ -36,7 +36,8 @@ public class PingEndpoint {
 
     // curl localhost:8080/ping/generateFirebaseIdToken
     @GetMapping("/ping/generateFirebaseIdToken")
-    public String generateFirebaseIdToken() throws FirebaseAuthException, JsonProcessingException {
+    @ResponseBody
+    public PingResponse generateFirebaseIdToken() throws FirebaseAuthException, JsonProcessingException {
 
         try {
             FirebaseApp.initializeApp();
@@ -83,7 +84,13 @@ public class PingEndpoint {
                 String.format("curl -X POST -H \"Content-Type: application/json\" -d '{\"firebaseToken\":\"'%s'\"}' " +
                         "http://localhost:8080/user/login\n",idToken));
 
-        return sb.toString();
+        PingResponse pingResponse = new PingResponse();
+        pingResponse.environment = systemService.getEnvironment();
+        pingResponse.projectId = systemService.getProjectId();
+        pingResponse.message = sb.toString();
+        pingResponse.testFirebaseIdToken = idToken;
+        System.out.println(pingResponse.message);
+        return pingResponse;
     }
 
     private String swapOnLocalhostCustomTokenForIdToken(String customToken) throws JsonProcessingException {

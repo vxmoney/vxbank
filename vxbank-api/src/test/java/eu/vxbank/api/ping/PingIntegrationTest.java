@@ -1,6 +1,7 @@
 package eu.vxbank.api.ping;
 
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,12 +17,19 @@ public class PingIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void testGetEnvironment(){
-        String path = String.format("http://localhost:%d/ping/getEnvironment",port);
-        PingResponse pingResponse =
-                this.restTemplate.getForObject(path, PingResponse.class);
+    public void testGetEnvironment() {
+        String path = String.format("http://localhost:%d/ping/getEnvironment", port);
+        PingResponse pingResponse = this.restTemplate.getForObject(path, PingResponse.class);
 
 
         System.out.println("Port = " + port);
+    }
+
+    @Test
+    public void generateFirebaseIdToken() {
+        String path = String.format("http://localhost:%d/ping/generateFirebaseIdToken", port);
+
+        PingResponse pingResponse = this.restTemplate.getForObject(path, PingResponse.class);
+        Assertions.assertNotNull(pingResponse.testFirebaseIdToken );
     }
 }
