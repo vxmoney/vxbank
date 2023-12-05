@@ -41,24 +41,25 @@ public class UserEndpoint {
         String email = vxFirebaseAuthService.validateFirebaseIdTokenAndGetEmail(loginParams.firebaseIdToken);
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        Optional<VxUser> optionalUser = VxService.getUserByEmail(email,ds);
-        if (optionalUser.isEmpty()){
-            VxUser user = createNewUser(email,ds);
+        Optional<VxUser> optionalUser = VxService.getUserByEmail(email, ds);
+        if (optionalUser.isEmpty()) {
+            VxUser user = createNewUser(email, ds);
             optionalUser = Optional.of(user);
         }
 
         VxUser vxUser = optionalUser.get();
 
+        TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
+
+
         UserResponse response = new UserResponse();
         response.id = vxUser.id;
         response.email = vxUser.email;
         response.message = "all good";
-        response.vxToken = "Not yet";
-
+        response.vxToken = tokenInfo.vxToken;
 
         return response;
     }
-
 
 
 }

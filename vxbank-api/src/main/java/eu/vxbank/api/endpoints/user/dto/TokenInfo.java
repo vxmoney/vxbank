@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class TokenInfo {
+    public Long vxUserId;
     public String firebaseId;
     public String email;
     public Long expiresAt;

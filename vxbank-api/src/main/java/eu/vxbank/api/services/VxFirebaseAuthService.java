@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class VxFirebaseAuthService {
@@ -75,6 +76,39 @@ public class VxFirebaseAuthService {
         String uid = decodedToken.getUid();
 
         return email;
+    }
+
+    public TokenInfo buildTokenForUser(Long userId, String email, Optional<Long> optionalExpirySeconds){
+
+        // default expiration is 2 hours
+        Long expirySeconds = 60L * 60L * 2; // 60 seconds * 60 minutes * 2 hours
+        if (optionalExpirySeconds.isPresent()){
+            expirySeconds = optionalExpirySeconds.get();
+        }
+
+        Instant now = Instant.now();
+        Instant expiresAt = now.plusSeconds(expirySeconds);
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(expiresAt)
+                .subject(String.valueOf(userId))
+                .claim("email", email)
+                .claim("uid",userId)
+                .build();
+
+        String vxToken = this.encoder.encode(JwtEncoderParameters.from(claims))
+                .getTokenValue();
+
+        TokenInfo tokenInfo = TokenInfo.builder()
+                .vxUserId(userId)
+                .email(email)
+                .expiresAt(expiresAt.toEpochMilli())
+                .vxToken(vxToken)
+                .build();
+
+        return tokenInfo;
     }
 
 }
