@@ -55,7 +55,7 @@ initDevEnvironment() {
 stopDevEnvironment(){
   killProcessOnPort 8445
   killProcessOnPort 9099
-  killProcessOnPort 4000
+  killProcessOnPort 8081
 }
 
 
