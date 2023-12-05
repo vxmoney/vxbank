@@ -27,4 +27,12 @@ public class VxService {
         return Optional.ofNullable(vxUser);
 
     }
+
+    public static <T> T getById(Long id, VxBankDatastore ds, Class<T> vxClass) {
+        T vxModel = ds.ofy.load().type(vxClass).id(id).now();
+        if (vxModel == null){
+            throw new IllegalStateException("Illegal user id");
+        }
+        return vxModel;
+    }
 }

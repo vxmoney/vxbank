@@ -14,46 +14,85 @@ import static org.junit.jupiter.api.Assertions.*;
 class VxUserTest {
 
     @Test
-    void testCreateGet(){
-        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+    void testCreateGet() {
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
 
         VxUser vxUser = new VxUser();
-        Key<VxUser> key = ds.ofy.save().entity(vxUser).now();
+        Key<VxUser> key = ds.ofy.save()
+                .entity(vxUser)
+                .now();
         Assertions.assertNotNull(key);
         Assertions.assertNotNull(vxUser.id);
     }
 
     @Test
-    void testGetById(){
-        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+    void testGetById() {
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
 
         VxUser vxUser = new VxUser();
-        String uuid = UUID.randomUUID().toString();
-        vxUser.email = String.format("$%s@mail.com",uuid);
+        String uuid = UUID.randomUUID()
+                .toString();
+        vxUser.email = String.format("$%s@mail.com", uuid);
 
-        Key<VxUser> key = ds.ofy.save().entity(vxUser).now();
+        Key<VxUser> key = ds.ofy.save()
+                .entity(vxUser)
+                .now();
         Long userId = vxUser.id;
 
         Assertions.assertNotNull(userId);
 
-        VxUser storedUser = ds.ofy.load().type(VxUser.class).id(userId).now();
+        VxUser storedUser = ds.ofy.load()
+                .type(VxUser.class)
+                .id(userId)
+                .now();
         Assertions.assertEquals(vxUser.email, storedUser.email);
     }
 
     @Test
-    void testGetByEmail(){
-        VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
+    void testGetByEmail() {
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
 
         VxUser vxUser = new VxUser();
-        String uuid = UUID.randomUUID().toString();
-        vxUser.email = String.format("$%s@mail.com",uuid);
+        String uuid = UUID.randomUUID()
+                .toString();
+        vxUser.email = String.format("$%s@mail.com", uuid);
 
-        ds.ofy.save().entity(vxUser).now();
+        ds.ofy.save()
+                .entity(vxUser)
+                .now();
 
-        Optional<VxUser> validUser = VxService.getUserByEmail(vxUser.email, ds );
+        Optional<VxUser> validUser = VxService.getUserByEmail(vxUser.email, ds);
         Assertions.assertTrue(validUser.isPresent());
-        Optional<VxUser> invalidUser = VxService.getUserByEmail("fake-email",ds);
+
+        Optional<VxUser> invalidUser = VxService.getUserByEmail("fake-email", ds);
         Assertions.assertTrue(invalidUser.isEmpty());
+    }
+
+
+    @Test
+    void testGetUserById() {
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
+
+        VxUser vxUser = new VxUser();
+        String uuid = UUID.randomUUID()
+                .toString();
+        vxUser.email = String.format("$%s@mail.com", uuid);
+
+        ds.ofy.save()
+                .entity(vxUser)
+                .now();
+
+        VxUser user = VxService.getById(vxUser.id, ds, VxUser.class);
+        Assertions.assertNotNull(user);
+
     }
 
 }
