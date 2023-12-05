@@ -59,7 +59,6 @@ public class PingEndpoint {
         long timeStamp = (new Date()).getTime();
         String email = String.format("user_%s@example.com", timeStamp);
 
-        System.out.println("EMIL = " + email);
 
         UserRecord.CreateRequest request = new UserRecord.CreateRequest().setEmail(email)
                 .setEmailVerified(false)

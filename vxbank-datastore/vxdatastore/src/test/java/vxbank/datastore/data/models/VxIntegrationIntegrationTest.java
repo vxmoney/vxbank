@@ -7,7 +7,7 @@ import vxbank.datastore.data.service.VxService;
 
 import java.util.*;
 
-public class VxServiceIntegrationTest {
+public class VxIntegrationIntegrationTest {
     VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
 
     private VxUser createUser() {
