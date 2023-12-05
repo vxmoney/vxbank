@@ -68,4 +68,13 @@ public class VxFirebaseAuthService {
         return tokenInfo;
     }
 
+    public String validateFirebaseIdTokenAndGetEmail(String firebaseIdToken) throws FirebaseAuthException {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance()
+                .verifyIdToken(firebaseIdToken);
+        String email = decodedToken.getEmail();
+        String uid = decodedToken.getUid();
+
+        return email;
+    }
+
 }
