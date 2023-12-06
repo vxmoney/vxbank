@@ -11,13 +11,20 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class VxUser {
+public class VxStripeConfig {
+
+
+    public enum State {
+        notConfigured, configurationInProgress, active, paused
+    }
 
 
     @Id
     public Long id;
 
     @Index
-    public String email;
+    public Long userId;
+
+    public State state;
 
 }
