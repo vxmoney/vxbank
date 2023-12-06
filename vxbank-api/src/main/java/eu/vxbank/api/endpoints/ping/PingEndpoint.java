@@ -8,12 +8,14 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
+import eu.vxbank.api.endpoints.user.dto.UserResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.enums.Environment;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,8 +114,16 @@ public class PingEndpoint {
     }
 
     @GetMapping("/ping/whoAmI")
-    public String whoAmI(Authentication authentication) {
-        return "Hello secured ping. authentication.getName(): " + authentication.getName();
+    @ResponseBody
+    public UserResponse whoAmI(Authentication authentication) {
+
+        Jwt jwtToken = (Jwt) authentication.getPrincipal();
+        String email = jwtToken.getClaim("email");
+        UserResponse userResponse = new UserResponse();
+        userResponse.id = Long.valueOf(authentication.getName());
+        userResponse.email = email;
+
+        return userResponse;
     }
 
 
