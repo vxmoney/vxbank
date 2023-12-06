@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class VxUser {
 
     public enum StripeConfigState {
-        configurationInitiated, active;
+        notConfigured, configurationInProgress, active, deactivated;
     }
 
     @Id
