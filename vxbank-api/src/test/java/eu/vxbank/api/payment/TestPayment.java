@@ -31,32 +31,6 @@ public class TestPayment {
     @Autowired
     private MockMvc mockMvc;
 
-
-    @Test
-    void deprecatedPaymentTest() throws Exception {
-
-        DeprecatedCreatePaymentIntentParams createParams = new DeprecatedCreatePaymentIntentParams();
-        createParams.productId = "id_01";
-        createParams.productTitle = "Test title";
-        createParams.productDescription = "Test description";
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestBody = objectMapper.writeValueAsString(createParams);
-
-        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payments/create-payment-intent")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status()
-                        .isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        StripeSessionCreateResponse stripeResponse = objectMapper.readValue(stringResponse,
-                StripeSessionCreateResponse.class);
-        Assertions.assertNotNull(stripeResponse);
-    }
-
     private String generateString() {
         boolean useLetters = true;
         boolean useNumbers = false;
@@ -114,7 +88,7 @@ public class TestPayment {
         String requestBody = objectMapper.writeValueAsString(createParams);
 
 
-        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/payment")
+        String stringResponse = mockMvc.perform(MockMvcRequestBuilders.post("/example/payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status()
