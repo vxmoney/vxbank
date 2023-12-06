@@ -35,6 +35,9 @@ public class UserEndpoint {
         return persistedUser;
     }
 
+    /**
+     * Checks the firebase token and if there is no user with the sed email then it creates it.
+     */
     @PostMapping("/login")
     public UserResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
 
