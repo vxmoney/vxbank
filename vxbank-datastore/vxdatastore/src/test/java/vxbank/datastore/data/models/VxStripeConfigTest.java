@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.service.VxService;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,9 +40,22 @@ public class VxStripeConfigTest {
     @Test
     void testCreateAndGetByUserId() {
         VxUser vxUser = persistRandomUser();
+
+        List<VxStripeConfig> emptyList = VxService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
+        Assertions.assertEquals(0, emptyList.size());
+
         VxStripeConfig stripeConfig = persistStripeConfig(vxUser.id);
         Assertions.assertNotNull(stripeConfig.id);
         Assertions.assertEquals(vxUser.id, stripeConfig.userId);
+
+        List<VxStripeConfig> configuredList = VxService.getByUserId(vxUser.id,
+                new HashMap<>(),
+                ds,
+                VxStripeConfig.class);
+        Assertions.assertEquals(1, configuredList.size());
+        VxStripeConfig config = configuredList.get(0);
+        Assertions.assertNotNull(config.id);
+        Assertions.assertEquals(vxUser.id, config.userId);
     }
 
 }
