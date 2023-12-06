@@ -13,6 +13,7 @@ import eu.vxbank.api.utils.enums.Environment;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,16 +73,16 @@ public class PingEndpoint {
         String idToken = swapOnLocalhostCustomTokenForIdToken(customToken);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("GENERATION COMPLETE\n");
+        sb.append("\nGENERATION COMPLETE\n");
         sb.append("You can view the user in console here: http://127.0.0.1:4000/auth\n");
         sb.append(String.format("export ID_TOKEN=%s", idToken));
         sb.append("\n");
-        sb.append(
-                "curl -X POST -H \"Content-Type: application/json\" -d '{\"firebaseToken\":\"'${ID_TOKEN}'\"}' " +
-                        "http://localhost:8080/user/login\n");
-        sb.append(
-                String.format("curl -X POST -H \"Content-Type: application/json\" -d '{\"firebaseToken\":\"'%s'\"}' " +
-                        "http://localhost:8080/user/login\n",idToken));
+        sb.append("""
+                curl -X POST -H "Content-Type: application/json" -d '{"firebaseToken":"'${ID_TOKEN}'"}' http://localhost:8080/user/login
+                """);
+        sb.append(String.format(
+                "curl -X POST -H \"Content-Type: application/json\" -d '{\"firebaseToken\":\"'%s'\"}' " +
+                        "http://localhost:8080/user/login\n", idToken));
 
         PingResponse pingResponse = new PingResponse();
         pingResponse.environment = systemService.getEnvironment();
@@ -89,6 +90,7 @@ public class PingEndpoint {
         pingResponse.message = sb.toString();
         pingResponse.testFirebaseIdToken = idToken;
         System.out.println(pingResponse.message);
+
         return pingResponse;
     }
 
@@ -108,5 +110,11 @@ public class PingEndpoint {
         return oauthResponse.idToken;
 
     }
+
+    @GetMapping("/ping/whoAmI")
+    public String whoAmI(Authentication authentication) {
+        return "Hello secured ping. authentication.getName(): " + authentication.getName();
+    }
+
 
 }

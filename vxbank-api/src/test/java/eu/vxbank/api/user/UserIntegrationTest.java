@@ -122,13 +122,41 @@ public class UserIntegrationTest {
         );
 
         // Extract the response
-        UserResponse response = responseEntity.getBody();
+        UserResponse loginResponse = responseEntity.getBody();
 
         // Example assertion (you should replace this with your actual assertions)
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(userParams.email, response.email);
+        Assertions.assertNotNull(loginResponse);
+        Assertions.assertEquals(userParams.email, loginResponse.email);
 
 
+        // ping who am I
+        UserResponse pingResponse = pingWhoAmI(loginResponse.vxToken);
+        Assertions.assertEquals(loginResponse.email, pingResponse.email);
+
+
+
+
+    }
+
+    private UserResponse pingWhoAmI(String vxToken) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<UserResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/ping/whoAmI",
+                HttpMethod.GET,
+                requestEntity,
+                UserResponse.class
+        );
+
+        // Extract the response
+        UserResponse responseBody = responseEntity.getBody();
+        return responseBody;
 
     }
 
