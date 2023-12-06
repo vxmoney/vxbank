@@ -4,7 +4,7 @@ package eu.vxbank.api.endpoints.user;
 import com.google.firebase.auth.FirebaseAuthException;
 import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.endpoints.user.dto.TokenInfo;
-import eu.vxbank.api.endpoints.user.dto.UserResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class UserEndpoint {
      * Checks the firebase token and if there is no user with the sed email then it creates it.
      */
     @PostMapping("/login")
-    public UserResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
+    public LoginResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
 
         String email = vxFirebaseAuthService.validateFirebaseIdTokenAndGetEmail(loginParams.firebaseIdToken);
 
@@ -55,7 +55,7 @@ public class UserEndpoint {
         TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
 
 
-        UserResponse response = new UserResponse();
+        LoginResponse response = new LoginResponse();
         response.id = vxUser.id;
         response.email = vxUser.email;
         response.message = "all good";

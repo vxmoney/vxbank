@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
-import eu.vxbank.api.endpoints.user.dto.UserResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.enums.Environment;
 import kong.unirest.HttpResponse;
@@ -115,15 +115,15 @@ public class PingEndpoint {
 
     @GetMapping("/ping/whoAmI")
     @ResponseBody
-    public UserResponse whoAmI(Authentication authentication) {
+    public LoginResponse whoAmI(Authentication authentication) {
 
         Jwt jwtToken = (Jwt) authentication.getPrincipal();
         String email = jwtToken.getClaim("email");
-        UserResponse userResponse = new UserResponse();
-        userResponse.id = Long.valueOf(authentication.getName());
-        userResponse.email = email;
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.id = Long.valueOf(authentication.getName());
+        loginResponse.email = email;
 
-        return userResponse;
+        return loginResponse;
     }
 
 

@@ -7,9 +7,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginParams;
-import eu.vxbank.api.endpoints.user.dto.UserResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import vxbank.datastore.data.models.VxUser;
-import vxbank.datastore.data.service.VxService;
 
 import java.util.UUID;
 
@@ -114,15 +112,15 @@ public class UserIntegrationTest {
         HttpEntity<LoginParams> requestEntity = new HttpEntity<>(loginParams, headers);
 
         // Make the POST request
-        ResponseEntity<UserResponse> responseEntity = restTemplate.exchange(
+        ResponseEntity<LoginResponse> responseEntity = restTemplate.exchange(
                 "http://localhost:" + port + "/user/login",
                 HttpMethod.POST,
                 requestEntity,
-                UserResponse.class
+                LoginResponse.class
         );
 
         // Extract the response
-        UserResponse loginResponse = responseEntity.getBody();
+        LoginResponse loginResponse = responseEntity.getBody();
 
         // Example assertion (you should replace this with your actual assertions)
         Assertions.assertNotNull(loginResponse);
@@ -130,7 +128,7 @@ public class UserIntegrationTest {
 
 
         // ping who am I
-        UserResponse pingResponse = pingWhoAmI(loginResponse.vxToken);
+        LoginResponse pingResponse = pingWhoAmI(loginResponse.vxToken);
         Assertions.assertEquals(loginResponse.email, pingResponse.email);
 
 
@@ -138,7 +136,7 @@ public class UserIntegrationTest {
 
     }
 
-    private UserResponse pingWhoAmI(String vxToken) {
+    private LoginResponse pingWhoAmI(String vxToken) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
@@ -147,15 +145,15 @@ public class UserIntegrationTest {
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
         // Make the GET request to /ping/whoAmI
-        ResponseEntity<UserResponse> responseEntity = restTemplate.exchange(
+        ResponseEntity<LoginResponse> responseEntity = restTemplate.exchange(
                 "http://localhost:" + port + "/ping/whoAmI",
                 HttpMethod.GET,
                 requestEntity,
-                UserResponse.class
+                LoginResponse.class
         );
 
         // Extract the response
-        UserResponse responseBody = responseEntity.getBody();
+        LoginResponse responseBody = responseEntity.getBody();
         return responseBody;
 
     }
