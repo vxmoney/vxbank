@@ -5,8 +5,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
-import eu.vxbank.api.helpers.UserEndpointHelper;
+import eu.vxbank.api.helpers.StripeConfigHelper;
+import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -75,11 +77,14 @@ public class StripeOnboardingIntegrationTest {
 
         Assertions.assertNotNull(firebaseIdToken);
 
-        LoginResponse loginResponse = UserEndpointHelper.login(firebaseIdToken,restTemplate,port);
+        LoginResponse loginResponse = UserHelper.login(firebaseIdToken,restTemplate,port);
         Assertions.assertNotNull(loginResponse);
 
+        StripeConfigGetByUserIdResponse configResponse
+                = StripeConfigHelper.getByUserId(loginResponse.id,
+                loginResponse.vxToken, restTemplate, port, 200);
 
-
+        Assertions.assertNotNull(configResponse);
         /**
          * /stripeConfig/getByUserId/{userId}
          * {

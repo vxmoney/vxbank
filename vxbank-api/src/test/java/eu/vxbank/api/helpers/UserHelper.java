@@ -8,7 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-public class UserEndpointHelper {
+public class UserHelper {
     public static LoginResponse login(String firebaseIdToken, TestRestTemplate restTemplate, int port){
 
         LoginParams loginParams = new LoginParams();
