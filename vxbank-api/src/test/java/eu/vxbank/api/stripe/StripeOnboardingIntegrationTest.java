@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.StripeConfigHelper;
 import eu.vxbank.api.helpers.UserHelper;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.UUID;
@@ -80,11 +82,24 @@ public class StripeOnboardingIntegrationTest {
         LoginResponse loginResponse = UserHelper.login(firebaseIdToken,restTemplate,port);
         Assertions.assertNotNull(loginResponse);
 
+        //stripeConfig/getByUserId/{userId}
         StripeConfigGetByUserIdResponse configResponse
                 = StripeConfigHelper.getByUserId(loginResponse.id,
                 loginResponse.vxToken, restTemplate, port, 200);
 
         Assertions.assertNotNull(configResponse);
+        // check that stripe state is notConfigured
+        Assertions.assertEquals(VxStripeConfig.State.notConfigured, configResponse.state);
+
+        // stripeConfig/initiateConfig
+        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
+        initiateConfigParams.userId = loginResponse.id;
+        StripeConfigInitiateConfigParams initiateConfigParamsResponse
+                = StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port,  200);
+
+
+
+
         /**
          * /stripeConfig/getByUserId/{userId}
          * {

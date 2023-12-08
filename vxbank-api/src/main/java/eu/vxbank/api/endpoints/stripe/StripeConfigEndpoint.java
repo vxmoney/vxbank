@@ -1,6 +1,8 @@
 package eu.vxbank.api.endpoints.stripe;
 
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,24 @@ public class StripeConfigEndpoint {
         }
 
         return response;
+    }
+
+    @PostMapping("/initiateConfig")
+    @ResponseBody
+    public StripeConfigInitiateConfigResponse initiateConfig(@RequestBody StripeConfigInitiateConfigParams params) {
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        List<VxStripeConfig> stripeConfigs = VxService.getByUserId(params.userId,
+                new HashMap<>(),
+                ds,
+                VxStripeConfig.class);
+
+        StripeConfigInitiateConfigResponse response = new StripeConfigInitiateConfigResponse();
+        if (stripeConfigs.size() > 0) {
+            throw new IllegalStateException("User already has a stripe config");
+        }
+
+        throw new IllegalStateException("Please implement this");
     }
 
 }
