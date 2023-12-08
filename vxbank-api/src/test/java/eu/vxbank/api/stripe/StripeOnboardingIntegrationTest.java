@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.StripeConfigHelper;
 import eu.vxbank.api.helpers.UserHelper;
@@ -94,7 +95,7 @@ public class StripeOnboardingIntegrationTest {
         // stripeConfig/initiateConfig
         StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
         initiateConfigParams.userId = loginResponse.id;
-        StripeConfigInitiateConfigParams initiateConfigParamsResponse
+        StripeConfigInitiateConfigResponse initiateConfigParamsResponse
                 = StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port,  200);
 
 

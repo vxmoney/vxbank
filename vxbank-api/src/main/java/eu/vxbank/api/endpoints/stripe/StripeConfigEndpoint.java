@@ -57,6 +57,7 @@ public class StripeConfigEndpoint {
             throw new IllegalStateException("User already has a stripe config");
         }
 
+
         throw new IllegalStateException("Please implement this");
     }
 
