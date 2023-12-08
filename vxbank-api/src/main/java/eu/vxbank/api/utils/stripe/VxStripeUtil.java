@@ -1,7 +1,12 @@
 package eu.vxbank.api.utils.stripe;
 
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
+import com.stripe.model.AccountLink;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.AccountCreateParams;
+import com.stripe.param.AccountLinkCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxPayment;
@@ -48,5 +53,28 @@ public class VxStripeUtil {
         stripeSessionResponse.url = session.getUrl();
         stripeSessionResponse.stripeSessionId = session.getId();
         return stripeSessionResponse;
+    }
+
+    public static Account createExpressAccount(String stripeKey) throws StripeException {
+        Stripe.apiKey = stripeKey;
+        AccountCreateParams params =
+                 AccountCreateParams.builder().setType(AccountCreateParams.Type.EXPRESS).build();
+        Account account = Account.create(params);
+        return account;
+    }
+
+    public static AccountLink createAccountLink(String stripeKey, String connectedAccountId) throws StripeException {
+        Stripe.apiKey = stripeKey;
+
+        AccountLinkCreateParams params =
+                AccountLinkCreateParams.builder()
+                        .setAccount(connectedAccountId)
+                        .setRefreshUrl("https://example.com/reauth")
+                        .setReturnUrl("https://example.com/return")
+                        .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
+                        .build();
+
+        AccountLink accountLink = AccountLink.create(params);
+        return accountLink;
     }
 }

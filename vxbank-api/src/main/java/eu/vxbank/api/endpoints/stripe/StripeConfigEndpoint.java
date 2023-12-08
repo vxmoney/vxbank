@@ -1,10 +1,15 @@
 package eu.vxbank.api.endpoints.stripe;
 
+import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
+import com.stripe.model.AccountLink;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.VxBankDatastore;
@@ -23,6 +28,9 @@ public class StripeConfigEndpoint {
 
     @Autowired
     SystemService systemService;
+
+    @Autowired
+    VxStripeKeys stripeKeys;
 
     @GetMapping("/getByUserId/{userId}")
     @ResponseBody
@@ -44,7 +52,8 @@ public class StripeConfigEndpoint {
 
     @PostMapping("/initiateConfig")
     @ResponseBody
-    public StripeConfigInitiateConfigResponse initiateConfig(@RequestBody StripeConfigInitiateConfigParams params) {
+    public StripeConfigInitiateConfigResponse initiateConfig(@RequestBody StripeConfigInitiateConfigParams params) throws
+            StripeException {
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         List<VxStripeConfig> stripeConfigs = VxService.getByUserId(params.userId,
@@ -57,6 +66,12 @@ public class StripeConfigEndpoint {
             throw new IllegalStateException("User already has a stripe config");
         }
 
+
+        String stripeKey = stripeKeys.stripeSecretKey;
+        Account account = VxStripeUtil.createExpressAccount(stripeKey);
+
+        String connectedAccountId = account.getId();
+        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,connectedAccountId);
 
         throw new IllegalStateException("Please implement this");
     }

@@ -15,7 +15,7 @@ public class VxStripeKeys {
 
     @Value("${stripeKey.devSecretKey}")
     private String stripeDevSecretKey;
-    String stripeSecretKey;
+   public String stripeSecretKey;
 
 
     @PostConstruct
