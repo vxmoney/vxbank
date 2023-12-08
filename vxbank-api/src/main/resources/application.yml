@@ -4,3 +4,6 @@ system:
 jwt:
   private.key: classpath:app.key
   public.key: classpath:app.pub
+
+stripeKey:
+  devSecretKey: classpath:stripeDevSecret.key

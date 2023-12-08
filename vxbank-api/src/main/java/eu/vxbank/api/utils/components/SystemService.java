@@ -19,16 +19,25 @@ public class SystemService {
 
     @Value("${system.environment}")
     String applicationEnvironment;
+
+    @Value("${stripeKey.devSecretKey}")
+    private String stripeDevSecretKey;
+    String stripeSecretKey;
+
     Environment environment;
     String projectId;
     VxBankDatastore vxBankDatastore;
+
 
     @PostConstruct
     public void init() {
         initEnvironment();
         initDatastore();
+        initStripeKey();
         System.out.println("Initialized SystemService");
     }
+
+
 
     private void initEnvironment() {
         projectId = System.getenv()
@@ -71,6 +80,21 @@ public class SystemService {
         }
     }
 
+    private void initStripeKey() {
+
+
+        switch (environment) {
+            case LOCALHOST:
+                stripeSecretKey = stripeDevSecretKey;
+                break;
+            case DEVELOPMENT:
+                stripeSecretKey = stripeDevSecretKey;
+                break;
+            default:
+                throw new IllegalStateException("Not supported projectId=" + projectId);
+        }
+    }
+
     private InputStream getDatastoreCredentialsInputStream() {
         System.out.println("getDatastoreCredentialsInputStream projectId=" + projectId);
         switch (environment) {
@@ -81,7 +105,6 @@ public class SystemService {
                 throw new IllegalStateException("Not supported credentials for env: " + environment);
         }
     }
-
 
 }
 
