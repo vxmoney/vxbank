@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-public class TestUserFlow {
+public class TokenTest {
 
     private static UserRecord createUserWithEmail(FirebaseAuth firebaseAuth, String email) throws
             FirebaseAuthException {
