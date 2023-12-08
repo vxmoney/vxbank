@@ -78,8 +78,7 @@ public class StripeOnboardingIntegrationTest {
         LoginResponse loginResponse = UserEndpointHelper.login(firebaseIdToken,restTemplate,port);
         Assertions.assertNotNull(loginResponse);
 
-        // path:
-        // /stripe/getByUserId/{userId}
+
 
         /**
          * /stripeConfig/getByUserId/{userId}
