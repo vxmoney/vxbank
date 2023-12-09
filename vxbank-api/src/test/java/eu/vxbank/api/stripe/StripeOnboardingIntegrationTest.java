@@ -15,6 +15,7 @@ import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.helpers.PingHelper;
 import eu.vxbank.api.helpers.StripeConfigHelper;
 import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
@@ -366,6 +367,10 @@ public class StripeOnboardingIntegrationTest {
 
         // finalizeConfig
         StripeConfigHelper.finalizeConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 200);
+
+        // pingWhoAmI
+        LoginResponse pingResponse = PingHelper.whoAmI(loginResponse.vxToken, restTemplate,port,200);
+        Assertions.assertEquals(VxStripeConfig.State.active, pingResponse.stripeConfigState);
 
 
     }

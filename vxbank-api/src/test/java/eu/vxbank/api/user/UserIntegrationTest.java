@@ -131,9 +131,6 @@ public class UserIntegrationTest {
         LoginResponse pingResponse = pingWhoAmI(loginResponse.vxToken);
         Assertions.assertEquals(loginResponse.email, pingResponse.email);
 
-
-
-
     }
 
     private LoginResponse pingWhoAmI(String vxToken) {
