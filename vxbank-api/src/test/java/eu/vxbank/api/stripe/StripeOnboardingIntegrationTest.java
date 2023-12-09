@@ -244,9 +244,10 @@ public class StripeOnboardingIntegrationTest {
 
     @Test
     public void test06() throws StripeException {
+        //https://connect.stripe.com/setup/e/acct_1OLNwlPnbmI8IHhZ/NyAr3g3jvcUH
         // 498 597 618
         // https://www.linkedin.com/in/bogdan-oloeriu/
-        String activeStripeAccountId = "fake";
+        String activeStripeAccountId = "acct_1OLNwlPnbmI8IHhZ";
         System.out.println(stripeDevSecretKey);
 
         Stripe.apiKey = stripeDevSecretKey;
