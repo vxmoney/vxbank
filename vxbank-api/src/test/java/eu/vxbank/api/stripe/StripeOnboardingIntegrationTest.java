@@ -1,6 +1,7 @@
 package eu.vxbank.api.stripe;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -9,6 +10,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
+import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -18,6 +20,8 @@ import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,7 +317,7 @@ public class StripeOnboardingIntegrationTest {
 
 
     @Test
-    public void test9FinalizeConfig() throws StripeException {
+    public void test9FinalizeConfig() throws StripeException, FirebaseAuthException, JsonProcessingException {
         // 498 597 618
         // https://www.linkedin.com/in/bogdan-oloeriu/
         // userId = 35
@@ -344,8 +348,9 @@ public class StripeOnboardingIntegrationTest {
         String email = String.format("$%s@mail.com", coreMail);
         VxUser vxUserParams = VxUser.builder()
                 .id(userId)
-                .email(coreMail).build();
-        VxUser vxUser = VxService.persist(vxUserParams, ds,VxUser.class);
+                .email(email)
+                .build();
+        VxUser vxUser = VxService.persist(vxUserParams, ds, VxUser.class);
         Assertions.assertEquals(vxUserParams.id, vxUser.id);
 
         // set stripeConfig
@@ -356,12 +361,31 @@ public class StripeOnboardingIntegrationTest {
                 .stripeAccountId(stripeAccountId)
                 .state(VxStripeConfig.State.configurationInProgress)
                 .build();
-        VxService.persist(configParams,ds, VxStripeConfig.class);
+        VxService.persist(configParams, ds, VxStripeConfig.class);
         List<VxStripeConfig> updatedList = VxService.getByUserId(35L, new HashMap<>(), ds, VxStripeConfig.class);
         VxStripeConfig stripeConfig = updatedList.get(0);
         Assertions.assertEquals(stripeAccountId, stripeConfig.stripeAccountId);
 
-        // generate vxToken for this user
+        // generate firebaseCustomToken for this user
+        String firebaseToken = createFirebaseIdToken(vxUser.email);
+
+        // login
+        LoginResponse loginResponse = UserHelper.login(firebaseToken, restTemplate, port);
+        String vxToken = loginResponse.vxToken;
+        Assertions.assertEquals(vxUser.id, loginResponse.id);
+        Assertions.assertNotNull(vxToken);
+
+        // initiate config
+        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
+        initiateConfigParams.userId = loginResponse.id;
+
+        // is is already configured, so we should expect conflict 409
+        // expect CONFLICT(409, Series.CLIENT_ERROR, "Conflict"),
+        StripeConfigHelper.initiateConfig(loginResponse.vxToken,
+                initiateConfigParams,
+                restTemplate,
+                port,
+                409);
 
 
     }

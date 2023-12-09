@@ -12,7 +12,9 @@ import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.service.VxService;
@@ -105,10 +107,9 @@ public class StripeConfigEndpoint {
             List<String> currentlyDueList = account.getRequirements()
                     .getCurrentlyDue();
             if (currentlyDueList.isEmpty()) {
-                throw new IllegalStateException("""
-                        We need to clarify our onboarding flow. \n
-                        This account configuration is complete. No need to initiate configuration
-                        """);
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "We need to clarify our onboarding flow. "
+                        + "This account configuration is complete. No need to initiate configuration");
+
             }
 
             AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, config.stripeAccountId);
