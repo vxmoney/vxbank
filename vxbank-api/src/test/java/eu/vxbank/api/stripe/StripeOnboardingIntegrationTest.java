@@ -344,7 +344,7 @@ public class StripeOnboardingIntegrationTest {
                 .state(VxStripeConfig.State.configurationInProgress)
                 .build();
         VxService.persist(configParams, ds, VxStripeConfig.class);
-        List<VxStripeConfig> updatedList = VxService.getByUserId(35L, new HashMap<>(), ds, VxStripeConfig.class);
+        List<VxStripeConfig> updatedList = VxService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
         VxStripeConfig stripeConfig = updatedList.get(0);
         Assertions.assertEquals(stripeAccountId, stripeConfig.stripeAccountId);
 
