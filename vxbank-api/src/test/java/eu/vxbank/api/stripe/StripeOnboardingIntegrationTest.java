@@ -282,4 +282,22 @@ public class StripeOnboardingIntegrationTest {
         Assertions.assertTrue( currentlyDueList.isEmpty());
     }
 
+    @Test
+    public void test08CycleAllStages() throws StripeException {
+        // https://connect.stripe.com/setup/e/acct_1OLONyPnb2T4BnUb/eTWNOXX96TTF
+        // 498 597 618
+        // https://www.linkedin.com/in/bogdan-oloeriu/
+        String activeStripeAccountId = "acct_1OLONyPnb2T4BnUb";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+
+        Assertions.assertTrue( currentlyDueList.isEmpty());
+
+    }
+
 }
