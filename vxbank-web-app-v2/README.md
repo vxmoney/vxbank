@@ -37,3 +37,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## deploy on gcloud
 - https://github.com/vercel/next.js/discussions/12474
+
+```bash
+gcloud config set project vxbank-eu-dev
+npm run build
+gcloud app deploy --quiet
+```
