@@ -1,5 +1,6 @@
 package eu.vxbank.api.endpoints.stripe;
 
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
@@ -97,6 +98,12 @@ public class StripeConfigEndpoint {
             if (config.state != VxStripeConfig.State.configurationInProgress){
                 throw new IllegalStateException("You can try this only if configuration is in progress");
             }
+
+            Stripe.apiKey = stripeKey;
+            Account account = Account.retrieve(config.stripeAccountId);
+
+
+
             AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,config.stripeAccountId);
             StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
             initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
