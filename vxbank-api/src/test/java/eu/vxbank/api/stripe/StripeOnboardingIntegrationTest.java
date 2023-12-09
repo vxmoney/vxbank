@@ -25,8 +25,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StripeOnboardingIntegrationTest {
@@ -134,6 +133,77 @@ public class StripeOnboardingIntegrationTest {
 
         Assertions.assertNotNull(account);
         Assertions.assertTrue(currentlyDueList.isEmpty());
+    }
+    @Test
+    public void test03OnlyLink() throws StripeException {
+        String activeStripeAccountId = "acct_1OLN0IBAJYnco4oS";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+        Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
+
+        Set<String> onlyLinkSet = new HashSet<>();
+        onlyLinkSet.add("external_account");
+        onlyLinkSet.add("tos_acceptance.date");
+        onlyLinkSet.add("tos_acceptance.ip");
+
+        Assertions.assertEquals(onlyLinkSet, currentlyDueSet);
+    }
+
+    /**
+     * LinkVisited -> same as OnlyLink
+     * Sms sent -> same as OnlyLink
+     * Sms verified -> same as OnlyLink
+     * Tell us about your business -> is different
+     */
+    @Test
+    public void test03TellUsAboutYourBusiness() throws StripeException {
+        String activeStripeAccountId = "acct_1OLN8hBG8FE1JWAR";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+        Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
+
+
+        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city", "individual.last_name", "individual.dob.year", "individual.address.line1", "individual.email", "tos_acceptance.ip", "tos_acceptance.date", "external_account", "individual.phone", "individual.address.postal_code", "individual.dob.month", "individual.first_name", "business_profile.mcc", "individual.dob.day", "business_profile.url");
+
+        Set<String> tellUsBoutYourBusinessSet = new HashSet<>(tellUsAboutYourBusinessList);
+
+        Assertions.assertEquals(tellUsBoutYourBusinessSet, currentlyDueSet);
+    }
+
+    /**
+     * LinkVisited -> same as OnlyLink
+     * Sms sent -> same as OnlyLink
+     * Sms verified -> same as OnlyLink
+     * Tell us about your business -> is different
+     */
+    @Test
+    public void test03TellUsAboutYourBusinessStep2() throws StripeException {
+        String activeStripeAccountId = "acct_1OLN8hBG8FE1JWAR";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+        Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
+
+
+        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city", "individual.last_name", "individual.dob.year", "individual.address.line1", "individual.email", "tos_acceptance.ip", "tos_acceptance.date", "external_account", "individual.phone", "individual.address.postal_code", "individual.dob.month", "individual.first_name", "business_profile.mcc", "individual.dob.day", "business_profile.url");
+
+        Set<String> tellUsBoutYourBusinessSet = new HashSet<>(tellUsAboutYourBusinessList);
+
+        Assertions.assertEquals(tellUsBoutYourBusinessSet, currentlyDueSet);
     }
 
 }
