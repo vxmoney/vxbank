@@ -195,15 +195,10 @@ public class StripeOnboardingIntegrationTest {
         Assertions.assertEquals(tellUsBoutYourBusinessSet, currentlyDueSet);
     }
 
-    /**
-     * LinkVisited -> same as OnlyLink
-     * Sms sent -> same as OnlyLink
-     * Sms verified -> same as OnlyLink
-     * Tell us about your business -> is different
-     */
+
     @Test
-    public void test03TellUsAboutYourBusinessStep2() throws StripeException {
-        String activeStripeAccountId = "acct_1OLN8hBG8FE1JWAR";
+    public void test04TellUsAboutHowYouEarnMoney() throws StripeException {
+        String activeStripeAccountId = "acct_1OLNT0BCbS7cY6AX";
         System.out.println(stripeDevSecretKey);
 
         Stripe.apiKey = stripeDevSecretKey;
@@ -214,20 +209,10 @@ public class StripeOnboardingIntegrationTest {
         Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
 
 
-        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city",
-                "individual.last_name",
-                "individual.dob.year",
-                "individual.address.line1",
-                "individual.email",
-                "tos_acceptance.ip",
+        List<String> tellUsAboutYourBusinessList = Arrays.asList("tos_acceptance.ip",
                 "tos_acceptance.date",
                 "external_account",
-                "individual.phone",
-                "individual.address.postal_code",
-                "individual.dob.month",
-                "individual.first_name",
                 "business_profile.mcc",
-                "individual.dob.day",
                 "business_profile.url");
 
         Set<String> tellUsBoutYourBusinessSet = new HashSet<>(tellUsAboutYourBusinessList);
