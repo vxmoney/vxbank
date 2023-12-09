@@ -134,6 +134,7 @@ public class StripeOnboardingIntegrationTest {
         Assertions.assertNotNull(account);
         Assertions.assertTrue(currentlyDueList.isEmpty());
     }
+
     @Test
     public void test03OnlyLink() throws StripeException {
         String activeStripeAccountId = "acct_1OLN0IBAJYnco4oS";
@@ -173,7 +174,21 @@ public class StripeOnboardingIntegrationTest {
         Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
 
 
-        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city", "individual.last_name", "individual.dob.year", "individual.address.line1", "individual.email", "tos_acceptance.ip", "tos_acceptance.date", "external_account", "individual.phone", "individual.address.postal_code", "individual.dob.month", "individual.first_name", "business_profile.mcc", "individual.dob.day", "business_profile.url");
+        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city",
+                "individual.last_name",
+                "individual.dob.year",
+                "individual.address.line1",
+                "individual.email",
+                "tos_acceptance.ip",
+                "tos_acceptance.date",
+                "external_account",
+                "individual.phone",
+                "individual.address.postal_code",
+                "individual.dob.month",
+                "individual.first_name",
+                "business_profile.mcc",
+                "individual.dob.day",
+                "business_profile.url");
 
         Set<String> tellUsBoutYourBusinessSet = new HashSet<>(tellUsAboutYourBusinessList);
 
@@ -199,7 +214,21 @@ public class StripeOnboardingIntegrationTest {
         Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
 
 
-        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city", "individual.last_name", "individual.dob.year", "individual.address.line1", "individual.email", "tos_acceptance.ip", "tos_acceptance.date", "external_account", "individual.phone", "individual.address.postal_code", "individual.dob.month", "individual.first_name", "business_profile.mcc", "individual.dob.day", "business_profile.url");
+        List<String> tellUsAboutYourBusinessList = Arrays.asList("individual.address.city",
+                "individual.last_name",
+                "individual.dob.year",
+                "individual.address.line1",
+                "individual.email",
+                "tos_acceptance.ip",
+                "tos_acceptance.date",
+                "external_account",
+                "individual.phone",
+                "individual.address.postal_code",
+                "individual.dob.month",
+                "individual.first_name",
+                "business_profile.mcc",
+                "individual.dob.day",
+                "business_profile.url");
 
         Set<String> tellUsBoutYourBusinessSet = new HashSet<>(tellUsAboutYourBusinessList);
 
