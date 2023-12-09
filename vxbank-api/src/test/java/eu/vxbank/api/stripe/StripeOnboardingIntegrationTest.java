@@ -303,7 +303,6 @@ public class StripeOnboardingIntegrationTest {
                 .getCurrentlyDue();
 
         Assertions.assertTrue( currentlyDueList.isEmpty());
-
     }
 
 }

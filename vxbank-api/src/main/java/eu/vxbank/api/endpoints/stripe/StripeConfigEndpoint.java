@@ -67,13 +67,13 @@ public class StripeConfigEndpoint {
 
         String stripeKey = stripeKeys.stripeSecretKey;
 
-        if (stripeConfigs.isEmpty()){
+        if (stripeConfigs.isEmpty()) {
 
             // create first config
             Account account = VxStripeUtil.createExpressAccount(stripeKey);
 
             String stripeAccountId = account.getId();
-            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,stripeAccountId);
+            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, stripeAccountId);
 
             //create stripe config in progress
             VxStripeConfig config = VxStripeConfig.builder()
@@ -92,19 +92,26 @@ public class StripeConfigEndpoint {
             initiateConfigResponse.state = config.state;
             return initiateConfigResponse;
 
-        }else {
+        } else {
             // just create new link so frontend can try again
             VxStripeConfig config = stripeConfigs.get(0);
-            if (config.state != VxStripeConfig.State.configurationInProgress){
+            if (config.state != VxStripeConfig.State.configurationInProgress) {
                 throw new IllegalStateException("You can try this only if configuration is in progress");
             }
 
             Stripe.apiKey = stripeKey;
             Account account = Account.retrieve(config.stripeAccountId);
 
+            List<String> currentlyDueList = account.getRequirements()
+                    .getCurrentlyDue();
+            if (currentlyDueList.isEmpty()) {
+                throw new IllegalStateException("""
+                        We need to clarify our onboarding flow. \n
+                        This account configuration is complete. No need to initiate configuration
+                        """);
+            }
 
-
-            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,config.stripeAccountId);
+            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, config.stripeAccountId);
             StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
             initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
             initiateConfigResponse.url = accountLink.getUrl();
