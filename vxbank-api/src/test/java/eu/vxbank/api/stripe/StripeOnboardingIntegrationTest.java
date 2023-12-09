@@ -8,6 +8,7 @@ import com.google.firebase.auth.UserRecord;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
+import com.stripe.model.AccountLink;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -15,6 +16,7 @@ import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.StripeConfigHelper;
 import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
+import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,6 +294,10 @@ public class StripeOnboardingIntegrationTest {
 
         Stripe.apiKey = stripeDevSecretKey;
         Account account = Account.retrieve(activeStripeAccountId);
+
+        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey,activeStripeAccountId);
+        System.out.println("AccountLinkUrl = "+accountLink.getUrl());
+
 
         List<String> currentlyDueList = account.getRequirements()
                 .getCurrentlyDue();
