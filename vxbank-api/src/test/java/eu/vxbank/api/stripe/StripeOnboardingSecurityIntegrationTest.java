@@ -144,7 +144,7 @@ public class StripeOnboardingSecurityIntegrationTest {
     // we might use these ids' as admins at some point in the future
     // complete cycle user A: acct_1OLVFTBDXgpnX6Hr
     // complete cycle suer B: acct_1OLVIoPaNl3jOqeD
-    private LoginResponse generateRandomUser() throws FirebaseAuthException, JsonProcessingException {
+    private LoginResponse generateRandomLoggedInUser() throws FirebaseAuthException, JsonProcessingException {
         VxBankDatastore ds = systemService.getVxBankDatastore();
         String coreMail = UUID.randomUUID()
                 .toString();
@@ -173,8 +173,8 @@ public class StripeOnboardingSecurityIntegrationTest {
             FirebaseAuthException,
             JsonProcessingException {
 
-        LoginResponse loginA = generateRandomUser();
-        LoginResponse loginB = generateRandomUser();
+        LoginResponse loginA = generateRandomLoggedInUser();
+        LoginResponse loginB = generateRandomLoggedInUser();
 
 
         // set the user
