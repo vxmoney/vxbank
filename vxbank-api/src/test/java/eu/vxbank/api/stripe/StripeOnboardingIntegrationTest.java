@@ -16,6 +16,7 @@ import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.StripeConfigHelper;
 import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
+import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxService;
 
 import java.util.*;
 
@@ -43,6 +46,9 @@ public class StripeOnboardingIntegrationTest {
 
     @Value("${stripeKey.devSecretKey}")
     private String stripeDevSecretKey;
+
+    @Autowired
+    SystemService systemService;
 
     private VxUser createUserParams() {
         VxUser vxUser = new VxUser();
@@ -281,7 +287,7 @@ public class StripeOnboardingIntegrationTest {
         List<String> currentlyDueList = account.getRequirements()
                 .getCurrentlyDue();
 
-        Assertions.assertTrue( currentlyDueList.isEmpty());
+        Assertions.assertTrue(currentlyDueList.isEmpty());
     }
 
     @Test
@@ -295,14 +301,70 @@ public class StripeOnboardingIntegrationTest {
         Stripe.apiKey = stripeDevSecretKey;
         Account account = Account.retrieve(activeStripeAccountId);
 
-        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey,activeStripeAccountId);
-        System.out.println("AccountLinkUrl = "+accountLink.getUrl());
+        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey, activeStripeAccountId);
+        System.out.println("AccountLinkUrl = " + accountLink.getUrl());
 
 
         List<String> currentlyDueList = account.getRequirements()
                 .getCurrentlyDue();
 
-        Assertions.assertTrue( currentlyDueList.isEmpty());
+        Assertions.assertTrue(currentlyDueList.isEmpty());
     }
+
+
+    @Test
+    public void test9FinalizeConfig() throws StripeException {
+        // 498 597 618
+        // https://www.linkedin.com/in/bogdan-oloeriu/
+        // userId = 35
+        String activeStripeAccountId = "acct_1OLOsQB0moZ0HQUD";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey, activeStripeAccountId);
+        System.out.println("AccountLinkUrl = " + accountLink.getUrl());
+
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+
+        Assertions.assertTrue(currentlyDueList.isEmpty());
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        List<VxStripeConfig> configList = VxService.getByUserId(35L, new HashMap<>(), ds, VxStripeConfig.class);
+        Assertions.assertFalse(configList.isEmpty());
+
+        // set the user
+        Long userId = 1L;
+        String stripeAccountId = "acct_1OLOsQB0moZ0HQUD";
+        String coreMail = UUID.randomUUID()
+                .toString();
+        String email = String.format("$%s@mail.com", coreMail);
+        VxUser vxUserParams = VxUser.builder()
+                .id(userId)
+                .email(coreMail).build();
+        VxUser vxUser = VxService.persist(vxUserParams, ds,VxUser.class);
+        Assertions.assertEquals(vxUserParams.id, vxUser.id);
+
+        // set stripeConfig
+        Long configId = 2L;
+        VxStripeConfig configParams = VxStripeConfig.builder()
+                .id(configId)
+                .userId(vxUser.id)
+                .stripeAccountId(stripeAccountId)
+                .state(VxStripeConfig.State.configurationInProgress)
+                .build();
+        VxService.persist(configParams,ds, VxStripeConfig.class);
+        List<VxStripeConfig> updatedList = VxService.getByUserId(35L, new HashMap<>(), ds, VxStripeConfig.class);
+        VxStripeConfig stripeConfig = updatedList.get(0);
+        Assertions.assertEquals(stripeAccountId, stripeConfig.stripeAccountId);
+
+        // generate vxToken for this user
+
+
+    }
+
 
 }
