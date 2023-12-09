@@ -242,4 +242,26 @@ public class StripeOnboardingIntegrationTest {
         Assertions.assertEquals(exptectedSet, currentlyDueSet);
     }
 
+    @Test
+    public void test06() throws StripeException {
+        // 498 597 618
+        // https://www.linkedin.com/in/bogdan-oloeriu/
+        String activeStripeAccountId = "fake";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+        Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
+
+
+        List<String> expectedList = Arrays.asList("tos_acceptance.ip", "tos_acceptance.date", "external_account");
+
+        Set<String> exptectedSet = new HashSet<>(expectedList);
+
+        Assertions.assertEquals(exptectedSet, currentlyDueSet);
+    }
+
 }
