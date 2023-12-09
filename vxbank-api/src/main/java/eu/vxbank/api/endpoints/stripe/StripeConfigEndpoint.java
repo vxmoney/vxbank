@@ -18,6 +18,7 @@ import vxbank.datastore.data.service.VxService;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/stripeConfig")
@@ -62,22 +63,49 @@ public class StripeConfigEndpoint {
                 VxStripeConfig.class);
 
         StripeConfigInitiateConfigResponse response = new StripeConfigInitiateConfigResponse();
-        if (stripeConfigs.size() > 0) {
-            throw new IllegalStateException("User already has a stripe config");
-        }
-
 
         String stripeKey = stripeKeys.stripeSecretKey;
-        Account account = VxStripeUtil.createExpressAccount(stripeKey);
 
-        String connectedAccountId = account.getId();
-        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,connectedAccountId);
+        if (stripeConfigs.isEmpty()){
 
-        StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
-        initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
-        initiateConfigResponse.url = accountLink.getUrl();
+            // create first config
+            Account account = VxStripeUtil.createExpressAccount(stripeKey);
 
-        return initiateConfigResponse;
+            String stripeAccountId = account.getId();
+            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,stripeAccountId);
+
+            //create stripe config in progress
+            VxStripeConfig config = VxStripeConfig.builder()
+                    .userId(params.userId)
+                    .stripeAccountId(stripeAccountId)
+                    .state(VxStripeConfig.State.configurationInProgress)
+                    .build();
+            VxService.persist(config, ds, VxStripeConfig.class);
+
+
+            StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
+            initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
+            initiateConfigResponse.url = accountLink.getUrl();
+            initiateConfigResponse.userId = params.userId;
+            initiateConfigResponse.stripeAccountId = config.stripeAccountId;
+            initiateConfigResponse.state = config.state;
+            return initiateConfigResponse;
+
+        }else {
+            // just create new link so frontend can try again
+            VxStripeConfig config = stripeConfigs.get(0);
+            if (config.state != VxStripeConfig.State.configurationInProgress){
+                throw new IllegalStateException("You can try this only if configuration is in progress");
+            }
+            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,config.stripeAccountId);
+            StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
+            initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
+            initiateConfigResponse.url = accountLink.getUrl();
+            initiateConfigResponse.userId = params.userId;
+            initiateConfigResponse.stripeAccountId = config.stripeAccountId;
+            initiateConfigResponse.state = config.state;
+            return initiateConfigResponse;
+        }
     }
 
 }

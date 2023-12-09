@@ -73,7 +73,7 @@ public class StripeOnboardingIntegrationTest {
     }
 
     @Test
-    public void testFirstOnboardingFlow() throws FirebaseAuthException, JsonProcessingException {
+    public void test01InitiateStripeConfig() throws FirebaseAuthException, JsonProcessingException {
         VxUser userParams = createUserParams();
 
         String firebaseIdToken = createFirebaseIdToken(userParams.email);
@@ -95,42 +95,14 @@ public class StripeOnboardingIntegrationTest {
         // stripeConfig/initiateConfig
         StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
         initiateConfigParams.userId = loginResponse.id;
-        StripeConfigInitiateConfigResponse initiateConfigParamsResponse
+        StripeConfigInitiateConfigResponse firstConfig
                 = StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port,  200);
 
+        // second config should create new link
+        StripeConfigInitiateConfigResponse secondConfig
+                = StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port,  200);
 
-
-
-        /**
-         * /stripeConfig/getByUserId/{userId}
-         * {
-         *      id,
-         *      userId,
-         *      state,
-         * }
-         */
-
-        /**
-         * / if notConfigured
-         * POST
-         * /stripeConfig/initiateConfig
-         * :params
-         * {
-         *    userId,
-         *    countryCode
-         * }
-         *
-         * :response
-         * {
-         *      stripeConfigId
-         *      tripeRedirectUrl
-         *      // log backend listening endpoint
-         * }
-         */
-
-        /**
-         *
-         */
+        Assertions.assertNotEquals(firstConfig.url, secondConfig.url);
     }
 
 }

@@ -25,6 +25,9 @@ public class VxStripeConfig {
     @Index
     public Long userId;
 
+    @Index
+    public String stripeAccountId;
+
     public State state;
 
 }
