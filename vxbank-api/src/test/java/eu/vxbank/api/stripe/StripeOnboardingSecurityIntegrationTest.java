@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.PingHelper;
 import eu.vxbank.api.helpers.StripeConfigHelper;
@@ -176,58 +177,21 @@ public class StripeOnboardingSecurityIntegrationTest {
         LoginResponse loginA = generateRandomLoggedInUser();
         LoginResponse loginB = generateRandomLoggedInUser();
 
+        StripeConfigInitiateConfigParams configAParams = new StripeConfigInitiateConfigParams();
+        configAParams.userId = loginA.id;
 
-        // set the user
-        VxBankDatastore ds = systemService.getVxBankDatastore();
+        StripeConfigInitiateConfigParams configBParams = new StripeConfigInitiateConfigParams();
+        configBParams.userId = loginB.id;
 
-        Long userId = 1L;
-        String stripeAccountId = "acct_1OLOsQB0moZ0HQUD";
-        String coreMail = UUID.randomUUID()
-                .toString();
-        String email = String.format("$%s@mail.com", coreMail);
-        VxUser vxUserParams = VxUser.builder()
-                .id(userId)
-                .email(email)
-                .build();
-        VxUser vxUser = VxService.persist(vxUserParams, ds, VxUser.class);
-        Assertions.assertEquals(vxUserParams.id, vxUser.id);
 
-        // set stripeConfig
-        Long configId = 2L;
-        VxStripeConfig configParams = VxStripeConfig.builder()
-                .id(configId)
-                .userId(vxUser.id)
-                .stripeAccountId(stripeAccountId)
-                .state(VxStripeConfig.State.configurationInProgress)
-                .build();
-        VxService.persist(configParams, ds, VxStripeConfig.class);
-        List<VxStripeConfig> updatedList = VxService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
-        VxStripeConfig stripeConfig = updatedList.get(0);
-        Assertions.assertEquals(stripeAccountId, stripeConfig.stripeAccountId);
+        // userA tries to initiate userB stripe config
+        StripeConfigHelper.initiateConfig(loginA.vxToken,
+                configBParams,
+                restTemplate,
+                port,
+                403);
 
-        // generate firebaseCustomToken for this user
-        String firebaseToken = createFirebaseIdToken(vxUser.email);
 
-        // login
-        LoginResponse loginResponse = UserHelper.login(firebaseToken, restTemplate, port);
-        String vxToken = loginResponse.vxToken;
-        Assertions.assertEquals(vxUser.id, loginResponse.id);
-        Assertions.assertNotNull(vxToken);
-
-        // initiate config
-        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
-        initiateConfigParams.userId = loginResponse.id;
-
-        // this is already configured, so we should expect conflict 409
-        // expect CONFLICT(409, Series.CLIENT_ERROR, "Conflict"),
-        StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 409);
-
-        // finalizeConfig
-        StripeConfigHelper.finalizeConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 200);
-
-        // pingWhoAmI
-        LoginResponse pingResponse = PingHelper.whoAmI(loginResponse.vxToken, restTemplate, port, 200);
-        Assertions.assertEquals(VxStripeConfig.State.active, pingResponse.stripeConfigState);
 
 
     }
