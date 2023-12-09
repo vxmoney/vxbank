@@ -381,13 +381,7 @@ public class StripeOnboardingIntegrationTest {
 
         // is is already configured, so we should expect conflict 409
         // expect CONFLICT(409, Series.CLIENT_ERROR, "Conflict"),
-        StripeConfigHelper.initiateConfig(loginResponse.vxToken,
-                initiateConfigParams,
-                restTemplate,
-                port,
-                409);
-
-
+        StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 409);
     }
 
 
