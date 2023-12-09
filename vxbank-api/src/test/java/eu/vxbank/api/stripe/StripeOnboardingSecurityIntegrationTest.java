@@ -5,20 +5,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Account;
-import com.stripe.model.AccountLink;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.PingHelper;
 import eu.vxbank.api.helpers.StripeConfigHelper;
 import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
 import eu.vxbank.api.utils.components.SystemService;
-import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,8 +83,6 @@ public class StripeOnboardingSecurityIntegrationTest {
     }
 
 
-
-
     @Test
     public void test9FinalizeConfig() throws StripeException, FirebaseAuthException, JsonProcessingException {
 
@@ -143,20 +135,51 @@ public class StripeOnboardingSecurityIntegrationTest {
         StripeConfigHelper.finalizeConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 200);
 
         // pingWhoAmI
-        LoginResponse pingResponse = PingHelper.whoAmI(loginResponse.vxToken, restTemplate,port,200);
+        LoginResponse pingResponse = PingHelper.whoAmI(loginResponse.vxToken, restTemplate, port, 200);
         Assertions.assertEquals(VxStripeConfig.State.active, pingResponse.stripeConfigState);
 
 
     }
 
+    // we might use these ids' as admins at some point in the future
     // complete cycle user A: acct_1OLVFTBDXgpnX6Hr
     // complete cycle suer B: acct_1OLVIoPaNl3jOqeD
-    @Test
-    public void test00InitiateConfigByDifferentUser() throws StripeException, FirebaseAuthException, JsonProcessingException {
-
+    private LoginResponse generateRandomUser() throws FirebaseAuthException, JsonProcessingException {
         VxBankDatastore ds = systemService.getVxBankDatastore();
+        String coreMail = UUID.randomUUID()
+                .toString();
+        String email = String.format("$%s@mail.com", coreMail);
+        VxUser vxUser = VxUser.builder()
+                .email(email)
+                .build();
+        VxService.persist(vxUser, ds, VxUser.class);
+        Assertions.assertNotNull(vxUser.id);
+
+        String vxToken = UserHelper.generateVxToken(vxUser.email, restTemplate, port);
+        Assertions.assertNotNull(vxToken);
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.id = vxUser.id;
+        loginResponse.email = vxUser.email;
+        loginResponse.vxToken = vxToken;
+
+        return loginResponse;
+    }
+
+
+    @Test
+    public void test00InitiateConfigByDifferentUser() throws
+            StripeException,
+            FirebaseAuthException,
+            JsonProcessingException {
+
+        LoginResponse loginA = generateRandomUser();
+        LoginResponse loginB = generateRandomUser();
+
 
         // set the user
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+
         Long userId = 1L;
         String stripeAccountId = "acct_1OLOsQB0moZ0HQUD";
         String coreMail = UUID.randomUUID()
@@ -203,14 +226,11 @@ public class StripeOnboardingSecurityIntegrationTest {
         StripeConfigHelper.finalizeConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 200);
 
         // pingWhoAmI
-        LoginResponse pingResponse = PingHelper.whoAmI(loginResponse.vxToken, restTemplate,port,200);
+        LoginResponse pingResponse = PingHelper.whoAmI(loginResponse.vxToken, restTemplate, port, 200);
         Assertions.assertEquals(VxStripeConfig.State.active, pingResponse.stripeConfigState);
 
 
     }
-
-
-
 
 
 }
