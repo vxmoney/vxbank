@@ -80,7 +80,7 @@ public class StripeOnboardingIntegrationTest {
     }
 
     @Test
-    public void test01InitiateStripeConfig() throws FirebaseAuthException, JsonProcessingException {
+    public void test00InitiateStripeConfig() throws FirebaseAuthException, JsonProcessingException {
         VxUser userParams = createUserParams();
 
         String firebaseIdToken = createFirebaseIdToken(userParams.email);
@@ -121,7 +121,7 @@ public class StripeOnboardingIntegrationTest {
     }
 
     @Test
-    public void test02GetConnectedStripeAccountActiveState() throws StripeException {
+    public void test01GetConnectedStripeAccountActiveState() throws StripeException {
         String activeStripeAccountId = "acct_1OLMCMPdnG6HZQi4";
         System.out.println(stripeDevSecretKey);
 
@@ -136,7 +136,7 @@ public class StripeOnboardingIntegrationTest {
     }
 
     @Test
-    public void test03OnlyLink() throws StripeException {
+    public void test02OnlyLink() throws StripeException {
         String activeStripeAccountId = "acct_1OLN0IBAJYnco4oS";
         System.out.println(stripeDevSecretKey);
 
