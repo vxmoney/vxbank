@@ -191,7 +191,9 @@ public class StripeOnboardingSecurityIntegrationTest {
                 port,
                 403);
 
-
+        // do the same for finalize config
+        StripeConfigHelper.finalizeConfig(loginA.vxToken, configBParams,
+                restTemplate, port, 403);
 
 
     }

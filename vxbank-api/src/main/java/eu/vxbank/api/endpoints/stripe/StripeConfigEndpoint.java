@@ -8,12 +8,15 @@ import eu.vxbank.api.endpoints.stripe.dto.StripeConfigFinalizeConfigResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vxbank.datastore.VxBankDatastore;
@@ -39,7 +42,15 @@ public class StripeConfigEndpoint {
 
     @GetMapping("/getByUserId/{userId}")
     @ResponseBody
-    public StripeConfigGetByUserIdResponse getByUserId(@PathVariable("userId") Long userId) {
+    public StripeConfigGetByUserIdResponse getByUserId(@PathVariable("userId") Long userId,
+                                                       Authentication authentication) {
+
+        // check security
+        Long authId = Long.valueOf(authentication.getName());
+        if (!authId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "You are trying to initiate configuration of someone else");
+        }
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         List<VxStripeConfig> stripeConfigs = VxService.getByUserId(userId, new HashMap<>(), ds, VxStripeConfig.class);
@@ -57,8 +68,16 @@ public class StripeConfigEndpoint {
 
     @PostMapping("/initiateConfig")
     @ResponseBody
-    public StripeConfigInitiateConfigResponse initiateConfig(@RequestBody StripeConfigInitiateConfigParams params) throws
-            StripeException {
+    public StripeConfigInitiateConfigResponse initiateConfig(@RequestBody StripeConfigInitiateConfigParams params,
+                                                             Authentication authentication) throws StripeException {
+
+        // check security
+        Long authId = Long.valueOf(authentication.getName());
+        if (!authId.equals(params.userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "You are trying to initiate configuration of someone else");
+        }
+
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         List<VxStripeConfig> stripeConfigs = VxService.getByUserId(params.userId,
@@ -108,8 +127,9 @@ public class StripeConfigEndpoint {
             List<String> currentlyDueList = account.getRequirements()
                     .getCurrentlyDue();
             if (currentlyDueList.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "We need to clarify our onboarding flow. "
-                        + "This account configuration is complete. No need to initiate configuration");
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "We need to clarify our onboarding flow. " +
+                                "This account configuration is complete. No need to initiate configuration");
 
             }
 
@@ -127,25 +147,33 @@ public class StripeConfigEndpoint {
 
     @PostMapping("/finalizeConfig")
     @ResponseBody
-    public StripeConfigFinalizeConfigResponse finalizeConfig(@RequestBody StripeConfigInitiateConfigParams params) throws
+    public StripeConfigFinalizeConfigResponse finalizeConfig(@RequestBody StripeConfigInitiateConfigParams params,
+                                                             Authentication authentication) throws
             StripeException {
+
+        // check security
+        Long authId = Long.valueOf(authentication.getName());
+        if (!authId.equals(params.userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "You are trying to initiate configuration of someone else");
+        }
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         List<VxStripeConfig> stripeConfigs = VxService.getByUserId(params.userId,
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);
-        if (stripeConfigs.isEmpty()){
+        if (stripeConfigs.isEmpty()) {
             throw new IllegalStateException("Configuration was not initiated");
         }
         VxStripeConfig config = stripeConfigs.get(0);
-        if (config.state == VxStripeConfig.State.active){
+        if (config.state == VxStripeConfig.State.active) {
             throw new IllegalStateException("Configuration is already active");
         }
-        if (config.state == VxStripeConfig.State.restricted){
+        if (config.state == VxStripeConfig.State.restricted) {
             throw new IllegalStateException("Contact vxBank. This stripe configuration is restricted");
         }
-        if (config.state != VxStripeConfig.State.configurationInProgress){
+        if (config.state != VxStripeConfig.State.configurationInProgress) {
             throw new IllegalStateException("Contact vxBank. Configuration state = " + config.state);
         }
 
@@ -154,7 +182,7 @@ public class StripeConfigEndpoint {
 
         List<String> currentlyDueList = account.getRequirements()
                 .getCurrentlyDue();
-        if (!currentlyDueList.isEmpty() ){
+        if (!currentlyDueList.isEmpty()) {
             throw new IllegalStateException("Stripe still contains currentlyDueList: " + currentlyDueList);
         }
 
