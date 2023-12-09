@@ -43,7 +43,14 @@ setEnvAndStartIntellij() {
   nohup intellij-idea-community .
 }
 
+gcloudLogin() {
+  firebase logout
+  firebase login
+  gcloud auth login
+}
+
 initDevEnvironment() {
+  gcloudLogin
   cd $API_DIR
   startDatastoreEmulator &
   cd $API_DIR
@@ -52,7 +59,7 @@ initDevEnvironment() {
   echo "EMULATORS INITIATED"
 }
 
-stopDevEnvironment(){
+stopDevEnvironment() {
   killProcessOnPort 4400
   killProcessOnPort 9099
   killProcessOnPort 4000
@@ -61,9 +68,6 @@ stopDevEnvironment(){
 
 # ping stuff
 
-pingLocal(){
+pingLocal() {
   curl localhost:8080/ping/getEnvironment
 }
-
-
-
