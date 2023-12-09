@@ -219,6 +219,7 @@ public class StripeOnboardingIntegrationTest {
 
         Assertions.assertEquals(exptectedSet, currentlyDueSet);
     }
+
     @Test
     public void test05SelectAnAccountForPayouts() throws StripeException {
         // 498 597 618
@@ -234,11 +235,7 @@ public class StripeOnboardingIntegrationTest {
         Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
 
 
-        List<String> expectedList = Arrays.asList("tos_acceptance.ip",
-                "tos_acceptance.date",
-                "external_account",
-                "business_profile.mcc",
-                "business_profile.url");
+        List<String> expectedList = Arrays.asList("tos_acceptance.ip", "tos_acceptance.date", "external_account");
 
         Set<String> exptectedSet = new HashSet<>(expectedList);
 
