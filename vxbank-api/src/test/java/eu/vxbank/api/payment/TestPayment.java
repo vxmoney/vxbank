@@ -73,7 +73,7 @@ public class TestPayment {
                 .createTimeStamp(timeStamp)
                 .currency("eur")
                 .productName("Random product name")
-                .valuePayedByUser(1000L) // 10 Euro
+                .valuePayedByUser(10000000L) // 10 Euro
                 .build();
         SetupUtils.persistVxModel(vxPayment, ds);
         Assertions.assertNotNull(vxPayment.id);
@@ -102,6 +102,7 @@ public class TestPayment {
         Assertions.assertNotNull(stripeResponse);
         Assertions.assertEquals(vxPayment.id, stripeResponse.vxPaymentId);
         System.out.println("stripeResponse.stripeSessionId= " + stripeResponse.stripeSessionId);
+        System.out.println("Use 4000000000000077 test card");
         System.out.println("stripeResponse.url= ");
         System.out.println(stripeResponse.url);
 

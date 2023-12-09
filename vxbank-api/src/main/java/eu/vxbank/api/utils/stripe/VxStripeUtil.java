@@ -4,6 +4,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
+import com.stripe.model.Transfer;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
@@ -15,7 +16,9 @@ import vxbank.datastore.data.models.VxUser;
 import java.util.*;
 
 public class VxStripeUtil {
-    public static StripeSessionCreateResponse createStripeSession(VxUser vxUser, VxIntegration vxServiceIntegration, VxPayment vxPayment,
+    public static StripeSessionCreateResponse createStripeSession(VxUser vxUser,
+                                                                  VxIntegration vxServiceIntegration,
+                                                                  VxPayment vxPayment,
                                                                   String stripeApiKey) throws StripeException {
 
         // Line item details
@@ -57,8 +60,9 @@ public class VxStripeUtil {
 
     public static Account createExpressAccount(String stripeKey) throws StripeException {
         Stripe.apiKey = stripeKey;
-        AccountCreateParams params =
-                 AccountCreateParams.builder().setType(AccountCreateParams.Type.EXPRESS).build();
+        AccountCreateParams params = AccountCreateParams.builder()
+                .setType(AccountCreateParams.Type.EXPRESS)
+                .build();
         Account account = Account.create(params);
         return account;
     }
@@ -66,15 +70,25 @@ public class VxStripeUtil {
     public static AccountLink createAccountLink(String stripeKey, String connectedAccountId) throws StripeException {
         Stripe.apiKey = stripeKey;
 
-        AccountLinkCreateParams params =
-                AccountLinkCreateParams.builder()
-                        .setAccount(connectedAccountId)
-                        .setRefreshUrl("https://example.com/reauth")
-                        .setReturnUrl("https://example.com/return")
-                        .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
-                        .build();
+        AccountLinkCreateParams params = AccountLinkCreateParams.builder()
+                .setAccount(connectedAccountId)
+                .setRefreshUrl("https://example.com/reauth")
+                .setReturnUrl("https://example.com/return")
+                .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
+                .build();
 
         AccountLink accountLink = AccountLink.create(params);
         return accountLink;
+    }
+
+    public static Transfer sendFundsToStripeAccount(String stripeKey, String stripeAccountId, Long amount, String currency) throws StripeException {
+        Stripe.apiKey = stripeKey;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", amount);
+        params.put("currency", currency);
+        params.put("destination", stripeAccountId);
+        Transfer transfer = Transfer.create(params);
+        return transfer;
     }
 }
