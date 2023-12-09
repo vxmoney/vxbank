@@ -5,6 +5,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -15,12 +18,14 @@ import eu.vxbank.api.testutils.SwapTokenUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,6 +39,9 @@ public class StripeOnboardingIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Value("${stripeKey.devSecretKey}")
+    private String stripeDevSecretKey;
 
     private VxUser createUserParams() {
         VxUser vxUser = new VxUser();
@@ -80,13 +88,15 @@ public class StripeOnboardingIntegrationTest {
 
         Assertions.assertNotNull(firebaseIdToken);
 
-        LoginResponse loginResponse = UserHelper.login(firebaseIdToken,restTemplate,port);
+        LoginResponse loginResponse = UserHelper.login(firebaseIdToken, restTemplate, port);
         Assertions.assertNotNull(loginResponse);
 
         //stripeConfig/getByUserId/{userId}
-        StripeConfigGetByUserIdResponse configResponse
-                = StripeConfigHelper.getByUserId(loginResponse.id,
-                loginResponse.vxToken, restTemplate, port, 200);
+        StripeConfigGetByUserIdResponse configResponse = StripeConfigHelper.getByUserId(loginResponse.id,
+                loginResponse.vxToken,
+                restTemplate,
+                port,
+                200);
 
         Assertions.assertNotNull(configResponse);
         // check that stripe state is notConfigured
@@ -95,14 +105,35 @@ public class StripeOnboardingIntegrationTest {
         // stripeConfig/initiateConfig
         StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
         initiateConfigParams.userId = loginResponse.id;
-        StripeConfigInitiateConfigResponse firstConfig
-                = StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port,  200);
+        StripeConfigInitiateConfigResponse firstConfig = StripeConfigHelper.initiateConfig(loginResponse.vxToken,
+                initiateConfigParams,
+                restTemplate,
+                port,
+                200);
 
         // second config should create new link
-        StripeConfigInitiateConfigResponse secondConfig
-                = StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port,  200);
+        StripeConfigInitiateConfigResponse secondConfig = StripeConfigHelper.initiateConfig(loginResponse.vxToken,
+                initiateConfigParams,
+                restTemplate,
+                port,
+                200);
 
         Assertions.assertNotEquals(firstConfig.url, secondConfig.url);
+    }
+
+    @Test
+    public void test02GetConnectedStripeAccountActiveState() throws StripeException {
+        String activeStripeAccountId = "acct_1OLMCMPdnG6HZQi4";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+
+        Assertions.assertNotNull(account);
+        Assertions.assertTrue(currentlyDueList.isEmpty());
     }
 
 }
