@@ -318,27 +318,8 @@ public class StripeOnboardingIntegrationTest {
 
     @Test
     public void test9FinalizeConfig() throws StripeException, FirebaseAuthException, JsonProcessingException {
-        // 498 597 618
-        // https://www.linkedin.com/in/bogdan-oloeriu/
-        // userId = 35
-        String activeStripeAccountId = "acct_1OLOsQB0moZ0HQUD";
-        System.out.println(stripeDevSecretKey);
-
-        Stripe.apiKey = stripeDevSecretKey;
-        Account account = Account.retrieve(activeStripeAccountId);
-
-        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey, activeStripeAccountId);
-        System.out.println("AccountLinkUrl = " + accountLink.getUrl());
-
-
-        List<String> currentlyDueList = account.getRequirements()
-                .getCurrentlyDue();
-
-        Assertions.assertTrue(currentlyDueList.isEmpty());
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        List<VxStripeConfig> configList = VxService.getByUserId(35L, new HashMap<>(), ds, VxStripeConfig.class);
-        Assertions.assertFalse(configList.isEmpty());
 
         // set the user
         Long userId = 1L;
@@ -382,6 +363,11 @@ public class StripeOnboardingIntegrationTest {
         // this is already configured, so we should expect conflict 409
         // expect CONFLICT(409, Series.CLIENT_ERROR, "Conflict"),
         StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 409);
+
+        // finalizeConfig
+        StripeConfigHelper.finalizeConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 200);
+
+
     }
 
 

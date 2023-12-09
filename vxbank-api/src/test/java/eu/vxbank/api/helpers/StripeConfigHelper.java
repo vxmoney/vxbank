@@ -1,5 +1,6 @@
 package eu.vxbank.api.helpers;
 
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigFinalizeConfigResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -68,5 +69,32 @@ public class StripeConfigHelper {
         return responseBody;
 
 
+    }
+
+    public static StripeConfigFinalizeConfigResponse finalizeConfig(String vxToken,
+                                                                    StripeConfigInitiateConfigParams initiateConfigParams,
+                                                                    TestRestTemplate restTemplate,
+                                                                    int port,
+                                                                    int expectedStatusCode) {
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<StripeConfigInitiateConfigParams> requestEntity = new HttpEntity<>(initiateConfigParams, headers);
+
+        ResponseEntity<StripeConfigFinalizeConfigResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/stripeConfig/finalizeConfig",
+                HttpMethod.POST,
+                requestEntity,
+                StripeConfigFinalizeConfigResponse.class
+        );
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        StripeConfigFinalizeConfigResponse responseBody = responseEntity.getBody();
+        return responseBody;
     }
 }

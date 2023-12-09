@@ -15,7 +15,7 @@ public class VxStripeConfig {
 
 
     public enum State {
-        notConfigured, configurationInProgress, active, paused
+        notConfigured, configurationInProgress, active, restricted
     }
 
 

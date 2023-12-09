@@ -119,6 +119,9 @@ public class PingEndpoint {
 
         Jwt jwtToken = (Jwt) authentication.getPrincipal();
         String email = jwtToken.getClaim("email");
+
+
+
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.id = Long.valueOf(authentication.getName());
         loginResponse.email = email;
