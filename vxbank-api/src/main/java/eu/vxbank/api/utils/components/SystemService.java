@@ -40,8 +40,6 @@ public class SystemService {
         projectId = System.getenv()
                 .getOrDefault(ApiConstants.GAE_APPLICATION, ApiConstants.APPLICATION_ID_LOCALHOST);
 
-        System.out.println("initEnvironment projectId=" + projectId);
-        System.out.println("initEnvironment applicationEnvironment=" + applicationEnvironment);
         switch (projectId) {
             case ApiConstants.APPLICATION_ID_LOCALHOST:
                 environment = Environment.LOCALHOST;
