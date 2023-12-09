@@ -243,7 +243,7 @@ public class StripeOnboardingIntegrationTest {
     }
 
     @Test
-    public void test06() throws StripeException {
+    public void test06SelectAnAccountForPayoutsLetsReview() throws StripeException {
         //https://connect.stripe.com/setup/e/acct_1OLNwlPnbmI8IHhZ/NyAr3g3jvcUH
         // 498 597 618
         // https://www.linkedin.com/in/bogdan-oloeriu/
@@ -258,11 +258,28 @@ public class StripeOnboardingIntegrationTest {
         Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
 
 
-        List<String> expectedList = Arrays.asList("tos_acceptance.ip", "tos_acceptance.date", "external_account");
+        List<String> expectedList = Arrays.asList("tos_acceptance.ip", "tos_acceptance.date");
 
         Set<String> exptectedSet = new HashSet<>(expectedList);
 
         Assertions.assertEquals(exptectedSet, currentlyDueSet);
+    }
+
+    @Test
+    public void test07ConfigurationComplete() throws StripeException {
+        // https://connect.stripe.com/setup/e/acct_1OLO6iPVZaH0vuBA/ue4jMoY4TFXQ
+        // 498 597 618
+        // https://www.linkedin.com/in/bogdan-oloeriu/
+        String activeStripeAccountId = "acct_1OLO6iPVZaH0vuBA";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+
+        Assertions.assertTrue( currentlyDueList.isEmpty());
     }
 
 }
