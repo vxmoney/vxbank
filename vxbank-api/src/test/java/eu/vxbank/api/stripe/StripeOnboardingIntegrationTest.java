@@ -209,15 +209,40 @@ public class StripeOnboardingIntegrationTest {
         Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
 
 
-        List<String> tellUsAboutYourBusinessList = Arrays.asList("tos_acceptance.ip",
+        List<String> expectedList = Arrays.asList("tos_acceptance.ip",
                 "tos_acceptance.date",
                 "external_account",
                 "business_profile.mcc",
                 "business_profile.url");
 
-        Set<String> tellUsBoutYourBusinessSet = new HashSet<>(tellUsAboutYourBusinessList);
+        Set<String> exptectedSet = new HashSet<>(expectedList);
 
-        Assertions.assertEquals(tellUsBoutYourBusinessSet, currentlyDueSet);
+        Assertions.assertEquals(exptectedSet, currentlyDueSet);
+    }
+    @Test
+    public void test05SelectAnAccountForPayouts() throws StripeException {
+        // 498 597 618
+        // https://www.linkedin.com/in/bogdan-oloeriu/
+        String activeStripeAccountId = "acct_1OLNlQBOUhUI9DOu";
+        System.out.println(stripeDevSecretKey);
+
+        Stripe.apiKey = stripeDevSecretKey;
+        Account account = Account.retrieve(activeStripeAccountId);
+
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+        Set<String> currentlyDueSet = new HashSet<>(currentlyDueList);
+
+
+        List<String> expectedList = Arrays.asList("tos_acceptance.ip",
+                "tos_acceptance.date",
+                "external_account",
+                "business_profile.mcc",
+                "business_profile.url");
+
+        Set<String> exptectedSet = new HashSet<>(expectedList);
+
+        Assertions.assertEquals(exptectedSet, currentlyDueSet);
     }
 
 }
