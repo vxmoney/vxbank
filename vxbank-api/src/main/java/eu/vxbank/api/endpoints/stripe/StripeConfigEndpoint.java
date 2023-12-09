@@ -73,7 +73,11 @@ public class StripeConfigEndpoint {
         String connectedAccountId = account.getId();
         AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey,connectedAccountId);
 
-        throw new IllegalStateException("Please implement this");
+        StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
+        initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
+        initiateConfigResponse.url = accountLink.getUrl();
+
+        return initiateConfigResponse;
     }
 
 }
