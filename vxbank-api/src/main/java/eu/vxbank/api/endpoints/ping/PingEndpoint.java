@@ -19,8 +19,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxStripeConfig;
+import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxService;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class PingEndpoint {
@@ -121,10 +127,19 @@ public class PingEndpoint {
         String email = jwtToken.getClaim("email");
 
 
-
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.id = Long.valueOf(authentication.getName());
         loginResponse.email = email;
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        List<VxStripeConfig> configList = VxService.getByUserId(loginResponse.id,
+                new HashMap<>(),
+                ds,
+                VxStripeConfig.class);
+        if (!configList.isEmpty()) {
+            VxStripeConfig config = configList.get(0);
+            loginResponse.stripeConfigState = config.state;
+        }
 
         return loginResponse;
     }
