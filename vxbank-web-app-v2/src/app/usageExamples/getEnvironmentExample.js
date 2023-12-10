@@ -17,8 +17,8 @@ export default function GetEnvironmentExample() {
   };
 
   return (
-    <div>
-      <div>Get environment example hello</div>
+    <div className="p-4">
+      <div className="pb-4">Get environment example hello</div>
       <button
         onClick={fetchPing}
         type="button"
@@ -26,7 +26,7 @@ export default function GetEnvironmentExample() {
       >
         Fetch ping
       </button>
-      {formattedResponse && <pre>{formattedResponse}</pre>}
+      {formattedResponse && <pre className="p-4">{formattedResponse}</pre>}
     </div>
   );
 }
