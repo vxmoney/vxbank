@@ -49,7 +49,7 @@ unsetVariables() {
 }
 
 openVsCode() {
-  nvm alias default 20
+  # nvm alias default 20
   unsetVariables
   cd ../vxbank-web-app-v2
   nohup code .
