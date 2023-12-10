@@ -1,5 +1,5 @@
 initEnvDevelopment() {
-    cp config/dev-firebase.js src/app/firebase.js
+    cp scripts/dev-firebase.js src/app/firebase.js
     echo "Curent env = development"
 }
 
