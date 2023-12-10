@@ -1,5 +1,5 @@
 env: standard
-runtime: nodejs18
+runtime: nodejs20
 # service: web-app
 handlers:
   - url: /.*
