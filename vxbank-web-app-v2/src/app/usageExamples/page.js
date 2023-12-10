@@ -36,7 +36,7 @@ export default function UsageExamples() {
           </a>
         </li>
       </ul>
-      {activeTab === "Ping" && <div>Ping content</div>}
+      {activeTab === "Ping" && <GetEnvironmentExample/>}
       {activeTab === "Hello" && <div>Hello content</div>}
     </div>
   );
