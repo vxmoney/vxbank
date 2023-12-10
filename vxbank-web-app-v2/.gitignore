@@ -37,4 +37,5 @@ next-env.d.ts
 
 # project specific
 src/app/firebase.js
+src/api/apiConfig.js
 nohup.out

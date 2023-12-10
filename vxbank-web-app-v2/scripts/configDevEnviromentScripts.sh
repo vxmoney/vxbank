@@ -2,6 +2,10 @@ initEnvDevelopment() {
     cp scripts/dev-firebase.js src/app/firebase.js
     echo "Curent env = development"
 }
+initEnvLocalhostDevelopment(){
+    cp scripts/dev-firebase.js src/app/firebase.js
+    cp scripts/localhost-apiConfig.js src/api/apiConfig.js
+}
 
 deployOnDev(){
     initEnvDevelopment
