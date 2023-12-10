@@ -43,6 +43,19 @@ openIntellij() {
   nohup intellij-idea-community .
 }
 
+unsetVariables() {
+  unset GOOGLE_APPLICATION_CREDENTIALS
+  unset FIREBASE_AUTH_EMULATOR_HOST
+}
+
+openVsCode() {
+  nvm alias default 20
+  unsetVariables
+  cd ../vxbank-web-app-v2
+  nohup code .
+  exit
+}
+
 gcloudLogin() {
   firebase logout
   firebase login

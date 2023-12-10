@@ -37,3 +37,4 @@ next-env.d.ts
 
 # project specific
 src/app/firebase.js
+nohup.out
