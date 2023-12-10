@@ -1,0 +1,2 @@
+# pointer file
+This is just a pointer to have the resources folder available when cloning the project

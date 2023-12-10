@@ -12,6 +12,7 @@ function showHelp() {
 }
 
 API_DIR=$(pwd)
+API_KYES_DIR="${API_DIR}/../../vxbank-security"
 OAUTH_DIR=emulators
 
 startDatastoreEmulator() {
@@ -63,7 +64,11 @@ gcloudLogin() {
 }
 
 initDevEnvironment() {
-  gcloudLogin
+  # gcloudLogin
+  cd $API_KYES_DIR
+  $(pwd)
+  source load-security-commands.sh
+  initSecurity
   cd $API_DIR
   startDatastoreEmulator &
   cd $API_DIR
