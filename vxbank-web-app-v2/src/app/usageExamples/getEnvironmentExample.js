@@ -9,4 +9,3 @@ export default function GetEnvironmentExample() {
     </div>
   );
 }
-0
