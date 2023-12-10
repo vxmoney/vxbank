@@ -1,6 +1,7 @@
 "use client";
 import { pingAPI } from "@/api/ping";
 import { useEffect, useState } from "react";
+import GetEnvironmentExample from "./getEnvironmentExample";
 
 export default function UsageExamples() {
   const [activeTab, setActiveTab] = useState("Ping");
@@ -11,7 +12,11 @@ export default function UsageExamples() {
         <li class="me-2">
           <a
             href="#"
-            class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            class={`inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
+              activeTab === "Ping"
+                ? "border-b-2 text-blue-600 border-blue-600 active dark:text-blue-500 dark:border-blue-500"
+                : ""
+            }`}
             onClick={() => setActiveTab("Ping")}
           >
             Ping
@@ -20,8 +25,11 @@ export default function UsageExamples() {
         <li class="me-2">
           <a
             href="#"
-            class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-            aria-current="page"
+            class={`inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
+              activeTab === "Hello"
+                ? "border-b-2 text-blue-600 border-blue-600 active dark:text-blue-500 dark:border-blue-500"
+                : ""
+            }`}
             onClick={() => setActiveTab("Hello")}
           >
             Hello
