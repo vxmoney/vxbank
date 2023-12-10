@@ -23,6 +23,10 @@ public class PingIntegrationTest {
 
 
         System.out.println("Port = " + port);
+
+        Package springSecurityPackage = org.springframework.security.core.Authentication.class.getPackage();
+        String springSecurityVersion = springSecurityPackage.getImplementationVersion();
+        System.out.println("Spring security version: " + springSecurityVersion);
     }
 
     @Test

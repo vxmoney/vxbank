@@ -1,7 +1,7 @@
 const configValues = {
   useEmulator: true,
   protocol: "http",
-  baseUrl: "your-backend-url.com",
+  baseUrl: "localhost",
   port: 8080,
 };
 export default configValues;
