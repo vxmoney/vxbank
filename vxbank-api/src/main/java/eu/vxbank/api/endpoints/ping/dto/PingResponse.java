@@ -7,5 +7,6 @@ public class PingResponse {
     public String projectId;
     public String message;
     public String testFirebaseIdToken;
+    public Boolean activeFirebaseAuthEmulator;
 
 }

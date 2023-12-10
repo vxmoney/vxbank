@@ -39,6 +39,7 @@ public class PingEndpoint {
         PingResponse pingResponse = new PingResponse();
         pingResponse.environment = systemService.getEnvironment();
         pingResponse.projectId = systemService.getProjectId();
+        pingResponse.activeFirebaseAuthEmulator = systemService.getActiveFirebaseAuthEmulator();
         return pingResponse;
     }
 
@@ -47,6 +48,10 @@ public class PingEndpoint {
     @GetMapping("/ping/generateFirebaseIdToken")
     @ResponseBody
     public PingResponse generateFirebaseIdToken() throws FirebaseAuthException, JsonProcessingException {
+
+        if (!systemService.getActiveFirebaseAuthEmulator()) {
+            throw new IllegalStateException("You are allowed to do this only when oauth emulator is active");
+        }
 
         try {
             FirebaseApp.initializeApp();

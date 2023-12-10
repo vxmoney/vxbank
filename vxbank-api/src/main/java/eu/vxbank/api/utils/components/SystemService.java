@@ -21,19 +21,28 @@ public class SystemService {
     String applicationEnvironment;
 
 
-
     Environment environment;
     String projectId;
     VxBankDatastore vxBankDatastore;
+    Boolean activeFirebaseAuthEmulator;
 
 
     @PostConstruct
     public void init() {
         initEnvironment();
         initDatastore();
+        detectFirebaseAuthEmulatorState();
         System.out.println("Initialized SystemService");
     }
 
+    private void detectFirebaseAuthEmulatorState() {
+        Optional<String> optionalEmulator = Optional.ofNullable(System.getenv("FIREBASE_AUTH_EMULATOR_HOST"));
+        if (optionalEmulator.isPresent()) {
+            activeFirebaseAuthEmulator = true;
+        } else {
+            activeFirebaseAuthEmulator = false;
+        }
+    }
 
 
     private void initEnvironment() {
@@ -76,7 +85,6 @@ public class SystemService {
     }
 
 
-
     private InputStream getDatastoreCredentialsInputStream() {
         System.out.println("getDatastoreCredentialsInputStream projectId=" + projectId);
         switch (environment) {
@@ -87,6 +95,7 @@ public class SystemService {
                 throw new IllegalStateException("Not supported credentials for env: " + environment);
         }
     }
+
 
 }
 
