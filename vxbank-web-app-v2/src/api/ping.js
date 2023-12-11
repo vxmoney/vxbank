@@ -13,4 +13,10 @@ const instance = axios.create({
 export const pingAPI = {
   getEnvironment: () => instance.get("/getEnvironment"),
   generateFirebaseIdToken: () => instance.get("/generateFirebaseIdToken"),
+  whoAmI: (vxToken) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.get("/whoAmI", { headers });
+  },
 };
