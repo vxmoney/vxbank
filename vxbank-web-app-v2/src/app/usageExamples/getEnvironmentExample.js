@@ -7,7 +7,9 @@ export default function GetEnvironmentExample() {
 
   const fetchPing = async () => {
     try {
+      console.log("fetchPing");
       const response = await pingAPI.getEnvironment();
+      console.log("fetchPing response: ", response);
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setPingResponse(response.data);
       setFormattedResponse(formattedResponse);

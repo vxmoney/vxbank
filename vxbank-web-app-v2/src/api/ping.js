@@ -3,8 +3,10 @@ import configValues from "./apiConfig";
 
 const { protocol, baseUrl, port } = configValues;
 
+const baseURL = `${protocol}://${baseUrl}${protocol === 'https' ? '' : `:${port}`}/ping`;
+
 const instance = axios.create({
-  baseURL: `${protocol}://${baseUrl}:${port}/ping`,
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
