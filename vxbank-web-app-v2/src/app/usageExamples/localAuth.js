@@ -1,4 +1,5 @@
 import { pingAPI } from "@/api/ping";
+import { userAPI } from "@/api/user";
 import { useState } from "react";
 
 export default function LocalAuthExample() {
@@ -17,6 +18,17 @@ export default function LocalAuthExample() {
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setPingResponse(response.data);
       setFormattedResponse(formattedResponse);
+    } catch (error) {
+      console.log("fetchPingError: ", error);
+    }
+  };
+
+  const fetchLogin = async () => {
+    try {
+      const response = await userAPI.login(pingResponse.testFirebaseIdToken);
+      const formattedResponse = JSON.stringify(response.data, null, 2);
+      setLoginResponse(response.data);
+      setLoginFormattedResponse(formattedResponse);
     } catch (error) {
       console.log("fetchPingError: ", error);
     }
@@ -56,7 +68,7 @@ export default function LocalAuthExample() {
         <div class="col-span-1">
           <p class="mb-4">Step 2: Login using this token</p>
           <button
-            onClick={fetchGenerateFirebaseIdToken}
+            onClick={fetchLogin}
             class="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Login
