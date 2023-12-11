@@ -11,5 +11,6 @@ const instance = axios.create({
 });
 
 export const pingAPI = {
-    getEnvironment: () => instance.get("/getEnvironment"),
-}
+  getEnvironment: () => instance.get("/getEnvironment"),
+  generateFirebaseIdToken: () => instance.get("/generateFirebaseIdToken"),
+};

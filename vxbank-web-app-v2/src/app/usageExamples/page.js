@@ -2,6 +2,7 @@
 import { pingAPI } from "@/api/ping";
 import { useEffect, useState } from "react";
 import GetEnvironmentExample from "./getEnvironmentExample";
+import LocalAuthExample from "./localAuth";
 
 export default function UsageExamples() {
   const [activeTab, setActiveTab] = useState("Ping");
@@ -33,14 +34,14 @@ export default function UsageExamples() {
               }`}
               onClick={() => setActiveTab("Hello")}
             >
-              Hello
+              Localhost auth
             </a>
           </li>
         </ul>
       </div>
 
       {activeTab === "Ping" && <GetEnvironmentExample />}
-      {activeTab === "Hello" && <div>Hello content</div>}
+      {activeTab === "Hello" && <LocalAuthExample />}
     </div>
   );
 }
