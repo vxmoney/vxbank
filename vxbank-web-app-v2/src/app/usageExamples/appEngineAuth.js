@@ -9,7 +9,7 @@ export default function AppEngineAuthExample() {
 
   const initialMessage =
     "Not needed. Check the top bar to see if you are logged in";
-  const initialLoginMessage = "Please login using the token generated above";
+  const initialLoginMessage = "Please login using the real firebase token";
   const whoAmIMessage =
     "Who am I?. To find out call the backend and pass the vxToken";
 
