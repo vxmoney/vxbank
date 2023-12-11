@@ -35,7 +35,7 @@ export default function Navbar() {
           <Link href="/profile">Profile</Link>
         </li>
         <li className="p-2 cursor-pointer">
-          <Link href="/usageExamples">UsageExamples</Link>
+          <Link href="/usageExamples">DeveloperExamples</Link>
         </li>
       </ul>
       <ul className="flex">
