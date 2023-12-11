@@ -28,11 +28,11 @@ export default function UsageExamples() {
             <a
               href="#"
               class={`inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                activeTab === "Hello"
+                activeTab === "Localhost"
                   ? "border-b-2 text-blue-600 border-blue-600 active dark:text-blue-500 dark:border-blue-500"
                   : ""
               }`}
-              onClick={() => setActiveTab("Hello")}
+              onClick={() => setActiveTab("Localhost")}
             >
               Localhost auth
             </a>
@@ -41,7 +41,7 @@ export default function UsageExamples() {
       </div>
 
       {activeTab === "Ping" && <GetEnvironmentExample />}
-      {activeTab === "Hello" && <LocalAuthExample />}
+      {activeTab === "Localhost" && <LocalAuthExample />}
     </div>
   );
 }
