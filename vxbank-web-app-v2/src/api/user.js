@@ -2,9 +2,10 @@ import axios from "axios";
 import configValues from "./apiConfig";
 
 const { protocol, baseUrl, port } = configValues;
+const baseURL = `${protocol}://${baseUrl}${protocol === 'https' ? '' : `:${port}`}/user`;
 
 const instance = axios.create({
-  baseURL: `${protocol}://${baseUrl}:${port}/user`,
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
