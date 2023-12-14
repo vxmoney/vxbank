@@ -41,7 +41,7 @@ public class SecurityConfiguration {
     RSAPrivateKey priv;
 
     private static final String[] WHITE_LIST_URL = {"/example/payment", "/stripeWebhook", "/ping/getEnvironment",
-            "/ping" + "/generateFirebaseIdToken", "/user" + "/login"};
+            "/ping" + "/generateFirebaseIdToken", "/user/login", "/swagger-ui/**", "/v3/api-docs/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -85,7 +85,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    WebMvcConfigurer corsMappingConfigurer(){
+    WebMvcConfigurer corsMappingConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
