@@ -1,9 +1,8 @@
 package eu.vxbank.api.endpoints.ping.dto;
 
-import eu.vxbank.api.ApplicationProps;
+import eu.vxbank.api.utils.components.vxintegration.ApplicationProps;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.enums.Environment;
-
-import javax.swing.plaf.PanelUI;
 
 public class PingResponse {
     public Environment environment;
@@ -14,5 +13,7 @@ public class PingResponse {
 
     public ApplicationProps applicationProps;
     public String applicationEnvironment;
+
+    public VxIntegrationConfig vxIntegrationConfig;
 
 }

@@ -1,7 +1,11 @@
 package eu.vxbank.api.utils.components.vxintegration;
 
-import java.security.PublicKey;
+import lombok.Data;
 
+@Data
 public class VxIntegration {
-    public String vxIntegrationId;
+    public VxIntegrationId vxIntegrationId;
+    public Long vxUserId;
+    public String vxStripeId;
+    public Long vxBankPercentage;
 }

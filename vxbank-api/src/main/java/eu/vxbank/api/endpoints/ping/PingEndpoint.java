@@ -6,11 +6,12 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import eu.vxbank.api.ApplicationProps;
+import eu.vxbank.api.utils.components.vxintegration.ApplicationProps;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.enums.Environment;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxService;
 
 import java.util.Date;
@@ -37,6 +37,9 @@ public class PingEndpoint {
     @Autowired
     private ApplicationProps applicationProps;
 
+    @Autowired
+    private VxIntegrationConfig vxIntegrationConfig;
+
     @GetMapping("/ping/getEnvironment")
     @ResponseBody
     public PingResponse getEnvironment() {
@@ -46,6 +49,7 @@ public class PingEndpoint {
         pingResponse.activeFirebaseAuthEmulator = systemService.getActiveFirebaseAuthEmulator();
         pingResponse.applicationProps = applicationProps;
         pingResponse.applicationEnvironment = systemService.getApplicationEnvironment();
+        pingResponse.vxIntegrationConfig = vxIntegrationConfig;
         return pingResponse;
     }
 
