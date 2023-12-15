@@ -1,5 +1,6 @@
 package eu.vxbank.api.helpers;
 
+import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import org.junit.jupiter.api.Assertions;
@@ -33,4 +34,28 @@ public class PingHelper {
         return responseBody;
 
     }
+
+    public static PingResponse getEnvironment(
+                                      TestRestTemplate restTemplate,
+                                      int port,
+                                      int expectedStatusCode) {
+
+        HttpHeaders headers = new HttpHeaders();
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<PingResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/ping/getEnvironment", HttpMethod.GET, requestEntity, PingResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        PingResponse responseBody = responseEntity.getBody();
+        return responseBody;
+
+    }
+
+
 }

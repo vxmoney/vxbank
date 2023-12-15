@@ -130,6 +130,10 @@ public class StripeOnboardingIntegrationTest {
                 port,
                 200);
 
+
+        System.out.println("StripeConfig url: "+secondConfig.url);
+        System.out.println("StripeConfig id: " + secondConfig.stripeAccountId);
+
         Assertions.assertNotEquals(firstConfig.url, secondConfig.url);
     }
 
