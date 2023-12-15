@@ -7,5 +7,6 @@ public class VxIntegration {
     public VxIntegrationId vxIntegrationId;
     public Long vxUserId;
     public String vxStripeId;
+    public Long integrationPercentage;
     public Long vxBankPercentage;
 }
