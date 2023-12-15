@@ -6,6 +6,7 @@ import com.stripe.exception.StripeException;
 import eu.vxbank.api.utils.components.vxintegration.ApplicationProps;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.helpers.PingHelper;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,20 @@ public class SetVxGamingOwnershipTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private VxIntegrationConfig vxIntegrationConfig;
+
     @Test
     public void test00OwnershipVxGaming() throws FirebaseAuthException, JsonProcessingException, StripeException {
         System.out.println("Hello test test00OwnershipVxGaming");
 
         PingResponse pingResponse = PingHelper.getEnvironment(restTemplate, port, 200);
-        ApplicationProps applicationProps = pingResponse.applicationProps;
-        Assertions.assertNotNull(applicationProps);
-        Assertions.assertNotNull(applicationProps.profiles);
+        VxIntegrationConfig responseIntegrationConfig = pingResponse.vxIntegrationConfig;
+        Assertions.assertNotNull(responseIntegrationConfig);
+        Assertions.assertEquals(2, responseIntegrationConfig.vxIntegrationList.size());
+
+        Assertions.assertEquals(vxIntegrationConfig, responseIntegrationConfig);
+
         System.out.println("Ping response environment: " + pingResponse.environment);
     }
 }

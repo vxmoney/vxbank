@@ -263,7 +263,7 @@ public class StripeOnboardingIntegrationTest {
     public void test06SelectAnAccountForPayoutsLetsReview() throws StripeException {
         //https://connect.stripe.com/setup/e/acct_1OLNwlPnbmI8IHhZ/NyAr3g3jvcUH
         // 498 597 618
-        // https://www.linkedin.com/in/bogdan-oloeriu/
+        // https://www.linkedin.com/in/bogdan-oloeriu
         String activeStripeAccountId = "acct_1OLNwlPnbmI8IHhZ";
         System.out.println(stripeDevSecretKey);
 

@@ -11,4 +11,12 @@ import java.util.List;
 @Data
 public class VxIntegrationConfig {
     public List<VxIntegration> vxIntegrationList;
+
+    public VxIntegration getIntegrationById(VxIntegrationId vxIntegrationId) {
+        VxIntegration vxIntegration = vxIntegrationList.stream()
+                .filter(integration -> integration.vxIntegrationId == vxIntegrationId)
+                .findFirst()
+                .get();
+        return vxIntegration;
+    }
 }
