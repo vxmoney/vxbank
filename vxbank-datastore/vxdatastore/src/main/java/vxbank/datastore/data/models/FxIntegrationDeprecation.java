@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class VxIntegration implements VxModel {
+public class FxIntegrationDeprecation implements VxModel {
 
 
     public enum Type {

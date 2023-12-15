@@ -2,14 +2,12 @@ package vxbank.datastore.data.service;
 
 import com.googlecode.objectify.cmd.Query;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxModel;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 
 public class VxService {
     public static VxUser persist(VxUser vxUser, VxBankDatastore vd) {

@@ -15,11 +15,11 @@ public class TestVxServiceIntegration {
     void testCreateGet() {
         VxBankDatastore ds = VxBankDatastore.init("my-project", VxBankDatastore.ConnectionType.localhost, Optional.empty());
 
-        VxIntegration vxServiceIntegration = new VxIntegration();
+        FxIntegrationDeprecation vxServiceIntegration = new FxIntegrationDeprecation();
         vxServiceIntegration.id = 1L;
         vxServiceIntegration.title = "chessout-integration-test";
         vxServiceIntegration.description = "Integration test description";
-        Key<VxIntegration> key = ds.ofy.save().entity(vxServiceIntegration).now();
+        Key<FxIntegrationDeprecation> key = ds.ofy.save().entity(vxServiceIntegration).now();
         Assertions.assertNotNull(key);
 
     }
