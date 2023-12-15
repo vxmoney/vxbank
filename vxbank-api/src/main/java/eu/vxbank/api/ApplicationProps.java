@@ -9,7 +9,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProps {
 
-    private List<Object> profiles;
+    public List<String> profiles;
 
     // getter and setter
 

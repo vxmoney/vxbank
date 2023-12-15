@@ -9,6 +9,7 @@ import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.helpers.PingHelper;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +44,8 @@ public class SetVxGamingOwnershipTest {
 
         PingResponse pingResponse = PingHelper.getEnvironment(restTemplate, port, 200);
         ApplicationProps applicationProps = pingResponse.applicationProps;
+        Assertions.assertNotNull(applicationProps);
+        Assertions.assertNotNull(applicationProps.profiles);
         System.out.println("Ping response environment: " + pingResponse.environment);
     }
 }
