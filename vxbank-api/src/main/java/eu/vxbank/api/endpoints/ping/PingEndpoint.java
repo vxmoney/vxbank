@@ -45,6 +45,7 @@ public class PingEndpoint {
         pingResponse.projectId = systemService.getProjectId();
         pingResponse.activeFirebaseAuthEmulator = systemService.getActiveFirebaseAuthEmulator();
         pingResponse.applicationProps = applicationProps;
+        pingResponse.applicationEnvironment = systemService.getApplicationEnvironment();
         return pingResponse;
     }
 
