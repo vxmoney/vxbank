@@ -48,8 +48,7 @@ public class EventEndpoint {
                 .get(0);
 
 
-        VxStripeUtil.debitConnectedAccount(stripeKeys.stripeSecretKey,
-                stripeKeys.stripePlatformId,
+        VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
                 vxStripeConfig.stripeAccountId,
                 params.entryPrice,
                 params.currency);
