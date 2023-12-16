@@ -2,10 +2,7 @@ package eu.vxbank.api.utils.stripe;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Account;
-import com.stripe.model.AccountLink;
-import com.stripe.model.Charge;
-import com.stripe.model.Transfer;
+import com.stripe.model.*;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
@@ -102,6 +99,18 @@ public class VxStripeUtil {
                                               String currency) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
+        Account account = Account.retrieve(connectedAccountId);
+
+        RequestOptions requestOptions =
+                RequestOptions.builder().setStripeAccount(connectedAccountId).build();
+
+        Balance balance = Balance.retrieve(requestOptions);
+
+        Balance.Available availableFunds = balance.getAvailable().stream().filter(available -> available.getCurrency().equals(currency))
+                .findAny().get();
+        if (availableFunds.getAmount() < price){
+            throw new IllegalStateException("Not sufficient funds to pay for this transaction");
+        }
 
 
         ChargeCreateParams params =
@@ -110,6 +119,8 @@ public class VxStripeUtil {
                         .setCurrency(currency)
                         .setSource(connectedAccountId)
                         .build();
+
+
 
         Charge charge = Charge.create(params);
 

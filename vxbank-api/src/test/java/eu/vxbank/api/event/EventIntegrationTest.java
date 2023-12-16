@@ -12,6 +12,7 @@ import eu.vxbank.api.helpers.*;
 import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
+import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,9 @@ public class EventIntegrationTest {
     }
 
     @Test
-    public void test00Create() {
+    public void test00Create() throws StripeException {
+
+        Long eventPrice = 1000L;
 
 
         Assertions.assertNotNull(userA);
@@ -99,9 +102,14 @@ public class EventIntegrationTest {
                 .entryPrice(1000L)
                 .build();
 
-        EventCreateResponse eventCreateResponse = EventHelper.create(
+        // try to create when client is broke
+        EventHelper.create(restTemplate, port, vxTokenUserA, params, 500);
 
-                restTemplate, port, vxTokenUserA, params, 200);
+        // add some funds and try to create again
+        VxStripeUtil.sendFundsToStripeAccount(stripeDevSecretKey, stripeAccountIdUserA, eventPrice, "eur");
+
+        EventCreateResponse eventCreateResponse = EventHelper.create(restTemplate, port, vxTokenUserA, params, 200);
+
         Assertions.assertEquals(userA.id, eventCreateResponse.vxUserId);
         Assertions.assertEquals(title, eventCreateResponse.title);
         Assertions.assertEquals(VxIntegrationId.vxGaming, eventCreateResponse.vxIntegrationId);
