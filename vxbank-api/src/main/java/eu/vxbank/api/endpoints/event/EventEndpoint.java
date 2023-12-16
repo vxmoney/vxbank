@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,7 @@ public class EventEndpoint {
                 .vxUserId(vxUser.id)
                 .state(VxEvent.State.openForRegistration)
                 .type(params.type)
+                .vxIntegrationId(params.vxIntegrationId.toString())
                 .title(params.title)
                 .currency(params.currency)
                 .entryPrice(params.entryPrice)

@@ -11,6 +11,7 @@ import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.*;
 import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
 import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,8 +55,6 @@ public class EventIntegrationTest {
         vxTokenUserA = vxToken;
 
 
-
-
         LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
         Assertions.assertEquals(email, loginResponse.email);
 
@@ -80,7 +79,7 @@ public class EventIntegrationTest {
     @BeforeEach
     public void setup() throws FirebaseAuthException, JsonProcessingException, StripeException {
 
-       setupFullUserA();
+        setupFullUserA();
 
         System.out.println("Hello setup");
     }
@@ -90,10 +89,11 @@ public class EventIntegrationTest {
 
 
         Assertions.assertNotNull(userA);
-        String title ="Event of "+ userA.email;
-                EventCreateParams params = EventCreateParams.builder()
+        String title = "Event of " + userA.email;
+        EventCreateParams params = EventCreateParams.builder()
                 .vxUserId(userA.id)
                 .type(VxEvent.Type.payed1V1)
+                .vxIntegrationId(VxIntegrationId.vxGaming)
                 .title(title)
                 .currency("eur")
                 .entryPrice(1000L)
@@ -101,9 +101,10 @@ public class EventIntegrationTest {
 
         EventCreateResponse eventCreateResponse = EventHelper.create(
 
-                restTemplate, port,vxTokenUserA, params, 200);
+                restTemplate, port, vxTokenUserA, params, 200);
         Assertions.assertEquals(userA.id, eventCreateResponse.vxUserId);
-        Assertions.assertEquals(title,eventCreateResponse.title);
+        Assertions.assertEquals(title, eventCreateResponse.title);
+        Assertions.assertEquals(VxIntegrationId.vxGaming, eventCreateResponse.vxIntegrationId);
     }
 
 
