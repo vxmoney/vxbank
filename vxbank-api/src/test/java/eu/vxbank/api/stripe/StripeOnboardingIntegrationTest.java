@@ -1,7 +1,6 @@
 package eu.vxbank.api.stripe;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -10,7 +9,6 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
-import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -21,8 +19,6 @@ import eu.vxbank.api.helpers.UserHelper;
 import eu.vxbank.api.testutils.SwapTokenUtil;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +129,10 @@ public class StripeOnboardingIntegrationTest {
 
         System.out.println("StripeConfig url: "+secondConfig.url);
         System.out.println("StripeConfig id: " + secondConfig.stripeAccountId);
+
+
+        System.out.println("User phone: 498 597 618");
+        System.out.println("User website: https://www.linkedin.com/in/bogdan-oloeriu");
 
         Assertions.assertNotEquals(firstConfig.url, secondConfig.url);
     }
