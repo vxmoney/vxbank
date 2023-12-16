@@ -86,7 +86,7 @@ public class VxBankDatastore {
 
 
     void registerDatastoreEntities(ObjectifyFactory factory) {
-        factory.register(ExampleModel.class);
+        factory.register(VxExampleModel.class);
         factory.register(VxPayment.class);
 
         factory.register(VxUser.class);

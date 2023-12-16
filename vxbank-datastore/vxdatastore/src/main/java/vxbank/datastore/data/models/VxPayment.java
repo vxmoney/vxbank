@@ -27,7 +27,7 @@ public class VxPayment implements VxModel {
      * vxServiceIntegrationId = company id
      */
     @Index
-    public Long vxServiceIntegrationId;
+    public Long vxStripeConfigId;
     @Index
     public String stripeSessionId;
     @Index

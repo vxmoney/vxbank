@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class VxService {
+public class VxDsService {
     public static VxUser persist(VxUser vxUser, VxBankDatastore vd) {
         vd.ofy.save()
                 .entity(vxUser)

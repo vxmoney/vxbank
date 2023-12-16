@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxDataTestEntity;
-import vxbank.datastore.data.service.VxdTestEntityService;
+import vxbank.datastore.data.models.VxExampleModel;
+import vxbank.datastore.data.service.VxDsService;
 
 @RestController
 @SpringBootApplication
@@ -32,11 +32,13 @@ public class ApiApplication {
 	@GetMapping("/testDatastore")
 	public String testDatastore(){
 		VxBankDatastore datastore = systemService.getVxBankDatastore();
-		VxDataTestEntity testEntity = new VxDataTestEntity();
-		testEntity.objectId = "01";
-		testEntity.message = "Test from vxbank api run 2";
+		VxExampleModel exampleModel = new VxExampleModel();
+		exampleModel.id = 1L;
+		exampleModel.description = "Test from vxbank api run 2";
 
-		VxdTestEntityService.persist(testEntity,datastore);
+		VxBankDatastore ds = systemService.getVxBankDatastore();
+		VxDsService.persist(exampleModel,ds,VxExampleModel.class);
+
 
 		return "Managed to persist new VxBankDatastore";
 	}

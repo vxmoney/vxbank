@@ -9,17 +9,15 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
-import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxPayment;
+import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.*;
 
 public class VxStripeUtil {
-    public static StripeSessionCreateResponse createStripeSession(VxUser vxUser,
-                                                                  VxIntegration vxServiceIntegration,
-                                                                  VxPayment vxPayment,
-                                                                  String stripeApiKey) throws StripeException {
+    public static StripeSessionCreateResponse createStripeSession(VxPayment vxPayment, String stripeKey) throws StripeException {
+        Stripe.apiKey = stripeKey;
 
         // Line item details
         Map<String, Object> priceData = new HashMap<>();
@@ -81,7 +79,10 @@ public class VxStripeUtil {
         return accountLink;
     }
 
-    public static Transfer sendFundsToStripeAccount(String stripeKey, String stripeAccountId, Long amount, String currency) throws StripeException {
+    public static Transfer sendFundsToStripeAccount(String stripeKey,
+                                                    String stripeAccountId,
+                                                    Long amount,
+                                                    String currency) throws StripeException {
         Stripe.apiKey = stripeKey;
 
         Map<String, Object> params = new HashMap<>();

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentCreateParams {
     public Long vxUserId;
-    public Long vxServiceIntegrationId;
+    public Long vxStripeConfigId;
     public Long vxPaymentId;
 }

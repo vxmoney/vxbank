@@ -3,7 +3,7 @@ package vxbank.datastore.data.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ public class VxStripeConfigTest {
         String uuid = UUID.randomUUID()
                 .toString();
         vxUser.email = String.format("$%s@mail.com", uuid);
-        VxUser persistedUser = VxService.persist(vxUser, ds, VxUser.class);
+        VxUser persistedUser = VxDsService.persist(vxUser, ds, VxUser.class);
 
         return persistedUser;
     }
@@ -32,7 +32,7 @@ public class VxStripeConfigTest {
                 .userId(userId)
                 .state(VxStripeConfig.State.notConfigured)
                 .build();
-        VxStripeConfig persistedConfig = VxService.persist(config, ds, VxStripeConfig.class);
+        VxStripeConfig persistedConfig = VxDsService.persist(config, ds, VxStripeConfig.class);
         return persistedConfig;
     }
 
@@ -41,14 +41,14 @@ public class VxStripeConfigTest {
     void testCreateAndGetByUserId() {
         VxUser vxUser = persistRandomUser();
 
-        List<VxStripeConfig> emptyList = VxService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
+        List<VxStripeConfig> emptyList = VxDsService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
         Assertions.assertEquals(0, emptyList.size());
 
         VxStripeConfig stripeConfig = persistStripeConfig(vxUser.id);
         Assertions.assertNotNull(stripeConfig.id);
         Assertions.assertEquals(vxUser.id, stripeConfig.userId);
 
-        List<VxStripeConfig> configuredList = VxService.getByUserId(vxUser.id,
+        List<VxStripeConfig> configuredList = VxDsService.getByUserId(vxUser.id,
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);

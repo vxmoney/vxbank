@@ -4,12 +4,10 @@ import com.googlecode.objectify.Key;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class VxUserTest {
 
@@ -67,10 +65,10 @@ class VxUserTest {
                 .entity(vxUser)
                 .now();
 
-        Optional<VxUser> validUser = VxService.getUserByEmail(vxUser.email, ds);
+        Optional<VxUser> validUser = VxDsService.getUserByEmail(vxUser.email, ds);
         Assertions.assertTrue(validUser.isPresent());
 
-        Optional<VxUser> invalidUser = VxService.getUserByEmail("fake-email", ds);
+        Optional<VxUser> invalidUser = VxDsService.getUserByEmail("fake-email", ds);
         Assertions.assertTrue(invalidUser.isEmpty());
     }
 
@@ -90,7 +88,7 @@ class VxUserTest {
                 .entity(vxUser)
                 .now();
 
-        VxUser user = VxService.getById(vxUser.id, ds, VxUser.class);
+        VxUser user = VxDsService.getById(vxUser.id, ds, VxUser.class);
         Assertions.assertNotNull(user);
     }
 
@@ -105,7 +103,7 @@ class VxUserTest {
                 .toString();
         vxUser.email = String.format("$%s@mail.com", uuid);
 
-        VxUser persistedUser = VxService.persist(vxUser, ds, VxUser.class);
+        VxUser persistedUser = VxDsService.persist(vxUser, ds, VxUser.class);
         Assertions.assertNotNull(persistedUser);
         Assertions.assertNotNull(persistedUser.id);
         Assertions.assertNotNull(vxUser.id);

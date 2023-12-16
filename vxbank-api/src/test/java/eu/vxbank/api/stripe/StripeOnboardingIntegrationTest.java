@@ -33,7 +33,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.*;
 
@@ -336,7 +336,7 @@ public class StripeOnboardingIntegrationTest {
                 .id(userId)
                 .email(email)
                 .build();
-        VxUser vxUser = VxService.persist(vxUserParams, ds, VxUser.class);
+        VxUser vxUser = VxDsService.persist(vxUserParams, ds, VxUser.class);
         Assertions.assertEquals(vxUserParams.id, vxUser.id);
 
         // set stripeConfig
@@ -347,8 +347,8 @@ public class StripeOnboardingIntegrationTest {
                 .stripeAccountId(stripeAccountId)
                 .state(VxStripeConfig.State.configurationInProgress)
                 .build();
-        VxService.persist(configParams, ds, VxStripeConfig.class);
-        List<VxStripeConfig> updatedList = VxService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
+        VxDsService.persist(configParams, ds, VxStripeConfig.class);
+        List<VxStripeConfig> updatedList = VxDsService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
         VxStripeConfig stripeConfig = updatedList.get(0);
         Assertions.assertEquals(stripeAccountId, stripeConfig.stripeAccountId);
 

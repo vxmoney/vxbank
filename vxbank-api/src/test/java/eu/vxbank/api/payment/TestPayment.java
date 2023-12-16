@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxIntegration;
 import vxbank.datastore.data.models.VxPayment;
 import vxbank.datastore.data.models.VxUser;
 
@@ -57,18 +56,12 @@ public class TestPayment {
         SetupUtils.createVxUser(vxUser, ds);
 
         String serviceTitle = generateString();
-        VxIntegration vxServiceIntegration = VxIntegration.builder()
-                .userId(vxUser.id)
-                .title(serviceTitle)
-                .build();
-        SetupUtils.persistVxModel(vxServiceIntegration, ds);
-
-        Assertions.assertNotNull(vxServiceIntegration.id);
+        Long vxStripeConfigId = 1L;
 
         Long timeStamp = new Date().getTime();
         VxPayment vxPayment = VxPayment.builder()
                 .vxUserId(vxUser.id)
-                .vxServiceIntegrationId(vxServiceIntegration.id)
+                .vxStripeConfigId(vxStripeConfigId)
                 .state(VxPayment.State.pending)
                 .createTimeStamp(timeStamp)
                 .currency("eur")
@@ -80,7 +73,7 @@ public class TestPayment {
 
         PaymentCreateParams createParams = PaymentCreateParams.builder()
                 .vxUserId(vxUser.id)
-                .vxServiceIntegrationId(vxServiceIntegration.id)
+                .vxStripeConfigId(vxStripeConfigId)
                 .vxPaymentId(vxPayment.id)
                 .build();
 

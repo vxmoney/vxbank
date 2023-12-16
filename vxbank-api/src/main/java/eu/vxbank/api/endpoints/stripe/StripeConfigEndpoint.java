@@ -8,7 +8,6 @@ import eu.vxbank.api.endpoints.stripe.dto.StripeConfigFinalizeConfigResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
-import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -16,16 +15,14 @@ import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/stripeConfig")
@@ -53,7 +50,7 @@ public class StripeConfigEndpoint {
         }
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        List<VxStripeConfig> stripeConfigs = VxService.getByUserId(userId, new HashMap<>(), ds, VxStripeConfig.class);
+        List<VxStripeConfig> stripeConfigs = VxDsService.getByUserId(userId, new HashMap<>(), ds, VxStripeConfig.class);
 
         StripeConfigGetByUserIdResponse response = new StripeConfigGetByUserIdResponse();
         if (stripeConfigs.size() > 0) {
@@ -80,7 +77,7 @@ public class StripeConfigEndpoint {
 
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        List<VxStripeConfig> stripeConfigs = VxService.getByUserId(params.userId,
+        List<VxStripeConfig> stripeConfigs = VxDsService.getByUserId(params.userId,
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);
@@ -103,7 +100,7 @@ public class StripeConfigEndpoint {
                     .stripeAccountId(stripeAccountId)
                     .state(VxStripeConfig.State.configurationInProgress)
                     .build();
-            VxService.persist(config, ds, VxStripeConfig.class);
+            VxDsService.persist(config, ds, VxStripeConfig.class);
 
 
             StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
@@ -159,7 +156,7 @@ public class StripeConfigEndpoint {
         }
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        List<VxStripeConfig> stripeConfigs = VxService.getByUserId(params.userId,
+        List<VxStripeConfig> stripeConfigs = VxDsService.getByUserId(params.userId,
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);
@@ -187,7 +184,7 @@ public class StripeConfigEndpoint {
         }
 
         config.state = VxStripeConfig.State.active;
-        VxStripeConfig updatedConfig = VxService.persist(config, ds, VxStripeConfig.class);
+        VxStripeConfig updatedConfig = VxDsService.persist(config, ds, VxStripeConfig.class);
 
         StripeConfigFinalizeConfigResponse finalizeConfigResponse = new StripeConfigFinalizeConfigResponse();
         finalizeConfigResponse.userId = updatedConfig.userId;

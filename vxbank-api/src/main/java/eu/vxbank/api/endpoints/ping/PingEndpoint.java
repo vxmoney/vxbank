@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -147,7 +147,7 @@ public class PingEndpoint {
         loginResponse.email = email;
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        List<VxStripeConfig> configList = VxService.getByUserId(loginResponse.id,
+        List<VxStripeConfig> configList = VxDsService.getByUserId(loginResponse.id,
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);

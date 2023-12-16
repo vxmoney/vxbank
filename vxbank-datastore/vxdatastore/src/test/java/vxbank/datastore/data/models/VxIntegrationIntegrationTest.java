@@ -3,7 +3,7 @@ package vxbank.datastore.data.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.*;
 
@@ -15,18 +15,17 @@ public class VxIntegrationIntegrationTest {
         String uuid = UUID.randomUUID()
                 .toString();
         vxUser.email = String.format("$%s@mail.com", uuid);
-        vxUser = VxService.persist(vxUser, ds, VxUser.class);
+        vxUser = VxDsService.persist(vxUser, ds, VxUser.class);
         return vxUser;
     }
 
-    private ExampleModel createIntegration(VxUser vxUser, ExampleModel.Type type) {
-        ExampleModel integration = new ExampleModel();
+    private VxExampleModel createIntegration(VxUser vxUser) {
+        VxExampleModel integration = new VxExampleModel();
         integration.userId = vxUser.id;
-        integration.type = type;
         integration.title = "test-title";
         integration.description = "test-description";
 
-        integration = VxService.persist(integration, ds, ExampleModel.class);
+        integration = VxDsService.persist(integration, ds, VxExampleModel.class);
         return integration;
     }
 
@@ -37,22 +36,19 @@ public class VxIntegrationIntegrationTest {
 
         Map<String, Object> filterList = new HashMap<>();
 
-        List<ExampleModel> vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, ExampleModel.class);
+        List<VxExampleModel> vxIntegrationList = VxDsService.getByUserId(user.id, filterList, ds, VxExampleModel.class);
 
         Assertions.assertEquals(0, vxIntegrationList.size());
 
-        ExampleModel integration = createIntegration(user, ExampleModel.Type.vxgaming);
-        integration = createIntegration(user, ExampleModel.Type.chessout);
+        VxExampleModel integration = createIntegration(user);
+        integration = createIntegration(user);
 
 
         // search with empty filter
-        vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, ExampleModel.class);
+        vxIntegrationList = VxDsService.getByUserId(user.id, filterList, ds, VxExampleModel.class);
         Assertions.assertEquals(2, vxIntegrationList.size());
 
-        // search with filter
-        filterList.put("type", ExampleModel.Type.vxgaming);
-        vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, ExampleModel.class);
-        Assertions.assertEquals(1, vxIntegrationList.size());
+        // search with filter was disabled because we removed type
 
     }
 }

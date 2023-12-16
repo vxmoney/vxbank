@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.PingHelper;
 import eu.vxbank.api.helpers.StripeConfigHelper;
@@ -24,9 +23,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StripeOnboardingSecurityIntegrationTest {
@@ -99,7 +100,7 @@ public class StripeOnboardingSecurityIntegrationTest {
                 .id(userId)
                 .email(email)
                 .build();
-        VxUser vxUser = VxService.persist(vxUserParams, ds, VxUser.class);
+        VxUser vxUser = VxDsService.persist(vxUserParams, ds, VxUser.class);
         Assertions.assertEquals(vxUserParams.id, vxUser.id);
 
         // set stripeConfig
@@ -110,8 +111,8 @@ public class StripeOnboardingSecurityIntegrationTest {
                 .stripeAccountId(stripeAccountId)
                 .state(VxStripeConfig.State.configurationInProgress)
                 .build();
-        VxService.persist(configParams, ds, VxStripeConfig.class);
-        List<VxStripeConfig> updatedList = VxService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
+        VxDsService.persist(configParams, ds, VxStripeConfig.class);
+        List<VxStripeConfig> updatedList = VxDsService.getByUserId(vxUser.id, new HashMap<>(), ds, VxStripeConfig.class);
         VxStripeConfig stripeConfig = updatedList.get(0);
         Assertions.assertEquals(stripeAccountId, stripeConfig.stripeAccountId);
 
@@ -153,7 +154,7 @@ public class StripeOnboardingSecurityIntegrationTest {
         VxUser vxUser = VxUser.builder()
                 .email(email)
                 .build();
-        VxService.persist(vxUser, ds, VxUser.class);
+        VxDsService.persist(vxUser, ds, VxUser.class);
         Assertions.assertNotNull(vxUser.id);
 
         String vxToken = UserHelper.generateVxToken(vxUser.email, restTemplate, port);

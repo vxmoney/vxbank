@@ -18,7 +18,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.UUID;
 
@@ -49,7 +49,7 @@ public class BasicSendFundsTest {
         VxUser vxUser = VxUser.builder()
                 .email(email)
                 .build();
-        VxService.persist(vxUser, ds, VxUser.class);
+        VxDsService.persist(vxUser, ds, VxUser.class);
         Assertions.assertNotNull(vxUser.id);
 
         String vxToken = UserHelper.generateVxToken(vxUser.email, restTemplate, port);
@@ -67,7 +67,7 @@ public class BasicSendFundsTest {
                 .stripeAccountId(stripeAccountId)
                 .state(VxStripeConfig.State.active)
                 .build();
-        VxService.persist(vxStripeConfig, ds, VxStripeConfig.class);
+        VxDsService.persist(vxStripeConfig, ds, VxStripeConfig.class);
         Assertions.assertNotNull(vxStripeConfig.id);
 
         return loginResponse;

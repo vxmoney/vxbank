@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
-import vxbank.datastore.data.service.VxService;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class UserEndpoint {
     private VxUser createNewUser(String email, VxBankDatastore ds) {
         VxUser vxUser = new VxUser();
         vxUser.email = email;
-        VxUser persistedUser = VxService.persist(vxUser, ds, VxUser.class);
+        VxUser persistedUser = VxDsService.persist(vxUser, ds, VxUser.class);
         return persistedUser;
     }
 
@@ -44,7 +44,7 @@ public class UserEndpoint {
         String email = vxFirebaseAuthService.validateFirebaseIdTokenAndGetEmail(loginParams.firebaseIdToken);
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
-        Optional<VxUser> optionalUser = VxService.getUserByEmail(email, ds);
+        Optional<VxUser> optionalUser = VxDsService.getUserByEmail(email, ds);
         if (optionalUser.isEmpty()) {
             VxUser user = createNewUser(email, ds);
             optionalUser = Optional.of(user);
