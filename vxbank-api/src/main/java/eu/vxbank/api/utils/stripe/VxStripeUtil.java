@@ -18,7 +18,8 @@ import vxbank.datastore.data.models.VxPayment;
 import java.util.*;
 
 public class VxStripeUtil {
-    public static StripeSessionCreateResponse createStripeSession(VxPayment vxPayment, String stripeKey) throws StripeException {
+    public static StripeSessionCreateResponse createStripeSession(VxPayment vxPayment, String stripeKey) throws
+            StripeException {
         Stripe.apiKey = stripeKey;
 
         // Line item details
@@ -101,17 +102,18 @@ public class VxStripeUtil {
                                              Long price,
                                              String currency) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
-        PaymentIntentCreateParams params =
-                PaymentIntentCreateParams.builder()
-                        .setAmount(price)
-                        .setCurrency(currency)
-                        .setApplicationFeeAmount(0L)
-                        .build();
+
+        Account account = Account.retrieve(connectedAccountId);
+
+        TransferCreateParams transferParams = TransferCreateParams.builder()
+                .setAmount(price)
+                .setCurrency(currency)
+                .setDestination(stripePlatformId)
+                .build();
         RequestOptions requestOptions =
                 RequestOptions.builder().setStripeAccount(connectedAccountId).build();
-        PaymentIntent paymentIntent = PaymentIntent.create(params, requestOptions);
-        System.out.println("PaymentIntentId = "+ paymentIntent.getId());
+        Transfer transfer = Transfer.create(transferParams, requestOptions);
 
-       throw new IllegalStateException("Start implementing direct debit please");
+        throw new IllegalStateException("Start implementing direct debit please");
     }
 }
