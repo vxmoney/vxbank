@@ -1,6 +1,7 @@
 package eu.vxbank.api.endpoints.event;
 
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.utils.components.SystemService;
@@ -48,12 +49,7 @@ public class EventEndpoint {
                 .get(0);
 
 
-        VxStripeUtil.sendFundsToStripeAccount(stripeKeys.stripeSecretKey,
-                vxStripeConfig.stripeAccountId,
-                params.entryPrice,
-                params.currency);
-
-        VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
+       Charge charge = VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
                 vxStripeConfig.stripeAccountId,
                 params.entryPrice,
                 params.currency);

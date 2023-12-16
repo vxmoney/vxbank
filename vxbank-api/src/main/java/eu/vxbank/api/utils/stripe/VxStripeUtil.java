@@ -96,13 +96,13 @@ public class VxStripeUtil {
         return transfer;
     }
 
-    public static void chargeConnectedAccount(String stripeSecretKey,
+    public static Charge chargeConnectedAccount(String stripeSecretKey,
                                               String connectedAccountId,
                                               Long price,
                                               String currency) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
-        Account account = Account.retrieve(connectedAccountId);
+
 
         ChargeCreateParams params =
                 ChargeCreateParams.builder()
@@ -113,6 +113,13 @@ public class VxStripeUtil {
 
         Charge charge = Charge.create(params);
 
-        throw new IllegalStateException("Start implementing direct debit please");
+        if (!charge.getStatus().equals("succeeded")){
+            throw new IllegalStateException("Charge not succeeded");
+        }
+        if (!charge.getCaptured()){
+            throw new IllegalStateException("Not able to capture intended funds");
+        }
+
+        return charge;
     }
 }
