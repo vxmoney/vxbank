@@ -48,6 +48,11 @@ public class EventEndpoint {
                 .get(0);
 
 
+        VxStripeUtil.sendFundsToStripeAccount(stripeKeys.stripeSecretKey,
+                vxStripeConfig.stripeAccountId,
+                params.entryPrice,
+                params.currency);
+
         VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
                 vxStripeConfig.stripeAccountId,
                 params.entryPrice,
