@@ -8,6 +8,7 @@ public class EventCreateResponse {
     public Long vxUserId;
 
     public VxEvent.Type type;
+    public VxEvent.State state;
     public Long createTimeStamp;
     public String currency;
     public Long entryPrice;
