@@ -53,6 +53,8 @@ public class EventIntegrationTest {
         vxTokenUserA = vxToken;
 
 
+
+
         LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
         Assertions.assertEquals(email, loginResponse.email);
 
@@ -88,6 +90,7 @@ public class EventIntegrationTest {
 
         Assertions.assertNotNull(userA);
         EventCreateParams params = new EventCreateParams();
+        LoginResponse pingResponse = PingHelper.whoAmI(vxTokenUserA, restTemplate, port,200);
         int expectedStatusCode = 200;
         EventCreateResponse eventCreateResponse = EventHelper.create(
 

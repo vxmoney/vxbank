@@ -109,15 +109,13 @@ public class SystemService {
         String email = jwtToken.getClaim("email");
         Long userId = Long.valueOf(auth.getName());
 
-        List<VxUser> userList = VxDsService.getByUserId(userId, new HashMap<>(), vxBankDatastore, VxUser.class);
-        if (userList.size() != 1) {
-            throw new IllegalStateException("We found multiple users for userId " + userId);
+        Optional<VxUser> optionalVxUser = VxDsService.getUserByEmail(email,  vxBankDatastore);
+        if (optionalVxUser.isEmpty()) {
+            throw new IllegalStateException("Not able to locateUser my email " + userId);
         }
 
-        VxUser vxUser = userList.get(0);
-        if (!email.equals(vxUser.email)) {
-            throw new IllegalStateException("Token email not the same with the database email for userId " + userId);
-        }
+        VxUser vxUser = optionalVxUser.get();
+
 
         List<VxStripeConfig> configList = VxDsService.getByUserId(userId,
                 new HashMap<>(),
