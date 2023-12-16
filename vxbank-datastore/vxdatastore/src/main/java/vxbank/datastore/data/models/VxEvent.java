@@ -35,6 +35,10 @@ public class VxEvent implements VxModel {
 
     @Index
     public State state;
+
+    @Index
+    public String vxIntegrationId;
+
     public String title;
     public Long createTimeStamp;
     public String currency;

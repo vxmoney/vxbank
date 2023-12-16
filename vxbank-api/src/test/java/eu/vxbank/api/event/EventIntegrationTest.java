@@ -99,11 +99,9 @@ public class EventIntegrationTest {
                 .entryPrice(1000L)
                 .build();
 
-        LoginResponse pingResponse = PingHelper.whoAmI(vxTokenUserA, restTemplate, port,200);
-        int expectedStatusCode = 200;
         EventCreateResponse eventCreateResponse = EventHelper.create(
 
-                restTemplate, port,vxTokenUserA, params, expectedStatusCode);
+                restTemplate, port,vxTokenUserA, params, 200);
         Assertions.assertEquals(userA.id, eventCreateResponse.vxUserId);
         Assertions.assertEquals(title,eventCreateResponse.title);
     }
