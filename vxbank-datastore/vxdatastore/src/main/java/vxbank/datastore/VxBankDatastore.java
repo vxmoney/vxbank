@@ -86,8 +86,7 @@ public class VxBankDatastore {
 
 
     void registerDatastoreEntities(ObjectifyFactory factory) {
-        factory.register(VxDataTestEntity.class);
-        factory.register(FxIntegrationDeprecation.class);
+        factory.register(ExampleModel.class);
         factory.register(VxPayment.class);
 
         factory.register(VxUser.class);

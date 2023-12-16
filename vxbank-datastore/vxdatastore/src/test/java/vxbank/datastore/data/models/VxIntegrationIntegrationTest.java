@@ -19,14 +19,14 @@ public class VxIntegrationIntegrationTest {
         return vxUser;
     }
 
-    private FxIntegrationDeprecation createIntegration(VxUser vxUser, FxIntegrationDeprecation.Type type) {
-        FxIntegrationDeprecation integration = new FxIntegrationDeprecation();
+    private ExampleModel createIntegration(VxUser vxUser, ExampleModel.Type type) {
+        ExampleModel integration = new ExampleModel();
         integration.userId = vxUser.id;
         integration.type = type;
         integration.title = "test-title";
         integration.description = "test-description";
 
-        integration = VxService.persist(integration, ds, FxIntegrationDeprecation.class);
+        integration = VxService.persist(integration, ds, ExampleModel.class);
         return integration;
     }
 
@@ -37,21 +37,21 @@ public class VxIntegrationIntegrationTest {
 
         Map<String, Object> filterList = new HashMap<>();
 
-        List<FxIntegrationDeprecation> vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, FxIntegrationDeprecation.class);
+        List<ExampleModel> vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, ExampleModel.class);
 
         Assertions.assertEquals(0, vxIntegrationList.size());
 
-        FxIntegrationDeprecation integration = createIntegration(user, FxIntegrationDeprecation.Type.vxgaming);
-        integration = createIntegration(user, FxIntegrationDeprecation.Type.chessout);
+        ExampleModel integration = createIntegration(user, ExampleModel.Type.vxgaming);
+        integration = createIntegration(user, ExampleModel.Type.chessout);
 
 
         // search with empty filter
-        vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, FxIntegrationDeprecation.class);
+        vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, ExampleModel.class);
         Assertions.assertEquals(2, vxIntegrationList.size());
 
         // search with filter
-        filterList.put("type", FxIntegrationDeprecation.Type.vxgaming);
-        vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, FxIntegrationDeprecation.class);
+        filterList.put("type", ExampleModel.Type.vxgaming);
+        vxIntegrationList = VxService.getByUserId(user.id, filterList, ds, ExampleModel.class);
         Assertions.assertEquals(1, vxIntegrationList.size());
 
     }
