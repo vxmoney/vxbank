@@ -18,7 +18,7 @@ public class VxEventPaymentTest {
 
 
     @Test
-    void testVxEvent(){
+    void testVxEventPayment(){
         VxUser vxUser = TestingUtils.generatePersistRandomUser(ds);
         Assertions.assertNotNull(vxUser.id);
         Long createTimeStamp = new Date().getTime();

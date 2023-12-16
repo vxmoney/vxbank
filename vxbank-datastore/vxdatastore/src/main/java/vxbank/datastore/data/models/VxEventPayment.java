@@ -19,6 +19,11 @@ public class VxEventPayment {
         debit
     }
 
+    public enum State{
+        pending,
+        complete
+    }
+
     @Id
     public Long id;
 
@@ -30,6 +35,8 @@ public class VxEventPayment {
 
     @Index
     public Type type;
+
+    public State state;
 
     public String description;
 
