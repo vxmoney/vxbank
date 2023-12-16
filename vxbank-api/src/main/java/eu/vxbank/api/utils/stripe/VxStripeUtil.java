@@ -4,14 +4,16 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.Transfer;
 import com.stripe.model.checkout.Session;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
+import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.TransferCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import vxbank.datastore.data.models.VxPayment;
-import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.models.VxUser;
 
 import java.util.*;
 
@@ -91,5 +93,25 @@ public class VxStripeUtil {
         params.put("destination", stripeAccountId);
         Transfer transfer = Transfer.create(params);
         return transfer;
+    }
+
+    public static void debitConnectedAccount(String stripeSecretKey,
+                                             String stripePlatformId,
+                                             String connectedAccountId,
+                                             Long price,
+                                             String currency) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        PaymentIntentCreateParams params =
+                PaymentIntentCreateParams.builder()
+                        .setAmount(price)
+                        .setCurrency(currency)
+                        .setApplicationFeeAmount(0L)
+                        .build();
+        RequestOptions requestOptions =
+                RequestOptions.builder().setStripeAccount(connectedAccountId).build();
+        PaymentIntent paymentIntent = PaymentIntent.create(params, requestOptions);
+        System.out.println("PaymentIntentId = "+ paymentIntent.getId());
+
+       throw new IllegalStateException("Start implementing direct debit please");
     }
 }
