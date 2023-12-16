@@ -2,7 +2,6 @@ package eu.vxbank.api.endpoints.event;
 
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,7 @@ public class EventEndpoint {
 
     @PostMapping
     public EventCreateResponse create (Authentication auth, @RequestBody EventCreateParams params){
-        VxUser vxUser = systemService.validateUser(auth);
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
         throw new IllegalStateException("Please implement this");
     }
 }

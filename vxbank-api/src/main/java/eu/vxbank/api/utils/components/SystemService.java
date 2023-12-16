@@ -7,12 +7,17 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.VxBankDatastore.ConnectionType;
+import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -99,8 +104,36 @@ public class SystemService {
     }
 
 
-    public VxUser validateUser(Authentication auth) {
-        throw new IllegalStateException("Please implement this");
+    public VxUser validateUserAndStripeConfig(Authentication auth) {
+        Jwt jwtToken = (Jwt) auth.getPrincipal();
+        String email = jwtToken.getClaim("email");
+        Long userId = Long.valueOf(auth.getName());
+
+        List<VxUser> userList = VxDsService.getByUserId(userId, new HashMap<>(), vxBankDatastore, VxUser.class);
+        if (userList.size() != 1) {
+            throw new IllegalStateException("We found multiple users for userId " + userId);
+        }
+
+        VxUser vxUser = userList.get(0);
+        if (!email.equals(vxUser.email)) {
+            throw new IllegalStateException("Token email not the same with the database email for userId " + userId);
+        }
+
+        List<VxStripeConfig> configList = VxDsService.getByUserId(userId,
+                new HashMap<>(),
+                vxBankDatastore,
+                VxStripeConfig.class);
+        if (configList.size() != 1) {
+            throw new IllegalStateException("We found multiple configuration for userId " + userId);
+        }
+        VxStripeConfig stripeConfig = configList.get(0);
+        if (stripeConfig.state != VxStripeConfig.State.active) {
+            throw new IllegalStateException(
+                    "Illegal stripe config state for userId = " + userId + " state=" + stripeConfig.state);
+        }
+
+
+        return vxUser;
     }
 }
 
