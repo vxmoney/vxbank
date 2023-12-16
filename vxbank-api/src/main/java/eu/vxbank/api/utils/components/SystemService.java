@@ -6,9 +6,11 @@ import eu.vxbank.api.utils.enums.Environment;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.VxBankDatastore.ConnectionType;
+import vxbank.datastore.data.models.VxUser;
 
 import java.io.InputStream;
 import java.util.Optional;
@@ -97,5 +99,8 @@ public class SystemService {
     }
 
 
+    public VxUser validateUser(Authentication auth) {
+        throw new IllegalStateException("Please implement this");
+    }
 }
 

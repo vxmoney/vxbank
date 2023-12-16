@@ -27,6 +27,8 @@ public class VxEvent implements VxModel {
 
     @Index
     public Long vxUserId;
+
+    public Type type;
     public Long createTimeStamp;
     public String currency;
     public Long entryPrice;
