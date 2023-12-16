@@ -38,6 +38,7 @@ public class EventEndpoint {
                 .vxUserId(vxUser.id)
                 .state(VxEvent.State.openForRegistration)
                 .type(params.type)
+                .title(params.title)
                 .currency(params.currency)
                 .entryPrice(params.entryPrice)
                 .createTimeStamp(createTimeStamp)
@@ -48,6 +49,6 @@ public class EventEndpoint {
         ModelMapper mm = new ModelMapper();
         EventCreateResponse response = mm.map(vxEvent, EventCreateResponse.class);
 
-        throw new IllegalStateException("Please implement this");
+        return response;
     }
 }

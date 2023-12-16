@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -89,14 +90,22 @@ public class EventIntegrationTest {
 
 
         Assertions.assertNotNull(userA);
-        EventCreateParams params = new EventCreateParams();
+        String title ="Event of "+ userA.email;
+                EventCreateParams params = EventCreateParams.builder()
+                .vxUserId(userA.id)
+                .type(VxEvent.Type.payed1V1)
+                .title(title)
+                .currency("eur")
+                .entryPrice(1000L)
+                .build();
+
         LoginResponse pingResponse = PingHelper.whoAmI(vxTokenUserA, restTemplate, port,200);
         int expectedStatusCode = 200;
         EventCreateResponse eventCreateResponse = EventHelper.create(
 
                 restTemplate, port,vxTokenUserA, params, expectedStatusCode);
-
-        System.out.println("End of test");
+        Assertions.assertEquals(userA.id, eventCreateResponse.vxUserId);
+        Assertions.assertEquals(title,eventCreateResponse.title);
     }
 
 
