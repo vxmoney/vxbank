@@ -3,16 +3,14 @@ package eu.vxbank.api.event;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
+import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
-import eu.vxbank.api.helpers.PingHelper;
-import eu.vxbank.api.helpers.RandomUtil;
-import eu.vxbank.api.helpers.StripeConfigHelper;
-import eu.vxbank.api.helpers.UserHelper;
+import eu.vxbank.api.helpers.*;
 import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
 import eu.vxbank.api.utils.components.SystemService;
-import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.security.web.PortResolverImpl;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
-
-import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class EventIntegrationTest {
@@ -46,14 +41,16 @@ public class EventIntegrationTest {
 
     String stripeAccountIdUserA = "acct_1OO0j2PVTA3jVN7Z";
     private VxUser userA;
+    private String vxTokenUserA;
 
-    private VxUser setupFullUserA() throws FirebaseAuthException, JsonProcessingException, StripeException {
+    private void setupFullUserA() throws FirebaseAuthException, JsonProcessingException, StripeException {
 
         // stripe id: acct_1OO0j2PVTA3jVN7Z
 
 
         String email = RandomUtil.generateRandomEmail();
         String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
+        vxTokenUserA = vxToken;
 
 
         LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
@@ -74,13 +71,13 @@ public class EventIntegrationTest {
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeAccountIdUserA);
-        return vxUser;
+        userA = vxUser;
     }
 
     @BeforeEach
     public void setup() throws FirebaseAuthException, JsonProcessingException, StripeException {
 
-        userA = setupFullUserA();
+       setupFullUserA();
 
         System.out.println("Hello setup");
     }
@@ -89,8 +86,12 @@ public class EventIntegrationTest {
     public void test00Create() {
 
 
-
         Assertions.assertNotNull(userA);
+        EventCreateParams params = new EventCreateParams();
+        int expectedStatusCode = 200;
+        EventCreateResponse eventCreateResponse = EventHelper.create(
+
+                restTemplate, port,vxTokenUserA, params, expectedStatusCode);
 
         System.out.println("End of test");
     }
