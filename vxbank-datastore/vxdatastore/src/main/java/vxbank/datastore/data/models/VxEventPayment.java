@@ -13,19 +13,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VxEvent  {
+public class VxEventPayment {
     public enum Type{
-        payed1V1
-    }
-
-    public enum State{
-        openForRegistration,
-        inProgress,
-        closed,
+        credit,
+        debit
     }
 
     @Id
     public Long id;
+
+    @Index
+    public Long vxEventId;
 
     @Index
     public Long vxUserId;
@@ -33,15 +31,6 @@ public class VxEvent  {
     @Index
     public Type type;
 
-    @Index
-    public State state;
-
-    @Index
-    public String vxIntegrationId;
-
-    public String title;
-    public Long createTimeStamp;
-    public String currency;
-    public Long entryPrice;
+    public String description;
 
 }
