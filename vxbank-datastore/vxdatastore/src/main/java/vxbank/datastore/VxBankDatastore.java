@@ -88,9 +88,10 @@ public class VxBankDatastore {
     void registerDatastoreEntities(ObjectifyFactory factory) {
         factory.register(VxExampleModel.class);
         factory.register(VxPayment.class);
-
         factory.register(VxUser.class);
         factory.register(VxStripeConfig.class);
+        factory.register(VxEvent.class);
+
     }
 
     public Boolean getInitialized() {
