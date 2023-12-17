@@ -47,6 +47,7 @@ npm run dev
 - https://github.com/vercel/next.js/discussions/12474
 
 ```bash
+
 # load config scripts
 . scripts/configDevEnviromentScripts.sh
 

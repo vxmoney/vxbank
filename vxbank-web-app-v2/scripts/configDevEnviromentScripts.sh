@@ -23,3 +23,11 @@ deployOnDev() {
     npm run build
     gcloud app deploy --quiet
 }
+
+deployOnProd() {
+    initEnvDevelopment
+    gcloud config set project vxbank-eu-prod
+    gcloud config get-value project
+    npm run build
+    gcloud app deploy --quiet
+}
