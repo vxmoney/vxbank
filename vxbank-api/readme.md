@@ -8,7 +8,7 @@ as fast as possible. Just use the bash commands that you need and start coding.
 - [local swagger documentation](http://localhost:8080/swagger-ui/index.html)
 - [appengine swagger documentation](https://backend-dot-vxbank-eu-dev.ew.r.appspot.com/swagger-ui/index.html)
 
-## some dev curl calls
+## some bash accelerators
 
 ```bash
 # dev environment
