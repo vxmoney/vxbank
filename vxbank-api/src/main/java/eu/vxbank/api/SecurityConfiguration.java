@@ -40,7 +40,8 @@ public class SecurityConfiguration {
     @Value("${jwt.private.key}")
     RSAPrivateKey priv;
 
-    private static final String[] WHITE_LIST_URL = {"/example/payment", "/stripeWebhook", "/ping/getEnvironment",
+    private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment", "/testDatastore", //
+            "/example/payment", "/stripeWebhook",
             "/ping" + "/generateFirebaseIdToken", "/user/login", "/swagger-ui/**", "/v3/api-docs/**"};
 
     @Bean
