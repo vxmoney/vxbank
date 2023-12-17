@@ -11,7 +11,12 @@ as fast as possible. Just use the bash commands that you need and start coding.
 ## some bash accelerators
 
 ```bash
-# dev environment
+# start coding
+. scripts/configDevEnviromentScripts.sh
+openIntellij
+
+
+# test endpoints
 export MY_PROTOCOL=https
 export MY_BASE_URL=://backend-dot-vxbank-eu-dev.ew.r.appspot.com
 
