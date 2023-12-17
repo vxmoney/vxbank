@@ -3,6 +3,7 @@ package eu.vxbank.api.helpers;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
+import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -45,22 +46,19 @@ public class EventHelper {
                                        Long eventId,
                                        int expectedStatusCode) {
 
-        // Set up the HTTP headers
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
 
-        // Create the HTTP entity with the request body and headers
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-        // Make the POST request
+        // Make the GET request to /ping/whoAmI
         ResponseEntity<EventGetResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/event/"+eventId, HttpMethod.GET, null, EventGetResponse.class);
+                "http://localhost:" + port + "/event/" + eventId, HttpMethod.GET, requestEntity, EventGetResponse.class);
 
-        // check status code
         int statusCode = responseEntity.getStatusCodeValue();
         Assertions.assertEquals(expectedStatusCode, statusCode);
 
-        // Extract the response
-        EventGetResponse response = responseEntity.getBody();
-        return response;
+        EventGetResponse responseBody = responseEntity.getBody();
+        return responseBody;
     }
 }

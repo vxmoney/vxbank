@@ -88,19 +88,11 @@ public class EventEndpoint {
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventGetResponse> get(@PathVariable Long eventId) {
+    public ResponseEntity<EventGetResponse> get( @PathVariable Long eventId) {
 
 
         throw new IllegalStateException("Please implement this");
 
-        /*
-        VxEvent vxEvent = VxDsService.getById(eventId, systemService.getVxBankDatastore(), VxEvent.class);
-
-        if (vxEvent != null) {
-            return new ResponseEntity<>(new EventGetResponse(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }*/
     }
 
 }
