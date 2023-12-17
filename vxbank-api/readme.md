@@ -8,6 +8,11 @@ as fast as possible. Just use the bash commands that you need and start coding.
 - [local swagger documentation](http://localhost:8080/swagger-ui/index.html)
 - [appengine swagger documentation](https://backend-dot-vxbank-eu-dev.ew.r.appspot.com/swagger-ui/index.html)
 
+## frontend app browser links
+- [localhost frontend](http://localhost:3000/)
+- [dev frontend](https://vxbank-eu-dev.ew.r.appspot.com/)
+- [prod frontend](https://vxbank-eu-prod.ew.r.appspot.com)
+
 ## some bash accelerators
 
 ```bash
