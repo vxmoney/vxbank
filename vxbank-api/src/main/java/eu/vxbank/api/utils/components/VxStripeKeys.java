@@ -15,6 +15,9 @@ public class VxStripeKeys {
 
     @Value("${stripeKey.devSecretKey}")
     private String stripeDevSecretKey;
+
+    @Value("${stripeKey.prodSecretKey}")
+    private String stripeProdSecretKey;
     public String stripeSecretKey;
     public String stripePlatformId;
 
@@ -30,6 +33,11 @@ public class VxStripeKeys {
             case DEVELOPMENT:
                 this.stripeSecretKey = stripeDevSecretKey;
                 this.webhookSigningSecret = "whsec_J71Mv8Nl89K2iCgaXjmOXazVlktirOPv";
+                this.tolerance = 300L;
+                return;
+            case PRODUCTION:
+                this.stripeSecretKey = stripeProdSecretKey;
+                this.webhookSigningSecret = "not_configured_for_production";
                 this.tolerance = 300L;
                 return;
             default:
