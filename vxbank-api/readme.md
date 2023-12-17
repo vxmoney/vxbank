@@ -25,6 +25,10 @@ openIntellij
 export MY_PROTOCOL=https
 export MY_BASE_URL=://backend-dot-vxbank-eu-dev.ew.r.appspot.com
 
+# set dev prod
+export MY_PROTOCOL=https
+export MY_BASE_URL=://backend-dot-vxbank-eu-prod.ew.r.appspot.com
+
 # det localhost env
 export MY_PROTOCOL=http
 export MY_BASE_URL=://localhost:8080
