@@ -80,6 +80,8 @@ appengine {  // App Engine tasks configuration
 	}
 
 	deploy {   // deploy configuration
+		// vxbank-eu-dev
+		// vxbank-eu-prod
 		projectId = 'vxbank-eu-dev' // gcloud config set project
 		version = '0-00-004'   // gcloud to generate a version
 		stopPreviousVersion = true // default - stop the current version
