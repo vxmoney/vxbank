@@ -3,6 +3,7 @@ package eu.vxbank.api.utils.components;
 
 import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.enums.Environment;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,6 +92,13 @@ public class SystemService {
                         ConnectionType.connectedToAppEngine,
                         Optional.of(credentialsStream));
                 break;
+            case PRODUCTION:
+                InputStream productionStream = getDatastoreCredentialsInputStream();
+                VxBankDatastore prodDatastore = new VxBankDatastore();
+                vxBankDatastore = VxBankDatastore.init(projectId,
+                        ConnectionType.connectedToAppEngine,
+                        Optional.of(productionStream));
+                break;
             default:
                 throw new IllegalStateException("Not supported initDatastore for env: " + environment);
         }
@@ -103,8 +111,11 @@ public class SystemService {
             case DEVELOPMENT:
                 return getClass().getClassLoader()
                         .getResourceAsStream("vxbank-eu-dev-key.json");
+            case PRODUCTION:
+                return getClass().getClassLoader()
+                        .getResourceAsStream("vxbank-eu-prod-key.json")
             default:
-                throw new IllegalStateException("Not supported credentials for env: " + environment);
+                throw new IllegalStateException("Not supported getDatastoreCredentialsInputStream for env: " + environment);
         }
     }
 
