@@ -34,7 +34,6 @@ public class VxStripeKeys {
                 return;
             default:
                 throw new IllegalStateException("Not supported environment: " + systemService.environment);
-
         }
     }
 
