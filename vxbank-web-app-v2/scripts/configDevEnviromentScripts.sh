@@ -7,7 +7,7 @@ initEnvDevelopment() {
 initEnvProduction() {
     cp scripts/prod-firebase.js src/app/firebase.js
     cp scripts/prod-apiConfig.js src/api/apiConfig.js
-    echo "Curent env = development"
+    echo "Curent env = production"
 }
 
 initEnvLocalhost() {
