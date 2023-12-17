@@ -7,13 +7,13 @@ import { getAuth } from "firebase/auth";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD3WNQhta9K8SW42PpGDnozZwm16vTJq8k",
-  authDomain: "vxbank-eu-dev.firebaseapp.com",
-  projectId: "vxbank-eu-dev",
-  storageBucket: "vxbank-eu-dev.appspot.com",
-  messagingSenderId: "762103373472",
-  appId: "1:762103373472:web:4314f42476e42cf37073c5",
-  measurementId: "G-PMLBWYSCB4",
+  apiKey: "AIzaSyAOvN4KqVt5A8SGDwCY2IHbiZv-fSdJ00M",
+  authDomain: "vxbank-eu-prod.firebaseapp.com",
+  projectId: "vxbank-eu-prod",
+  storageBucket: "vxbank-eu-prod.appspot.com",
+  messagingSenderId: "703299368858",
+  appId: "1:703299368858:web:298d176b2a373804cc2c23",
+  measurementId: "G-GD4Q2M5EBK"
 };
 
 // Initialize Firebase
