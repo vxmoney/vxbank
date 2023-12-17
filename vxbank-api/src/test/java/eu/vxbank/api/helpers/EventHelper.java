@@ -47,18 +47,18 @@ public class EventHelper {
                                        int expectedStatusCode) {
 
         HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
 
         // Create the HTTP entity with the headers
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
         // Make the GET request to /ping/whoAmI
         ResponseEntity<EventGetResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/event/" + eventId, HttpMethod.GET, requestEntity, EventGetResponse.class);
+                "http://localhost:" + port + "/event/1", HttpMethod.GET, requestEntity, EventGetResponse.class);
 
         int statusCode = responseEntity.getStatusCodeValue();
         Assertions.assertEquals(expectedStatusCode, statusCode);
 
-        EventGetResponse responseBody = responseEntity.getBody();
-        return responseBody;
+        throw new IllegalStateException("Please implement this");
     }
 }

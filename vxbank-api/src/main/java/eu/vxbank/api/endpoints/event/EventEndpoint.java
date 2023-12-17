@@ -88,7 +88,8 @@ public class EventEndpoint {
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventGetResponse> get( @PathVariable Long eventId) {
+    @ResponseBody
+    public EventGetResponse get( @PathVariable Long eventId) {
 
 
         throw new IllegalStateException("Please implement this");
