@@ -39,8 +39,9 @@ killProcessOnPort() {
 }
 
 openIntellij() {
-  export GOOGLE_APPLICATION_CREDENTIALS="/home/bogdan/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-dev-key.json"
+  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-dev-key.json"
   export FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"
+  initDevEnvironment &
   nohup intellij-idea-community .
 }
 

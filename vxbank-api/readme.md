@@ -16,9 +16,13 @@ as fast as possible. Just use the bash commands that you need and start coding.
 openIntellij
 
 
-# test endpoints
+# set dev env
 export MY_PROTOCOL=https
 export MY_BASE_URL=://backend-dot-vxbank-eu-dev.ew.r.appspot.com
+
+# det localhost env
+export MY_PROTOCOL=http
+export MY_BASE_URL=://localhost:8080
 
 # ping
 curl --location --request GET "${MY_PROTOCOL}${MY_BASE_URL}/ping/getEnvironment"
