@@ -15,8 +15,6 @@ public class VxStripeKeys {
 
     @Value("${stripeKey.devSecretKey}")
     private String stripeDevSecretKey;
-    @Value("${stripeKey.devPlatformId}")
-    private String stripeDevPlatformId;
     public String stripeSecretKey;
     public String stripePlatformId;
 
@@ -26,13 +24,11 @@ public class VxStripeKeys {
         switch (systemService.environment) {
             case LOCALHOST:
                 this.stripeSecretKey = stripeDevSecretKey;
-                this.stripePlatformId = stripeDevPlatformId;
                 this.webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
                 this.tolerance = Long.MAX_VALUE;
                 return;
             case DEVELOPMENT:
                 this.stripeSecretKey = stripeDevSecretKey;
-                this.stripePlatformId = stripeDevPlatformId;
                 this.webhookSigningSecret = "whsec_J71Mv8Nl89K2iCgaXjmOXazVlktirOPv";
                 this.tolerance = 300L;
                 return;
