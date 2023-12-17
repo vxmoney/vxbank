@@ -1,6 +1,5 @@
 package eu.vxbank.api.endpoints.ping.dto;
 
-import eu.vxbank.api.utils.components.vxintegration.ApplicationProps;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.enums.Environment;
 
@@ -11,7 +10,6 @@ public class PingResponse {
     public String testFirebaseIdToken;
     public Boolean activeFirebaseAuthEmulator;
 
-    public ApplicationProps applicationProps;
     public String applicationEnvironment;
 
     public VxIntegrationConfig vxIntegrationConfig;
