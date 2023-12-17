@@ -25,7 +25,7 @@ deployOnDev() {
 }
 
 deployOnProd() {
-    initEnvDevelopment
+    initEnvProduction
     gcloud config set project vxbank-eu-prod
     gcloud config get-value project
     npm run build
