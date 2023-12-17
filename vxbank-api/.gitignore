@@ -38,6 +38,7 @@ out/
 
 
 src/main/resources/vxbank-eu-dev-key.json
+src/main/resources/vxbank-eu-prod-key.json
 src/main/resources/app.key
 src/main/resources/app.pub
 src/main/resources/stripeDevSecret.key
