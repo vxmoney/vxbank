@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxDsService;
@@ -49,12 +50,14 @@ public class EventEndpoint {
                 .get(0);
 
 
-       Charge charge = VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
+        Charge charge = VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
                 vxStripeConfig.stripeAccountId,
                 params.entryPrice,
                 params.currency);
 
         Long createTimeStamp = new Date().getTime();
+
+        // create event
         VxEvent vxEvent = VxEvent.builder()
                 .vxUserId(vxUser.id)
                 .state(VxEvent.State.openForRegistration)
@@ -65,8 +68,18 @@ public class EventEndpoint {
                 .entryPrice(params.entryPrice)
                 .createTimeStamp(createTimeStamp)
                 .build();
-
         VxDsService.persist(vxEvent, systemService.getVxBankDatastore(), VxEvent.class);
+
+        // create event payment
+
+        VxEventPayment vxEventPayment = VxEventPayment.builder()
+                .vxEventId(vxEvent.id)
+                .vxUserId(vxUser.id)
+                .type(VxEventPayment.Type.credit)
+                .state(VxEventPayment.State.complete)
+                .description("Event seed funds added by event creator: stripeChargeId" + charge.getId())
+                .build();
+        VxDsService.persist(vxEventPayment, systemService.getVxBankDatastore(), VxEventPayment.class);
 
         ModelMapper mm = new ModelMapper();
         EventCreateResponse response = mm.map(vxEvent, EventCreateResponse.class);
