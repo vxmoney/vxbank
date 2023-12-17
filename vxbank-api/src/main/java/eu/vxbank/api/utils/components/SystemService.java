@@ -113,7 +113,7 @@ public class SystemService {
                         .getResourceAsStream("vxbank-eu-dev-key.json");
             case PRODUCTION:
                 return getClass().getClassLoader()
-                        .getResourceAsStream("vxbank-eu-prod-key.json")
+                        .getResourceAsStream("vxbank-eu-prod-key.json");
             default:
                 throw new IllegalStateException("Not supported getDatastoreCredentialsInputStream for env: " + environment);
         }
