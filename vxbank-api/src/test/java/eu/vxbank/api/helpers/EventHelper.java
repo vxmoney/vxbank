@@ -2,8 +2,7 @@ package eu.vxbank.api.helpers;
 
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.user.dto.LoginParams;
-import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -19,7 +18,6 @@ public class EventHelper {
                                              int expectedStatusCode) {
 
 
-
         // Set up the HTTP headers
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
@@ -29,10 +27,8 @@ public class EventHelper {
         HttpEntity<EventCreateParams> requestEntity = new HttpEntity<>(params, headers);
 
         // Make the POST request
-        ResponseEntity<EventCreateResponse> responseEntity = restTemplate.exchange("http://localhost:" + port + "/event",
-                HttpMethod.POST,
-                requestEntity,
-                EventCreateResponse.class);
+        ResponseEntity<EventCreateResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/event", HttpMethod.POST, requestEntity, EventCreateResponse.class);
 
         // check status code
         int statusCode = responseEntity.getStatusCodeValue();
@@ -40,6 +36,31 @@ public class EventHelper {
 
         // Extract the response
         EventCreateResponse response = responseEntity.getBody();
+        return response;
+    }
+
+    public static EventGetResponse get(TestRestTemplate restTemplate,
+                                       int port,
+                                       String vxToken,
+                                       Long eventId,
+                                       int expectedStatusCode) {
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the request body and headers
+
+        // Make the POST request
+        ResponseEntity<EventGetResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/event/"+eventId, HttpMethod.GET, null, EventGetResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        EventGetResponse response = responseEntity.getBody();
         return response;
     }
 }

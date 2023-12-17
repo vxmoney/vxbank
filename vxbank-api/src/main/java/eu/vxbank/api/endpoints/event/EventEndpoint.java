@@ -4,16 +4,16 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
+import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.models.VxStripeConfig;
@@ -86,4 +86,21 @@ public class EventEndpoint {
 
         return response;
     }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventGetResponse> get(@PathVariable Long eventId) {
+
+
+        throw new IllegalStateException("Please implement this");
+
+        /*
+        VxEvent vxEvent = VxDsService.getById(eventId, systemService.getVxBankDatastore(), VxEvent.class);
+
+        if (vxEvent != null) {
+            return new ResponseEntity<>(new EventGetResponse(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }*/
+    }
+
 }

@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
+import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -113,6 +114,9 @@ public class EventIntegrationTest {
         Assertions.assertEquals(userA.id, eventCreateResponse.vxUserId);
         Assertions.assertEquals(title, eventCreateResponse.title);
         Assertions.assertEquals(VxIntegrationId.vxGaming, eventCreateResponse.vxIntegrationId);
+
+        EventGetResponse getResponse = EventHelper.get(restTemplate,port,vxTokenUserA, eventCreateResponse.id, 200);
+        Assertions.assertEquals(eventCreateResponse.id, getResponse.id);
     }
 
 
