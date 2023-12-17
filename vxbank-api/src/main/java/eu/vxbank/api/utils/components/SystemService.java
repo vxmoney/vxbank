@@ -60,15 +60,20 @@ public class SystemService {
             case ApiConstants.APPLICATION_ID_LOCALHOST:
                 environment = Environment.LOCALHOST;
                 break;
-
             case "e~vxbank-eu-dev": // just for testing
                 // override projectId we connect datastore to actual development datastore
                 projectId = ApiConstants.APPLICATION_ID_DEVELOPMENT;
+                environment = Environment.DEVELOPMENT;
+                break;
             case ApiConstants.APPLICATION_ID_DEVELOPMENT:
                 environment = Environment.DEVELOPMENT;
                 break;
+            case "e~vxbank-eu-prod":
+                projectId = ApiConstants.APPLICATION_ID_PRODUCTION;
+                environment = Environment.PRODUCTION;
+                break;
             default:
-                throw new IllegalStateException("Not supported projectId=" + projectId);
+                throw new IllegalStateException("SystemService.initEnvironment Not supported projectId=" + projectId);
         }
     }
 

@@ -7,5 +7,6 @@ public class ApiConstants {
 
     public static final String APPLICATION_ID_LOCALHOST = "simple-local-host";
     public static final String APPLICATION_ID_DEVELOPMENT = "vxbank-eu-dev";
+    public static final String APPLICATION_ID_PRODUCTION = "vxbank-eu-prod";
 
 }
