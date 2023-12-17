@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxExampleModel;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -45,6 +46,19 @@ public class PingEndpoint {
         pingResponse.activeFirebaseAuthEmulator = systemService.getActiveFirebaseAuthEmulator();
         pingResponse.applicationEnvironment = systemService.getApplicationEnvironment();
         pingResponse.vxIntegrationConfig = vxIntegrationConfig;
+
+        // datastore test
+        long timeStamp = new Date().getTime();
+        VxExampleModel vxExampleModel = new VxExampleModel();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Env=" + pingResponse.environment + " ");
+        sb.append(" timeStamp=" + timeStamp);
+        vxExampleModel.description = sb.toString();
+        VxDsService.persist(vxExampleModel, systemService.getVxBankDatastore(), VxExampleModel.class);
+
+        pingResponse.datastoreExampleMode = vxExampleModel;
+
         return pingResponse;
     }
 
