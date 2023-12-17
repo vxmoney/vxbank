@@ -79,6 +79,7 @@ public class EventEndpoint {
                 .type(VxEventPayment.Type.credit)
                 .state(VxEventPayment.State.complete)
                 .description("Event seed funds added by event creator: stripeChargeId" + charge.getId())
+                .value(params.entryPrice)
                 .build();
         VxDsService.persist(vxEventPayment, systemService.getVxBankDatastore(), VxEventPayment.class);
 

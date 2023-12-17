@@ -59,6 +59,7 @@ public class EventHelper {
         int statusCode = responseEntity.getStatusCodeValue();
         Assertions.assertEquals(expectedStatusCode, statusCode);
 
-        throw new IllegalStateException("Please implement this");
+        EventGetResponse response = responseEntity.getBody();
+        return response;
     }
 }
