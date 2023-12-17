@@ -115,7 +115,7 @@ public class EventIntegrationTest {
         Assertions.assertEquals(title, eventCreateResponse.title);
         Assertions.assertEquals(VxIntegrationId.vxGaming, eventCreateResponse.vxIntegrationId);
 
-        EventGetResponse getResponse = EventHelper.get(restTemplate,port,vxTokenUserA, 1L, 200);
+        EventGetResponse getResponse = EventHelper.get(restTemplate, port, vxTokenUserA, eventCreateResponse.id, 200);
         Assertions.assertEquals(eventCreateResponse.id, getResponse.id);
     }
 

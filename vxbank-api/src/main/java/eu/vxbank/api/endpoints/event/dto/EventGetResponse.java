@@ -15,4 +15,5 @@ public class EventGetResponse {
     public Long createTimeStamp;
     public String currency;
     public Long entryPrice;
+    public Long availableFunds;
 }

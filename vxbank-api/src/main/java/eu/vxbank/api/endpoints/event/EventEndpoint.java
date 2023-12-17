@@ -22,6 +22,7 @@ import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -91,8 +92,32 @@ public class EventEndpoint {
     @ResponseBody
     public EventGetResponse get( @PathVariable Long eventId) {
 
+        VxEvent vxEvent = VxDsService.getById(eventId, systemService.getVxBankDatastore(),VxEvent.class);
+        if (vxEvent == null){
+            throw new IllegalStateException("Not able to locate event by id = " + eventId);
+        }
 
-        throw new IllegalStateException("Please implement this");
+        ModelMapper mm = new ModelMapper();
+        EventGetResponse response = mm.map(vxEvent, EventGetResponse.class);
+
+        List<VxEventPayment> payments =
+                VxDsService.getVxEventPaymentList(systemService.getVxBankDatastore(),eventId);
+
+        Long totalCredit = payments.stream()
+                .filter(payment -> payment.type == VxEventPayment.Type.credit &&
+                        payment.state == VxEventPayment.State.complete )
+                .mapToLong(VxEventPayment::getValue).sum();
+        Long totalDebit = payments.stream()
+                .filter(payment -> payment.type == VxEventPayment.Type.debit &&
+                        payment.state == VxEventPayment.State.complete )
+                .mapToLong(VxEventPayment::getValue).sum();
+
+        Long availableFunds = totalCredit - totalDebit;
+        response.availableFunds = availableFunds;
+
+
+
+        return response;
 
     }
 

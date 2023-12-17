@@ -36,6 +36,10 @@ public class VxEventPayment {
     @Index
     public Type type;
 
+    public String currency;
+
+    public Long value;
+
     public State state;
 
     public String description;

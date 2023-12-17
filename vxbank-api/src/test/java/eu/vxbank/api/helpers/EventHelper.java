@@ -54,7 +54,7 @@ public class EventHelper {
 
         // Make the GET request to /ping/whoAmI
         ResponseEntity<EventGetResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/event/1", HttpMethod.GET, requestEntity, EventGetResponse.class);
+                "http://localhost:" + port + "/event/" + eventId, HttpMethod.GET, requestEntity, EventGetResponse.class);
 
         int statusCode = responseEntity.getStatusCodeValue();
         Assertions.assertEquals(expectedStatusCode, statusCode);
