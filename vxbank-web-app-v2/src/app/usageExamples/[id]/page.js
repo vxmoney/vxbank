@@ -1,12 +1,25 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Link from "next/link";
 
 export default function UsageExampleId() {
-  let { id, qid } = useParams();
-  //let {qid} = useRouter().query;
+  let { id } = useParams();
+  let { qid } = useParams();
   
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.isReady) {
+      console.log("router.isReady", router.isReady);
+    }else{
+      console.log("router.notReady", router.isReady);
+    }
+  }, [router]);
+
+  
+
   return (
     <div>
       <h1 class="p-2 mb-2 text-lg font-semibold text-gray-900 dark:text-white">

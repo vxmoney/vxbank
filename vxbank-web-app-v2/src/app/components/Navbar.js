@@ -4,8 +4,8 @@ import { UserAuth } from "../context/AuthContext";
 export default function Navbar() {
   const { user, googleSignIn, logOut } = UserAuth();
 
-  console.log("Navbar user", user);
   const handleSignIn = async () => {
+    console.log("Handle sign in");
     console.log("Handle sign in");
     try {
       await googleSignIn();
