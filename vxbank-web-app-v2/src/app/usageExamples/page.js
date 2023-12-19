@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import GetEnvironmentExample from "./getEnvironmentExample";
 import LocalAuthExample from "./localAuth";
 import AppEngineAuthExample from "./appEngineAuth";
+import IdPathParams from "./idPathParams";
 
 export default function UsageExamples() {
   const [activeTab, setActiveTab] = useState("Ping");
@@ -52,12 +53,28 @@ export default function UsageExamples() {
               AppEngine auth
             </a>
           </li>
+
+          <li class="me-2">
+            <a
+              href="#"
+              class={`inline-block p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
+                activeTab === "PathParams"
+                  ? "border-b-2 text-blue-600 border-blue-600 active dark:text-blue-500 dark:border-blue-500"
+                  : ""
+              }`}
+              onClick={() => setActiveTab("PathParams")}
+            >
+              Path params
+            </a>
+          </li>
+
         </ul>
       </div>
 
       {activeTab === "Ping" && <GetEnvironmentExample />}
       {activeTab === "Localhost" && <LocalAuthExample />}
       {activeTab === "AppEngine" && <AppEngineAuthExample />}
+      {activeTab === "PathParams" && <IdPathParams />}
     </div>
   );
 }
