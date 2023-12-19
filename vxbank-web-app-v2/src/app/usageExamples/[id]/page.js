@@ -2,23 +2,25 @@
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+
 import Link from "next/link";
 
 export default function UsageExampleId() {
+  const searchParams = useSearchParams();
+
   let { id } = useParams();
-  let { qid } = useParams();
-  
+  const qid = searchParams.get("qid");
+
   const router = useRouter();
 
   useEffect(() => {
     if (router.isReady) {
       console.log("router.isReady", router.isReady);
-    }else{
+    } else {
       console.log("router.notReady", router.isReady);
     }
   }, [router]);
-
-  
 
   return (
     <div>
