@@ -6,8 +6,7 @@ import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.service.VxDsService;
 import vxbank.datastore.data.utils.TestingUtils;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 public class VxEventTest {
 
@@ -25,10 +24,50 @@ public class VxEventTest {
                 .vxUserId(vxUser.id)
                 .createTimeStamp(createTimeStamp)
                 .currency("eur")
-                .entryPrice(entryPrice).build();
+                .entryPrice(entryPrice)
+                .build();
         VxDsService.persist(vxEvent, ds, VxEvent.class);
 
         Assertions.assertNotNull(vxEvent.id);
+    }
+
+    @Test
+    void testQueryEvent(){
+        VxUser vxUser = TestingUtils.generatePersistRandomUser(ds);
+        Assertions.assertNotNull(vxUser.id);
+        Long createTimeStamp = new Date().getTime();
+        String uniqueServiceId = String.valueOf(createTimeStamp);
+        Long entryPrice = 1000L; // 2 decimal denomination
+
+        {
+            VxEvent vxEventA = VxEvent.builder()
+                    .vxUserId(vxUser.id)
+                    .createTimeStamp(createTimeStamp)
+                    .currency("eur")
+                    .entryPrice(entryPrice)
+                    .vxIntegrationId(uniqueServiceId)
+                    .state(VxEvent.State.inProgress)
+                    .build();
+            VxDsService.persist(vxEventA, ds, VxEvent.class);
+
+        }
+        {
+            VxEvent vxEventB = VxEvent.builder()
+                    .vxUserId(vxUser.id)
+                    .createTimeStamp(createTimeStamp)
+                    .currency("eur")
+                    .entryPrice(entryPrice)
+                    .vxIntegrationId(uniqueServiceId)
+                    .state(VxEvent.State.openForRegistration)
+                    .build();
+            VxDsService.persist(vxEventB, ds, VxEvent.class);
+
+        }
+
+        List<VxEvent.State> stateList = Arrays.asList(VxEvent.State.inProgress, VxEvent.State.openForRegistration);
+
+        List<VxEvent> vxEventList = VxDsService.searchEvent(ds, uniqueServiceId, stateList);
+        Assertions.assertEquals(2, vxEventList.size());
     }
 
 }

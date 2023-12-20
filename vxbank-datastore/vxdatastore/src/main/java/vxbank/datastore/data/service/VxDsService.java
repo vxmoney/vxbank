@@ -2,14 +2,9 @@ package vxbank.datastore.data.service;
 
 import com.googlecode.objectify.cmd.Query;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxEventParticipant;
-import vxbank.datastore.data.models.VxEventPayment;
-import vxbank.datastore.data.models.VxModel;
-import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.models.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class VxDsService {
     public static VxUser persist(VxUser vxUser, VxBankDatastore vd) {
@@ -102,5 +97,29 @@ public class VxDsService {
 
 
         return list;
+    }
+
+
+    public static List<VxEvent> searchEvent(VxBankDatastore ds,
+                                            String vxIntegrationId,
+                                            List<VxEvent.State> stateList) {
+        Query<VxEvent> query = ds.ofy.load()
+                .type(VxEvent.class);
+
+        query = query.filter("vxIntegrationId", vxIntegrationId);
+
+        VxEvent.State[] eventValues = VxEvent.State.values();
+        Set<VxEvent.State> eventStates = new HashSet<>(Arrays.asList(eventValues));
+        for (VxEvent.State state: stateList){
+            eventStates.remove(state);
+        }
+        for (VxEvent.State state: eventStates){
+            query.filter("state !=", state);
+        }
+
+
+        query = query.chunkAll();
+        List<VxEvent> eventList = query.list();
+        return eventList;
     }
 }
