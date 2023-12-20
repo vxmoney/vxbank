@@ -2,6 +2,8 @@ package eu.vxbank.api.ping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
+import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
+import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -50,11 +52,10 @@ public class PingIntegrationTest {
         String path = String.format("http://localhost:%d/ping/generateFirebaseIdToken", port);
 
         PingResponse pingResponse = this.restTemplate.getForObject(path, PingResponse.class);
-        Assertions.assertNotNull(pingResponse.testFirebaseIdToken );
+        Assertions.assertNotNull(pingResponse.testFirebaseIdToken);
     }
 
     private LoginResponse setupUser(String stripeId) throws FirebaseAuthException, JsonProcessingException {
-
 
 
         String email = RandomUtil.generateRandomEmail();
@@ -79,7 +80,8 @@ public class PingIntegrationTest {
         VxBankDatastore ds = systemService.getVxBankDatastore();
         SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeId);
 
-        loginResponse = PingHelper.whoAmI(vxToken,restTemplate,port,200);
+        loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
+
         return loginResponse;
 
     }
@@ -92,6 +94,19 @@ public class PingIntegrationTest {
 
         LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
 
+        PingRequestFundsParams params = PingRequestFundsParams.builder()
+                .userId(loginResponse.id)
+                .amount(1000L)
+                .currency("eur")
+                .build();
+
+        PingRequestFundsResponse requestFundsResponse = PingHelper.requestFunds(restTemplate,
+                port,
+                loginResponse.vxToken,
+                params,
+                200);
+
+        Assertions.assertNotNull(requestFundsResponse);
 
     }
 }

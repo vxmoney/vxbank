@@ -1,5 +1,10 @@
 package eu.vxbank.api.helpers;
 
+import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
+import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
+import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
+import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
+import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -35,10 +40,7 @@ public class PingHelper {
 
     }
 
-    public static PingResponse getEnvironment(
-                                      TestRestTemplate restTemplate,
-                                      int port,
-                                      int expectedStatusCode) {
+    public static PingResponse getEnvironment(TestRestTemplate restTemplate, int port, int expectedStatusCode) {
 
         HttpHeaders headers = new HttpHeaders();
 
@@ -58,4 +60,34 @@ public class PingHelper {
     }
 
 
+    public static PingRequestFundsResponse requestFunds(TestRestTemplate restTemplate,
+                                                        int port,
+                                                        String vxToken,
+                                                        PingRequestFundsParams params,
+                                                        int expectedStatusCode) {
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<PingRequestFundsParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<PingRequestFundsResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/ping/requestFunds",
+                HttpMethod.POST,
+                requestEntity,
+                PingRequestFundsResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        PingRequestFundsResponse response = responseEntity.getBody();
+        return response;
+
+    }
 }
