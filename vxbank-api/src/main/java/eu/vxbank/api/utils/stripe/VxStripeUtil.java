@@ -10,6 +10,7 @@ import com.stripe.param.AccountLinkCreateParams;
 import com.stripe.param.ChargeCreateParams;
 import com.stripe.param.TransferCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
+import eu.vxbank.api.endpoints.user.dto.Funds;
 import vxbank.datastore.data.models.VxPayment;
 
 import java.util.*;
@@ -94,43 +95,66 @@ public class VxStripeUtil {
     }
 
     public static Charge chargeConnectedAccount(String stripeSecretKey,
-                                              String connectedAccountId,
-                                              Long price,
-                                              String currency) throws StripeException {
+                                                String connectedAccountId,
+                                                Long price,
+                                                String currency) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
-        Account account = Account.retrieve(connectedAccountId);
 
-        RequestOptions requestOptions =
-                RequestOptions.builder().setStripeAccount(connectedAccountId).build();
+        RequestOptions requestOptions = RequestOptions.builder()
+                .setStripeAccount(connectedAccountId)
+                .build();
 
         Balance balance = Balance.retrieve(requestOptions);
 
-        Balance.Available availableFunds = balance.getAvailable().stream().filter(available -> available.getCurrency().equals(currency))
-                .findAny().get();
-        if (availableFunds.getAmount() < price){
+        Balance.Available availableFunds = balance.getAvailable()
+                .stream()
+                .filter(available -> available.getCurrency()
+                        .equals(currency))
+                .findAny()
+                .get();
+        if (availableFunds.getAmount() < price) {
             throw new IllegalStateException("Not sufficient funds to pay for this transaction");
         }
 
 
-        ChargeCreateParams params =
-                ChargeCreateParams.builder()
-                        .setAmount(price)
-                        .setCurrency(currency)
-                        .setSource(connectedAccountId)
-                        .build();
-
+        ChargeCreateParams params = ChargeCreateParams.builder()
+                .setAmount(price)
+                .setCurrency(currency)
+                .setSource(connectedAccountId)
+                .build();
 
 
         Charge charge = Charge.create(params);
 
-        if (!charge.getStatus().equals("succeeded")){
+        if (!charge.getStatus()
+                .equals("succeeded")) {
             throw new IllegalStateException("Charge not succeeded");
         }
-        if (!charge.getCaptured()){
+        if (!charge.getCaptured()) {
             throw new IllegalStateException("Not able to capture intended funds");
         }
 
         return charge;
+    }
+
+    public static List<Funds> getFundsList(String stripeSecretKey, String stripeAccountId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        Account account = Account.retrieve(stripeAccountId);
+        RequestOptions requestOptions = RequestOptions.builder()
+                .setStripeAccount(stripeAccountId)
+                .build();
+
+        Balance balance = Balance.retrieve(requestOptions);
+
+        List<Balance.Available> availableList = balance.getAvailable();
+        List<Funds> availableFundsList = balance.getAvailable()
+                .stream()
+                .map(available -> Funds.builder()
+                        .amount(available.getAmount())
+                        .currency(available.getCurrency())
+                        .build())
+                .toList();
+        return availableFundsList;
     }
 }
