@@ -81,6 +81,7 @@ public class PingIntegrationTest {
         SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeId);
 
         loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
+        loginResponse.vxToken = vxToken;
 
         return loginResponse;
 
