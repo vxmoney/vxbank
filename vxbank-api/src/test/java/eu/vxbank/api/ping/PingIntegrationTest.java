@@ -7,6 +7,7 @@ import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
+import eu.vxbank.api.endpoints.user.dto.Funds;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.PingHelper;
 import eu.vxbank.api.helpers.RandomUtil;
@@ -94,6 +95,11 @@ public class PingIntegrationTest {
         // stripe id: acct_1OPQvwPmPYe3loud
 
         LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
+        Funds initialFunds = loginResponse.availableFundsList.stream()
+                .filter(fItem -> fItem.getCurrency()
+                        .equals("eur"))
+                .findFirst()
+                .get();
 
         PingRequestFundsParams params = PingRequestFundsParams.builder()
                 .userId(loginResponse.id)
@@ -108,6 +114,14 @@ public class PingIntegrationTest {
                 200);
 
         Assertions.assertNotNull(requestFundsResponse);
+
+        Funds funds = requestFundsResponse.fundsList.stream()
+                .filter(fItem -> fItem.getCurrency()
+                        .equals("eur"))
+                .findFirst()
+                .get();
+        Assertions.assertTrue(funds.amount > initialFunds.amount);
+
 
     }
 }

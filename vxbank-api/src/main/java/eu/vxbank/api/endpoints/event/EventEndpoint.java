@@ -119,8 +119,6 @@ public class EventEndpoint {
         Long availableFunds = totalCredit - totalDebit;
         response.availableFunds = availableFunds;
 
-
-
         return response;
 
     }
