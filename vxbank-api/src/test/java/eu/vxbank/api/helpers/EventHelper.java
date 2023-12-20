@@ -1,9 +1,6 @@
 package eu.vxbank.api.helpers;
 
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
-import eu.vxbank.api.endpoints.event.dto.EventSearchResponse;
+import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import org.junit.jupiter.api.Assertions;
@@ -111,6 +108,32 @@ public class EventHelper {
         Assertions.assertEquals(expectedStatusCode, statusCode);
 
         EventSearchResponse response = responseEntity.getBody();
+        return response;
+    }
+
+    public static EventJoinResponse join(TestRestTemplate restTemplate,
+                                         int port,
+                                         String vxToken,
+                                         EventJoinParams params,
+                                         int expectedStatusCode) {
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<EventJoinParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<EventJoinResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/event/join", HttpMethod.POST, requestEntity, EventJoinResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        EventJoinResponse response = responseEntity.getBody();
         return response;
     }
 }

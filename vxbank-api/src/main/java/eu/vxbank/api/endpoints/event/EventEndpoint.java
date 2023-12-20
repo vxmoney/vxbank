@@ -2,10 +2,7 @@ package eu.vxbank.api.endpoints.event;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
-import eu.vxbank.api.endpoints.event.dto.EventSearchResponse;
+import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
@@ -93,6 +90,62 @@ public class EventEndpoint {
 
         return response;
     }
+
+
+    @PostMapping("/join")
+    public EventJoinResponse join(Authentication auth, @RequestBody EventJoinParams params) throws
+            StripeException {
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        if (!Objects.equals(vxUser.id, params.vxUserId)) {
+            throw new IllegalStateException("You can not join events for someone else");
+        }
+
+        VxEvent vxEvent = VxDsService.getById(params.eventId, systemService.getVxBankDatastore(),VxEvent.class);
+
+        VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
+                        new HashMap<>(),
+                        systemService.getVxBankDatastore(),
+                        VxStripeConfig.class)
+                .get(0);
+
+
+        Charge charge = VxStripeUtil.chargeConnectedAccount(stripeKeys.stripeSecretKey,
+                vxStripeConfig.stripeAccountId,
+                vxEvent.entryPrice,
+                vxEvent.currency);
+
+        Long createTimeStamp = new Date().getTime();
+
+
+
+        // create event payment
+        VxEventPayment vxEventPayment = VxEventPayment.builder()
+                .vxEventId(vxEvent.id)
+                .vxUserId(vxUser.id)
+                .type(VxEventPayment.Type.credit)
+                .state(VxEventPayment.State.complete)
+                .description("Event join: stripeChargeId" + charge.getId())
+                .value(vxEvent.entryPrice)
+                .build();
+        VxDsService.persist(vxEventPayment, systemService.getVxBankDatastore(), VxEventPayment.class);
+
+        // create participant
+        VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
+                .vxUserId(vxUser.id)
+                .vxEventId(vxEvent.id)
+                .state(VxEventParticipant.State.active)
+                .build();
+        VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(), VxEventParticipant.class);
+
+        ModelMapper mm = new ModelMapper();
+        EventJoinResponse response = mm.map(vxEvent, EventJoinResponse.class);
+
+        throw new IllegalStateException("Please count all participants");
+    }
+
+
+
 
     @GetMapping("/{eventId}")
     @ResponseBody

@@ -3,15 +3,13 @@ package eu.vxbank.api.event;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
-import eu.vxbank.api.endpoints.event.dto.EventSearchResponse;
+import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.*;
+import eu.vxbank.api.sidehelpers.SideCompleteUser;
 import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
@@ -167,7 +165,83 @@ public class EventIntegrationTest {
                 limit,
                 200);
         Assertions.assertNotNull(eventSearchResponse);
-        System.out.println("Total events in emulator: "+ eventSearchResponse.eventList.size());
+        System.out.println("Total events in emulator: " + eventSearchResponse.eventList.size());
+    }
+
+    //acct_1OPVGOPkbRPH6pWE UserA
+    //acct_1OPVKOBU1TJus18q UserB
+
+    @Test
+    public void testJoin() throws StripeException, FirebaseAuthException, JsonProcessingException {
+
+        String stripeIdA = "acct_1OPVGOPkbRPH6pWE";
+        LoginResponse vxLoginA = SideCompleteUser.setupUser(stripeIdA,
+                restTemplate,
+                port,
+                systemService.getVxBankDatastore());
+
+        String stripeIdB = "acct_1OPVKOBU1TJus18q";
+        LoginResponse vxLoginB = SideCompleteUser.setupUser(stripeIdB,
+                restTemplate,
+                port,
+                systemService.getVxBankDatastore());
+
+
+        EventCreateResponse createEventResponse = create1V1Event(restTemplate,
+                port,
+                systemService.getVxBankDatastore(),
+                stripeIdA,
+                vxLoginA,
+                1000L,
+                "eur");
+
+        // join the event
+        EventJoinParams params = EventJoinParams.builder()
+                .eventId(createEventResponse.id)
+                .vxUserId(vxLoginB.id)
+                .build();
+
+        EventHelper.join(restTemplate, port, vxLoginB.vxToken, params, 500);
+        VxStripeUtil.sendFundsToStripeAccount(stripeDevSecretKey,
+                stripeIdB,
+                createEventResponse.entryPrice,
+                createEventResponse.currency);
+
+        EventJoinResponse joinResponse = EventHelper.join(restTemplate, port, vxLoginB.vxToken, params, 200);
+        Assertions.assertNotNull(joinResponse);
+
+
+    }
+
+    private EventCreateResponse create1V1Event(TestRestTemplate restTemplate,
+                                               int port,
+                                               VxBankDatastore vxBankDatastore,
+                                               String stripeIdA,
+                                               LoginResponse loginResponse,
+                                               Long eventPrice,
+                                               String currency) throws StripeException {
+        // send funds
+        VxStripeUtil.sendFundsToStripeAccount(stripeDevSecretKey, stripeIdA, eventPrice, currency);
+
+        String title = "Event " + loginResponse.id;
+        EventCreateParams params = EventCreateParams.builder()
+                .vxUserId(loginResponse.id)
+                .type(VxEvent.Type.payed1V1)
+                .vxIntegrationId(VxIntegrationId.vxGaming)
+                .title(title)
+                .currency(currency)
+                .entryPrice(eventPrice)
+                .build();
+
+        EventCreateResponse eventCreateResponse = EventHelper.create(restTemplate,
+                port,
+                loginResponse.vxToken,
+                params,
+                200);
+
+        return eventCreateResponse;
+
+
     }
 
 
