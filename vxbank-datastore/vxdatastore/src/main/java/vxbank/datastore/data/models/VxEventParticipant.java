@@ -27,6 +27,6 @@ public class VxEventParticipant {
     public Long vxEventId;
 
     @Index
-    public State type;
+    public State state;
 
 }

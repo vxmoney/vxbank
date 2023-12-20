@@ -32,6 +32,12 @@ public class VxEventParticipantTest {
         VxDsService.persist(vxEvent, ds, VxEvent.class);
 
         // event participant
-
+        VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
+                .vxUserId(vxUser.id)
+                .vxEventId(vxEvent.id)
+                .state(VxEventParticipant.State.active)
+                .build();
+        VxDsService.persist(vxEventParticipant,ds,VxEventParticipant.class);
+        Assertions.assertNotNull(vxEventParticipant.id);
     }
 }
