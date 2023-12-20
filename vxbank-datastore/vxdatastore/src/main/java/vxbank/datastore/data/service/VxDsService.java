@@ -122,4 +122,13 @@ public class VxDsService {
         List<VxEvent> eventList = query.list();
         return eventList;
     }
+
+    public static List<VxEventParticipant> getParticipantsByEventId(VxBankDatastore ds,
+                                                          Long vxEventId){
+        Query<VxEventParticipant> query = ds.ofy.load().type(VxEventParticipant.class);
+        query = query.filter("vxEventId", vxEventId);
+        List<VxEventParticipant> participantList = query.chunkAll().list();
+        return participantList;
+    }
+
 }

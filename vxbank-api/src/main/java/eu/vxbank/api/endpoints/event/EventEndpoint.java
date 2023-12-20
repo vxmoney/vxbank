@@ -93,15 +93,14 @@ public class EventEndpoint {
 
 
     @PostMapping("/join")
-    public EventJoinResponse join(Authentication auth, @RequestBody EventJoinParams params) throws
-            StripeException {
+    public EventJoinResponse join(Authentication auth, @RequestBody EventJoinParams params) throws StripeException {
         VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
 
         if (!Objects.equals(vxUser.id, params.vxUserId)) {
             throw new IllegalStateException("You can not join events for someone else");
         }
 
-        VxEvent vxEvent = VxDsService.getById(params.eventId, systemService.getVxBankDatastore(),VxEvent.class);
+        VxEvent vxEvent = VxDsService.getById(params.eventId, systemService.getVxBankDatastore(), VxEvent.class);
 
         VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
                         new HashMap<>(),
@@ -116,7 +115,6 @@ public class EventEndpoint {
                 vxEvent.currency);
 
         Long createTimeStamp = new Date().getTime();
-
 
 
         // create event payment
@@ -141,10 +139,16 @@ public class EventEndpoint {
         ModelMapper mm = new ModelMapper();
         EventJoinResponse response = mm.map(vxEvent, EventJoinResponse.class);
 
-        throw new IllegalStateException("Please count all participants");
+        List<VxEventParticipant> participantList =
+                VxDsService.getParticipantsByEventId(systemService.getVxBankDatastore(),
+                vxEvent.id);
+        participantList = participantList.stream()
+                .filter(p -> p.state == VxEventParticipant.State.active)
+                .toList();
+        response.eventActiveParticipantsCount = participantList.size();
+
+        return response;
     }
-
-
 
 
     @GetMapping("/{eventId}")
@@ -184,10 +188,9 @@ public class EventEndpoint {
     public EventSearchResponse search(@RequestParam(name = "vxIntegrationId") VxIntegrationId vxIntegrationId,
                                       @RequestParam(name = "stateList") List<VxEvent.State> stateList,
                                       @RequestParam(name = "offset", defaultValue = "0") Long offset,
-                                      @RequestParam(name = "limit", defaultValue = "5") Long limit
-                                  ) {
+                                      @RequestParam(name = "limit", defaultValue = "5") Long limit) {
 
-       List<VxEvent> vxEventList = VxDsService.searchEvent(systemService.getVxBankDatastore(),
+        List<VxEvent> vxEventList = VxDsService.searchEvent(systemService.getVxBankDatastore(),
                 vxIntegrationId.toString(),
                 stateList);
 
