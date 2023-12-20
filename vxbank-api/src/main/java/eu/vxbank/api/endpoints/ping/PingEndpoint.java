@@ -8,7 +8,12 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
+import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
+import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
+import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.endpoints.user.dto.Funds;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -18,15 +23,13 @@ import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.enums.Environment;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxExampleModel;
-import vxbank.datastore.data.models.VxStripeConfig;
+import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
@@ -34,6 +37,7 @@ import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class PingEndpoint {
@@ -157,7 +161,6 @@ public class PingEndpoint {
     public LoginResponse whoAmI(Authentication authentication) throws StripeException {
 
 
-
         Jwt jwtToken = (Jwt) authentication.getPrincipal();
         String email = jwtToken.getClaim("email");
 
@@ -175,15 +178,18 @@ public class PingEndpoint {
             VxStripeConfig config = configList.get(0);
             loginResponse.stripeConfigState = config.state;
 
-           List<Funds>availableFunds =  VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey,
-                    config.stripeAccountId);
-           loginResponse.availableFundsList = availableFunds;
+            List<Funds> availableFunds = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, config.stripeAccountId);
+            loginResponse.availableFundsList = availableFunds;
         }
 
         return loginResponse;
     }
 
-
+    @PostMapping("/ping/requestFunds")
+    public PingRequestFundsResponse requestFunds(Authentication auth, @RequestBody PingRequestFundsParams params) throws
+            StripeException {
+        throw new IllegalStateException("Please implement ");
+    }
 
 
 }

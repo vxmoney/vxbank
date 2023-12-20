@@ -168,48 +168,8 @@ public class UserIntegrationTest {
 
     }
 
-    @Test
-    public void testFaucetRequestFundsTest() throws FirebaseAuthException, JsonProcessingException {
 
 
-        // stripe id: acct_1OPQvwPmPYe3loud
-
-        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
-
-
-
-    }
-
-    private LoginResponse setupUser(String stripeId) throws FirebaseAuthException, JsonProcessingException {
-
-
-
-        String email = RandomUtil.generateRandomEmail();
-        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
-
-        LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
-        Assertions.assertEquals(email, loginResponse.email);
-
-        VxUser vxUser = new VxUser();
-        vxUser.id = loginResponse.id;
-        vxUser.email = email;
-        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
-        initiateConfigParams.userId = vxUser.id;
-        StripeConfigInitiateConfigResponse initiateConfigResponse = StripeConfigHelper.initiateConfig(vxToken,
-                initiateConfigParams,
-                restTemplate,
-                port,
-                200);
-
-        Long vxUserId = vxUser.id;
-
-        VxBankDatastore ds = systemService.getVxBankDatastore();
-        SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeId);
-
-        loginResponse = PingHelper.whoAmI(vxToken,restTemplate,port,200);
-        return loginResponse;
-
-    }
 
 
 }
