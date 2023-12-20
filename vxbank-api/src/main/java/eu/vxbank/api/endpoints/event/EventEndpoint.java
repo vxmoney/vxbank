@@ -134,7 +134,6 @@ public class EventEndpoint {
                                       @RequestParam(name = "limit", defaultValue = "5") Long limit
                                   ) {
 
-
        List<VxEvent> vxEventList = VxDsService.searchEvent(systemService.getVxBankDatastore(),
                 vxIntegrationId.toString(),
                 stateList);
