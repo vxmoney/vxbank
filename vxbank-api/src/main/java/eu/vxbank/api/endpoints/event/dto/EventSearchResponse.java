@@ -5,8 +5,8 @@ import vxbank.datastore.data.models.VxEvent;
 import java.util.List;
 
 public class EventSearchResponse {
-    int offset;
-    int limit;
-    int totalCount;
-    List<VxEvent> eventList;
+   public int offset;
+    public int limit;
+    public int totalCount;
+    public List<VxEvent> eventList;
 }

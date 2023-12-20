@@ -5,6 +5,7 @@ import com.stripe.model.Charge;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
+import eu.vxbank.api.endpoints.event.dto.EventSearchResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
@@ -127,13 +128,21 @@ public class EventEndpoint {
 
     @GetMapping
     @ResponseBody
-    public EventGetResponse search(@RequestParam(name = "vxIntegrationId") VxIntegrationId vxIntegrationId,
-                                   @RequestParam(name = "stateList") List<VxEvent.State> stateList,
-                                   @RequestParam(name = "offset", defaultValue = "0") Long offset,
-                                   @RequestParam(name = "limit", defaultValue = "5") Long limit
+    public EventSearchResponse search(@RequestParam(name = "vxIntegrationId") VxIntegrationId vxIntegrationId,
+                                      @RequestParam(name = "stateList") List<VxEvent.State> stateList,
+                                      @RequestParam(name = "offset", defaultValue = "0") Long offset,
+                                      @RequestParam(name = "limit", defaultValue = "5") Long limit
                                   ) {
 
-        throw new IllegalStateException("Please implement this");
+
+       List<VxEvent> vxEventList = VxDsService.searchEvent(systemService.getVxBankDatastore(),
+                vxIntegrationId.toString(),
+                stateList);
+
+        EventSearchResponse searchResponse = new EventSearchResponse();
+        searchResponse.eventList = vxEventList;
+
+        return searchResponse;
 
     }
 

@@ -149,12 +149,10 @@ public class EventIntegrationTest {
                 .entryPrice(1000L)
                 .build();
 
-
         // add some funds and try to create again
         VxStripeUtil.sendFundsToStripeAccount(stripeDevSecretKey, stripeAccountIdUserA, eventPrice, "eur");
 
         EventCreateResponse eventCreateResponse = EventHelper.create(restTemplate, port, vxTokenUserA, params, 200);
-
 
         int offset = 0;
         int limit = 10000;
@@ -169,6 +167,7 @@ public class EventIntegrationTest {
                 limit,
                 200);
         Assertions.assertNotNull(eventSearchResponse);
+        System.out.println("Total events in emulator: "+ eventSearchResponse.eventList.size());
     }
 
 
