@@ -25,7 +25,6 @@ public class EventParticipantEndpoint {
     @ResponseBody
     public EventParticipantGetByEventIdResponse getByEventId(@PathVariable Long eventId) {
 
-
         VxBankDatastore ds = systemService.getVxBankDatastore();
 
         //VxDsService.get(params.vxPaymentId, VxPayment.class, ds);
