@@ -7,8 +7,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.helpers.PingHelper;
+import eu.vxbank.api.helpers.RandomUtil;
+import eu.vxbank.api.helpers.StripeConfigHelper;
+import eu.vxbank.api.helpers.UserHelper;
+import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
+import eu.vxbank.api.utils.components.SystemService;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.junit.jupiter.api.Assertions;
@@ -21,8 +29,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
 
+import java.util.Map;
 import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +45,9 @@ public class UserIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    SystemService systemService;
 
     private VxUser createUserParams() {
         VxUser vxUser = new VxUser();
@@ -152,6 +165,49 @@ public class UserIntegrationTest {
         // Extract the response
         LoginResponse responseBody = responseEntity.getBody();
         return responseBody;
+
+    }
+
+    @Test
+    public void testFaucetRequestFundsTest() throws FirebaseAuthException, JsonProcessingException {
+
+
+        // stripe id: acct_1OPQvwPmPYe3loud
+
+        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
+
+
+
+    }
+
+    private LoginResponse setupUser(String stripeId) throws FirebaseAuthException, JsonProcessingException {
+
+
+
+        String email = RandomUtil.generateRandomEmail();
+        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
+
+        LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
+        Assertions.assertEquals(email, loginResponse.email);
+
+        VxUser vxUser = new VxUser();
+        vxUser.id = loginResponse.id;
+        vxUser.email = email;
+        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
+        initiateConfigParams.userId = vxUser.id;
+        StripeConfigInitiateConfigResponse initiateConfigResponse = StripeConfigHelper.initiateConfig(vxToken,
+                initiateConfigParams,
+                restTemplate,
+                port,
+                200);
+
+        Long vxUserId = vxUser.id;
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeId);
+
+        loginResponse = PingHelper.whoAmI(vxToken,restTemplate,port,200);
+        return loginResponse;
 
     }
 
