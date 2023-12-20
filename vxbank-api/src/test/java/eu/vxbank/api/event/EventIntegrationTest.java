@@ -157,19 +157,16 @@ public class EventIntegrationTest {
 
 
         int offset = 0;
-        int maxPageSize = 5;
-        List<VxIntegrationId> vxIntegrationIdList = Arrays.asList(VxIntegrationId.vxGaming, VxIntegrationId.vxBank);
+        int limit = 10000;
         List<VxEvent.State> stateList = Arrays.asList(VxEvent.State.inProgress, VxEvent.State.openForRegistration);
-        List<VxEvent.Type> typeList = Arrays.asList(VxEvent.Type.payed1V1);
 
         EventSearchResponse eventSearchResponse = EventHelper.search(restTemplate,
                 port,
                 vxTokenUserA,
-                vxIntegrationIdList,
+                VxIntegrationId.vxGaming,
                 stateList,
-                typeList,
                 offset,
-                maxPageSize,
+                limit,
                 200);
         Assertions.assertNotNull(eventSearchResponse);
     }

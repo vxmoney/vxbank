@@ -75,9 +75,8 @@ public class EventHelper {
     public static EventSearchResponse search(TestRestTemplate restTemplate,
                                              int port,
                                              String vxToken,
-                                             List<VxIntegrationId> vxIntegrationIdList,
+                                             VxIntegrationId vxIntegrationId,
                                              List<VxEvent.State> stateList,
-                                             List<VxEvent.Type> typeList,
                                              int offset,
                                              int limit,
                                              int expectedStatusCode) {
@@ -92,11 +91,10 @@ public class EventHelper {
         // Build the URL with query parameters
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/event")
                 .queryParam("offset", offset)
-                .queryParam("limit", limit);
+                .queryParam("limit", limit)
+                .queryParam("vxIntegrationId", vxIntegrationId);
 
-        if (!typeList.isEmpty()){
-            builder.queryParam("typeList", typeList);
-        }
+
         if (!stateList.isEmpty()){
             builder.queryParam("stateList", stateList);
         }

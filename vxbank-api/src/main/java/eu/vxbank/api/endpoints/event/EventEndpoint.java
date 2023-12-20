@@ -7,6 +7,7 @@ import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,8 +127,11 @@ public class EventEndpoint {
 
     @GetMapping
     @ResponseBody
-    public EventGetResponse search(@RequestParam(name = "stateList") List<VxEvent.State> stateList,
-                                   @RequestParam(name = "typeList") List<VxEvent.Type> typeList) {
+    public EventGetResponse search(@RequestParam(name = "vxIntegrationId") VxIntegrationId vxIntegrationId,
+                                   @RequestParam(name = "stateList") List<VxEvent.State> stateList,
+                                   @RequestParam(name = "offset", defaultValue = "0") Long offset,
+                                   @RequestParam(name = "limit", defaultValue = "5") Long limit
+                                  ) {
 
         throw new IllegalStateException("Please implement this");
 
