@@ -12,10 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import vxbank.datastore.data.models.VxEvent;
-import vxbank.datastore.data.models.VxEventPayment;
-import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
@@ -70,7 +67,6 @@ public class EventEndpoint {
         VxDsService.persist(vxEvent, systemService.getVxBankDatastore(), VxEvent.class);
 
         // create event payment
-
         VxEventPayment vxEventPayment = VxEventPayment.builder()
                 .vxEventId(vxEvent.id)
                 .vxUserId(vxUser.id)
@@ -80,6 +76,15 @@ public class EventEndpoint {
                 .value(params.entryPrice)
                 .build();
         VxDsService.persist(vxEventPayment, systemService.getVxBankDatastore(), VxEventPayment.class);
+
+        // create participant
+        VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
+                .vxUserId(vxUser.id)
+                .vxEventId(vxEvent.id)
+                .state(VxEventParticipant.State.active)
+                .build();
+        VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(),VxEventParticipant.class);
+
 
         ModelMapper mm = new ModelMapper();
         EventCreateResponse response = mm.map(vxEvent, EventCreateResponse.class);
