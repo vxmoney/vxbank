@@ -83,7 +83,7 @@ public class EventEndpoint {
                 .vxEventId(vxEvent.id)
                 .state(VxEventParticipant.State.active)
                 .build();
-        VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(),VxEventParticipant.class);
+        VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(), VxEventParticipant.class);
 
 
         ModelMapper mm = new ModelMapper();
@@ -94,27 +94,28 @@ public class EventEndpoint {
 
     @GetMapping("/{eventId}")
     @ResponseBody
-    public EventGetResponse get( @PathVariable Long eventId) {
+    public EventGetResponse get(@PathVariable Long eventId) {
 
-        VxEvent vxEvent = VxDsService.getById(eventId, systemService.getVxBankDatastore(),VxEvent.class);
-        if (vxEvent == null){
+        VxEvent vxEvent = VxDsService.getById(eventId, systemService.getVxBankDatastore(), VxEvent.class);
+        if (vxEvent == null) {
             throw new IllegalStateException("Not able to locate event by id = " + eventId);
         }
 
         ModelMapper mm = new ModelMapper();
         EventGetResponse response = mm.map(vxEvent, EventGetResponse.class);
 
-        List<VxEventPayment> payments =
-                VxDsService.getVxEventPaymentList(systemService.getVxBankDatastore(),eventId);
+        List<VxEventPayment> payments = VxDsService.getVxEventPaymentList(systemService.getVxBankDatastore(), eventId);
 
         Long totalCredit = payments.stream()
                 .filter(payment -> payment.type == VxEventPayment.Type.credit &&
-                        payment.state == VxEventPayment.State.complete )
-                .mapToLong(VxEventPayment::getValue).sum();
+                        payment.state == VxEventPayment.State.complete)
+                .mapToLong(VxEventPayment::getValue)
+                .sum();
         Long totalDebit = payments.stream()
                 .filter(payment -> payment.type == VxEventPayment.Type.debit &&
-                        payment.state == VxEventPayment.State.complete )
-                .mapToLong(VxEventPayment::getValue).sum();
+                        payment.state == VxEventPayment.State.complete)
+                .mapToLong(VxEventPayment::getValue)
+                .sum();
 
         Long availableFunds = totalCredit - totalDebit;
         response.availableFunds = availableFunds;
@@ -125,9 +126,8 @@ public class EventEndpoint {
 
     @GetMapping
     @ResponseBody
-    public EventGetResponse search(
-
-    ) {
+    public EventGetResponse search(@RequestParam(name = "stateList") List<VxEvent.State> stateList,
+                                   @RequestParam(name = "typeList") List<VxEvent.Type> typeList) {
 
         throw new IllegalStateException("Please implement this");
 
