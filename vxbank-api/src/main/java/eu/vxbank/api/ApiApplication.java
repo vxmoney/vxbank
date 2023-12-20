@@ -1,6 +1,7 @@
 package eu.vxbank.api;
 
 import eu.vxbank.api.utils.components.SystemService;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxExampleModel;
 import vxbank.datastore.data.service.VxDsService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
+@OpenAPIDefinition(servers = {@Server(url = "/", description = "Default Server URL")})
 @RestController
 @SpringBootApplication
 public class ApiApplication {
