@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class PingRequestFundsParams {
-    Long userId;
-    Long amount;
-    String currency;
+    public Long userId;
+    public Long amount;
+    public String currency;
 
 }

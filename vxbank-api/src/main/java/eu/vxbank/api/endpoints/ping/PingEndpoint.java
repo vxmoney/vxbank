@@ -188,7 +188,25 @@ public class PingEndpoint {
     @PostMapping("/ping/requestFunds")
     public PingRequestFundsResponse requestFunds(Authentication auth, @RequestBody PingRequestFundsParams params) throws
             StripeException {
-        throw new IllegalStateException("Please implement ");
+
+        VxStripeConfig vxStripeConfig = VxDsService.getByUserId(params.userId,
+                        new HashMap<>(),
+                        systemService.getVxBankDatastore(),
+                        VxStripeConfig.class)
+                .get(0);
+
+        VxStripeUtil.sendFundsToStripeAccount(stripeKeys.stripeSecretKey,
+                vxStripeConfig.stripeAccountId,
+                params.amount,
+                params.currency);
+
+        PingRequestFundsResponse response = new PingRequestFundsResponse();
+        response.userId = params.userId;
+
+        List<Funds> fundsList = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, vxStripeConfig.stripeAccountId);
+        response.fundsList = fundsList;
+
+        return response;
     }
 
 
