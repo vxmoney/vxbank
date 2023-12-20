@@ -118,6 +118,8 @@ public class EventIntegrationTest {
         EventGetResponse getResponse = EventHelper.get(restTemplate, port, vxTokenUserA, eventCreateResponse.id, 200);
         Assertions.assertEquals(eventCreateResponse.id, getResponse.id);
         Assertions.assertEquals(eventPrice, getResponse.availableFunds);
+
+        EventParticipantHelper.getByEventId(restTemplate,port,vxTokenUserA,eventCreateResponse.id,200);
     }
 
 
