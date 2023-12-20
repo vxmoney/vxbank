@@ -7,6 +7,7 @@ import vxbank.datastore.data.service.VxDsService;
 import vxbank.datastore.data.utils.TestingUtils;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public class VxEventParticipantTest {
@@ -17,7 +18,7 @@ public class VxEventParticipantTest {
 
 
     @Test
-    void testVxEventParticipant(){
+    void testVxEventParticipant() {
         // user
         VxUser vxUser = TestingUtils.generatePersistRandomUser(ds);
 
@@ -28,7 +29,8 @@ public class VxEventParticipantTest {
                 .vxUserId(vxUser.id)
                 .createTimeStamp(createTimeStamp)
                 .currency("eur")
-                .entryPrice(entryPrice).build();
+                .entryPrice(entryPrice)
+                .build();
         VxDsService.persist(vxEvent, ds, VxEvent.class);
 
         // event participant
@@ -37,7 +39,39 @@ public class VxEventParticipantTest {
                 .vxEventId(vxEvent.id)
                 .state(VxEventParticipant.State.active)
                 .build();
-        VxDsService.persist(vxEventParticipant,ds,VxEventParticipant.class);
+        VxDsService.persist(vxEventParticipant, ds, VxEventParticipant.class);
         Assertions.assertNotNull(vxEventParticipant.id);
     }
+
+    @Test
+    void testGetByEventId() {
+        // user
+        VxUser vxUser = TestingUtils.generatePersistRandomUser(ds);
+
+        // event
+        Long createTimeStamp = new Date().getTime();
+        Long entryPrice = 1000L; // 2 decimal denomination
+        VxEvent vxEvent = VxEvent.builder()
+                .vxUserId(vxUser.id)
+                .createTimeStamp(createTimeStamp)
+                .currency("eur")
+                .entryPrice(entryPrice)
+                .build();
+        VxDsService.persist(vxEvent, ds, VxEvent.class);
+
+        // event participant
+        VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
+                .vxUserId(vxUser.id)
+                .vxEventId(vxEvent.id)
+                .state(VxEventParticipant.State.active)
+                .build();
+        VxDsService.persist(vxEventParticipant, ds, VxEventParticipant.class);
+
+        // get by eventId
+        List<VxEventParticipant> participantList = VxDsService.getListByEventId(ds,
+                vxEvent.id,
+                VxEventParticipant.class);
+        Assertions.assertEquals(1, participantList.size());
+    }
+
 }

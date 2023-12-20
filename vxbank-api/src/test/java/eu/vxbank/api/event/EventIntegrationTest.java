@@ -6,6 +6,7 @@ import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
+import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -119,7 +120,12 @@ public class EventIntegrationTest {
         Assertions.assertEquals(eventCreateResponse.id, getResponse.id);
         Assertions.assertEquals(eventPrice, getResponse.availableFunds);
 
-        EventParticipantHelper.getByEventId(restTemplate,port,vxTokenUserA,eventCreateResponse.id,200);
+        EventParticipantGetByEventIdResponse participantResponse = EventParticipantHelper.getByEventId(restTemplate,
+                port,
+                vxTokenUserA,
+                eventCreateResponse.id,
+                200);
+        Assertions.assertEquals(1, participantResponse.participantList.size() );
     }
 
 

@@ -1,9 +1,14 @@
 package eu.vxbank.api.endpoints.eventparticipant;
 
 import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
+import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
+import eu.vxbank.api.utils.components.SystemService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxEventParticipant;
 import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -13,11 +18,21 @@ import java.util.List;
 @RequestMapping("/eventparticipant")
 public class EventParticipantEndpoint {
 
-    @GetMapping("/getByEventId{eventId}")
+    @Autowired
+    SystemService systemService;
+
+    @GetMapping("/getByEventId/{eventId}")
     @ResponseBody
-    public EventGetResponse getByEventId(@PathVariable Long eventId) {
+    public EventParticipantGetByEventIdResponse getByEventId(@PathVariable Long eventId) {
 
-       throw new IllegalStateException("Please implement this getByEventId");
 
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+
+        //VxDsService.get(params.vxPaymentId, VxPayment.class, ds);
+        List<VxEventParticipant> participantList = VxDsService.getListByEventId(ds, eventId, VxEventParticipant.class);
+
+        EventParticipantGetByEventIdResponse response = new EventParticipantGetByEventIdResponse();
+        response.participantList = participantList;
+        return response;
     }
 }

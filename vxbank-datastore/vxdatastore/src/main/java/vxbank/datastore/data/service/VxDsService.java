@@ -2,6 +2,7 @@ package vxbank.datastore.data.service;
 
 import com.googlecode.objectify.cmd.Query;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxEventParticipant;
 import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.models.VxModel;
 import vxbank.datastore.data.models.VxUser;
@@ -88,6 +89,18 @@ public class VxDsService {
                 .type(VxEventPayment.class)
                 .filter("vxEventId", vxEventId);
         List<VxEventPayment> list = query.chunkAll().list();
+        return list;
+    }
+
+    public static <T> List<T> getListByEventId(VxBankDatastore ds, Long vxEventId, Class<T> vxClass){
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("vxEventId", vxEventId);
+
+        query = query.chunkAll();
+        List<T> list = query.list();
+
+
         return list;
     }
 }
