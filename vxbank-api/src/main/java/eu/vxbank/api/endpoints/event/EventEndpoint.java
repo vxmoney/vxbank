@@ -123,4 +123,14 @@ public class EventEndpoint {
 
     }
 
+    @GetMapping
+    @ResponseBody
+    public EventGetResponse search(
+
+    ) {
+
+        throw new IllegalStateException("Please implement this");
+
+    }
+
 }
