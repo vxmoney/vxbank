@@ -3,10 +3,13 @@ package eu.vxbank.api.event;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.event.dto.EventCloseParams;
+import eu.vxbank.api.endpoints.event.dto.EventCloseResponse;
 import eu.vxbank.api.endpoints.event.dto.EventJoinParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.helpers.EventHelper;
 import eu.vxbank.api.helpers.EventResultHelper;
 import eu.vxbank.api.sidehelpers.SideCompleteUser;
 import eu.vxbank.api.testutils.EventUtils;
@@ -64,24 +67,56 @@ public class Event1V1ResultsIntegrationTest {
                 curency);
 
 
-        // set result
-        Long timeStampCreator = new Date().getTime();
-        EventResultCreateParams creatorParams = EventResultCreateParams.builder()
-                .vxUserId(creator.id)
-                .vxEventId(vxEvent.id)
-                .createTimeStamp(timeStampCreator)
-                .participantId(creator.id)
-                .participantFinalResultPlace(VxEventResult.FinalResultPlace.firstPlace)
-                .prizeValue(600L)
-                .build();
+        // creator set result
+        {
+            Long timeStampCreator = new Date().getTime();
+            EventResultCreateParams creatorParams = EventResultCreateParams.builder()
+                    .vxUserId(creator.id)
+                    .vxEventId(vxEvent.id)
+                    .createTimeStamp(timeStampCreator)
+                    .participantId(creator.id)
+                    .participantFinalResultPlace(VxEventResult.FinalResultPlace.firstPlace)
+                    .prizeValue(600L)
+                    .build();
 
-        EventResultCreateResponse resultResponse = EventResultHelper.create(restTemplate,
+            EventResultCreateResponse resultResponse = EventResultHelper.create(restTemplate,
+                    port,
+                    creator.vxToken,
+                    creatorParams,
+                    200);
+            Assertions.assertNotNull(resultResponse.vxEventId);
+        }
+
+        // participant set result
+        {
+            Long timeStampParticipant = new Date().getTime();
+            EventResultCreateParams participantParams = EventResultCreateParams.builder()
+                    .vxUserId(whoJoins.id)
+                    .vxEventId(vxEvent.id)
+                    .createTimeStamp(timeStampParticipant)
+                    .participantId(creator.id) // confirms that creator is firstPlace
+                    .participantFinalResultPlace(VxEventResult.FinalResultPlace.firstPlace)
+                    .prizeValue(600L)
+                    .build();
+
+            EventResultCreateResponse participantResult = EventResultHelper.create(restTemplate,
+                    port,
+                    creator.vxToken,
+                    participantParams,
+                    200);
+            Assertions.assertNotNull(participantResult.vxEventId);
+        }
+
+        //
+
+        EventCloseParams closeParams = new EventCloseParams();
+        closeParams.vxEventId = vxEvent.id;
+     EventCloseResponse response = EventHelper.closeEvent(restTemplate,
                 port,
                 creator.vxToken,
-                creatorParams,
+             closeParams,
                 200);
-        Assertions.assertNotNull(resultResponse.vxEventId);
-
+        Assertions.assertEquals(VxEvent.State.closed, response.state);
 
 
     }

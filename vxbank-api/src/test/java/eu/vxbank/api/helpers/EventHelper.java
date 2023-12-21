@@ -1,6 +1,8 @@
 package eu.vxbank.api.helpers;
 
 import eu.vxbank.api.endpoints.event.dto.*;
+import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
+import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import org.junit.jupiter.api.Assertions;
@@ -92,14 +94,13 @@ public class EventHelper {
                 .queryParam("vxIntegrationId", vxIntegrationId);
 
 
-        if (!stateList.isEmpty()){
+        if (!stateList.isEmpty()) {
             builder.queryParam("stateList", stateList);
         }
 
 
         // Make the GET request to /ping/whoAmI
-        ResponseEntity<EventSearchResponse> responseEntity = restTemplate.exchange(
-                builder.toUriString(),
+        ResponseEntity<EventSearchResponse> responseEntity = restTemplate.exchange(builder.toUriString(),
                 HttpMethod.GET,
                 requestEntity,
                 EventSearchResponse.class);
@@ -134,6 +135,41 @@ public class EventHelper {
 
         // Extract the response
         EventJoinResponse response = responseEntity.getBody();
+        return response;
+    }
+
+    public static EventCloseResponse closeEvent(TestRestTemplate restTemplate,
+                                                int port,
+                                                String vxToken,
+                                                EventCloseParams params,
+                                                int expectedStatusCode) {
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<EventCloseParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Build the uri
+        // Build the URL with query parameters
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(
+                "http://localhost:" + port + "/event/closeEvent");
+
+
+        // Make the POST request
+        ResponseEntity<EventCloseResponse> responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
+                HttpMethod.POST,
+                requestEntity,
+                EventCloseResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        EventCloseResponse response = responseEntity.getBody();
         return response;
     }
 }

@@ -201,4 +201,12 @@ public class EventEndpoint {
 
     }
 
+    @PostMapping("/closeEvent")
+    public EventJoinResponse closeEvent(Authentication auth, @RequestBody EventJoinParams params) throws StripeException {
+
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        throw new IllegalStateException("Please implement this");
+    }
+
 }
