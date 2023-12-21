@@ -3,6 +3,7 @@ package eu.vxbank.api.endpoints.eventresult;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
+import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vxbank.datastore.data.models.*;
+import vxbank.datastore.data.service.VxDsService;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/eventparticipant")
+@RequestMapping("/eventresult")
 public class EventResultEndpoint {
 
     @Autowired
@@ -23,9 +30,36 @@ public class EventResultEndpoint {
     VxStripeKeys stripeKeys;
 
     @PostMapping
-    public EventCreateResponse create(Authentication auth, @RequestBody EventResultCreateParams params) throws
+    public EventResultCreateResponse create(Authentication auth, @RequestBody EventResultCreateParams params) throws
             StripeException {
-        throw new IllegalStateException("Please implement this");
+
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), params.vxEventId);
+
+        // check current participants
+        List<VxEventParticipant> participantList = VxDsService.getListByEventId(VxEventParticipant.class,
+                systemService.getVxBankDatastore(),
+                params.vxEventId);
+        if (!listContainsUserId(participantList, params.participantId)) {
+            throw new IllegalStateException(
+                    "You are trying to set results for someone that did not participated in event");
+        }
+
+        VxEventResult vxEventResult = params.buildVxEventResult();
+        VxDsService.persist(VxEventResult.class,
+                systemService.getVxBankDatastore(),
+                vxEventResult);
+        EventResultCreateResponse response = EventResultCreateResponse.newInstance(vxEventResult);
+
+        return response;
+    }
+
+    private boolean listContainsUserId(List<VxEventParticipant> list, Long vxUserId) {
+        Optional<VxEventParticipant> optionalParticipant = list.stream()
+                .filter(p -> p.vxUserId.equals(vxUserId))
+                .findFirst();
+        return optionalParticipant.isPresent();
     }
 
 }

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
+import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxEventResult;
 
 @Builder(toBuilder = true)
@@ -18,4 +20,11 @@ public class EventResultCreateParams {
     public Long participantId;
     public VxEventResult.FinalResultPlace participantFinalResultPlace;
     public Long prizeValue;
+
+    public VxEventResult buildVxEventResult(){
+
+        ModelMapper mm = new ModelMapper();
+        VxEventResult eventResult = mm.map(this, VxEventResult.class);
+        return eventResult;
+    }
 }
