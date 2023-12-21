@@ -68,7 +68,7 @@ public class Event1V1ResultsIntegrationTest {
         Long timeStampCreator = new Date().getTime();
         EventResultCreateParams creatorParams = EventResultCreateParams.builder()
                 .vxUserId(creator.id)
-                .vxUserId(vxEvent.id)
+                .vxEventId(vxEvent.id)
                 .createTimeStamp(timeStampCreator)
                 .participantId(creator.id)
                 .participantFinalResultPlace(VxEventResult.FinalResultPlace.firstPlace)
