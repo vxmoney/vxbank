@@ -1,7 +1,6 @@
 package eu.vxbank.api.payment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.vxbank.api.endpoints.payment.dto.DeprecatedCreatePaymentIntentParams;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.testutils.BuildUtils;
@@ -25,7 +24,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TestPayment {
+public class PaymentTest {
 
     @Autowired
     private MockMvc mockMvc;

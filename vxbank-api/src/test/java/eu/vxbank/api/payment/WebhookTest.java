@@ -18,7 +18,7 @@ import java.util.Date;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TestWebhook {
+public class WebhookTest {
 
     @Autowired
     private MockMvc mockMvc;

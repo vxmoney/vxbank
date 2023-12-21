@@ -6,7 +6,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Transfer;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.helpers.PingHelper;
-import eu.vxbank.api.payment.TestPayment;
+import eu.vxbank.api.payment.PaymentTest;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegration;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
@@ -21,7 +21,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 
 /**
  * Use this test to add funds if test fails
- * {@link TestPayment#createPaymentTest()}
+ * {@link PaymentTest#createPaymentTest()}
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OwnershipTest {
