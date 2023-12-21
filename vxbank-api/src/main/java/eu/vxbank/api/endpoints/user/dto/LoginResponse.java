@@ -12,6 +12,7 @@ public class LoginResponse {
     public String vxToken;
     public VxStripeConfig.State stripeConfigState;
     public List<Funds> availableFundsList;
+    public String stripeId;
 
 
 }

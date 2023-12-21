@@ -41,6 +41,7 @@ public class SideCompleteUser {
 
         loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
         loginResponse.vxToken = vxToken;
+        loginResponse.stripeId = stripeId;
 
         return loginResponse;
 
