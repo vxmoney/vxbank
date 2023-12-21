@@ -31,6 +31,7 @@ public class VxEventResult {
     public Long vxUserId;
     @Index
     public Long vxEventId;
+    public State state;
     public Long createTimeStamp;
     public Long updateTimeStamp;
     public Long participantId;

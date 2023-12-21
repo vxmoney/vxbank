@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/event")
@@ -202,11 +200,95 @@ public class EventEndpoint {
     }
 
     @PostMapping("/closeEvent")
-    public EventJoinResponse closeEvent(Authentication auth, @RequestBody EventJoinParams params) throws StripeException {
+    public EventCloseResponse closeEvent(Authentication auth, @RequestBody EventCloseParams params) throws
+            StripeException {
 
-        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+        VxUser currentUser = systemService.validateUserAndStripeConfig(auth);
 
-        throw new IllegalStateException("Please implement this");
+        VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), params.vxEventId);
+        if (VxEvent.Type.payed1V1.equals(vxEvent.type)) {
+            closePayed1v1Event(currentUser, vxEvent);
+        }
+
+        EventCloseResponse response = EventCloseResponse.newInstance(vxEvent);
+        return response;
+
     }
+
+    private boolean userIsParticipant(VxUser vxUser, List<VxEventParticipant> list) {
+        Optional<VxEventParticipant> optionalParticipant = list.stream()
+                .filter(p -> p.vxUserId.equals(vxUser.id) && p.state.equals(VxEventParticipant.State.active))
+                .findFirst();
+        return optionalParticipant.isPresent();
+    }
+
+    private boolean resultsAreGood1v1Results(List<VxEventResult> resultList, List<VxEventParticipant> participantList) {
+        Set<Long> participantSet = participantList.stream()
+                .map(p -> p.vxUserId)
+                .collect(Collectors.toSet());
+
+        // we need 2 participants
+        if (participantSet.size() != 2) {
+            throw new IllegalStateException("We need 2 participatns");
+            //return false;
+        }
+
+        List<VxEventResult> activeResults = resultList.stream()
+                .filter(r -> r.state.equals(VxEventResult.State.active))
+                .collect(Collectors.toList());
+
+        // all participants need to have a proposal
+        Set<Long> whoDidNotUpdatedResults = new HashSet<>(participantSet);
+        activeResults.forEach(r -> whoDidNotUpdatedResults.remove(r.vxEventId));
+        if (whoDidNotUpdatedResults.size() > 0) {
+            throw new IllegalStateException("All participants need to have a proposal");
+            //return false;
+        }
+
+        // all participantFinalResultPlace need to be the same
+        for (VxEventResult result : activeResults) {
+            if (!result.participantFinalResultPlace.equals(VxEventResult.FinalResultPlace.firstPlace)) {
+                throw new IllegalStateException("All participants to to propose the same result");
+                //return false;
+            }
+        }
+
+        // prize value needs to be positive and the same
+        Set<Long> proposedValues = new HashSet<>();
+        for (VxEventResult result : activeResults) {
+            if (result.prizeValue < 0L) {
+                throw new IllegalStateException("All values need to be positive");
+                //return false;
+            }
+            proposedValues.add(result.prizeValue);
+        }
+        if (proposedValues.size() != 1) {
+            throw new IllegalStateException("All values need to be the same");
+            //return false;
+        }
+
+        return true;
+    }
+
+    private void closePayed1v1Event(VxUser currentUser, VxEvent vxEvent) {
+
+        // check current user is participant
+        List<VxEventParticipant> participantList = VxDsService.getListByEventId(VxEventParticipant.class,
+                systemService.getVxBankDatastore(),
+                vxEvent.id);
+        if (!userIsParticipant(currentUser, participantList)) {
+            throw new IllegalStateException("You are not a participant. You are not allowed to close this event");
+        }
+
+        List<VxEventResult> resultList = VxDsService.getListByEventId(VxEventResult.class,
+                systemService.getVxBankDatastore(),
+                vxEvent.id);
+        if (!resultsAreGood1v1Results(resultList, participantList)) {
+            throw new IllegalStateException("Not good 1v1 results");
+        }
+
+        throw new IllegalStateException("Please implement this: close1v1");
+    }
+
 
 }

@@ -15,9 +15,9 @@ public class EventResultCreateResponse {
     public VxEventResult.FinalResultPlace participantFinalResultPlace;
     public Long prizeValue;
 
-    public static EventResultCreateResponse newInstance(VxEventResult object){
+    public static EventResultCreateResponse newInstance(VxEventResult vxEventResult){
         ModelMapper mm = new ModelMapper();
-        EventResultCreateResponse resposne = mm.map(object, EventResultCreateResponse.class);
+        EventResultCreateResponse resposne = mm.map(vxEventResult, EventResultCreateResponse.class);
         return resposne;
     }
 }

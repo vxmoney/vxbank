@@ -47,6 +47,7 @@ public class EventResultEndpoint {
         }
 
         VxEventResult vxEventResult = params.buildVxEventResult();
+        vxEventResult.state = VxEventResult.State.active;
         VxDsService.persist(VxEventResult.class,
                 systemService.getVxBankDatastore(),
                 vxEventResult);

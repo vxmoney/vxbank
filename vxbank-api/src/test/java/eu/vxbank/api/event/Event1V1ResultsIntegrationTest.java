@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.event.dto.EventCloseParams;
 import eu.vxbank.api.endpoints.event.dto.EventCloseResponse;
-import eu.vxbank.api.endpoints.event.dto.EventJoinParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
