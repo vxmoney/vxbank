@@ -93,6 +93,7 @@ public class VxBankDatastore {
         factory.register(VxEvent.class);
         factory.register(VxEventPayment.class);
         factory.register(VxEventParticipant.class);
+        factory.register(VxEventResult.class);
     }
 
     public Boolean getInitialized() {
