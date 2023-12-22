@@ -119,7 +119,7 @@ public class EventEndpoint {
         VxEventPayment vxEventPayment = VxEventPayment.builder()
                 .vxEventId(vxEvent.id)
                 .vxUserId(vxUser.id)
-                .type(VxEventPayment.Type.credit)
+                .type(VxEventPayment.Type.debit)
                 .state(VxEventPayment.State.complete)
                 .description("Event join: stripeChargeId" + charge.getId())
                 .value(vxEvent.entryPrice)
