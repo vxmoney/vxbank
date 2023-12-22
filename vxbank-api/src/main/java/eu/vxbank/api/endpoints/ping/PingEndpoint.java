@@ -53,6 +53,7 @@ public class PingEndpoint {
     @GetMapping("/ping/getEnvironment")
     @ResponseBody
     public PingResponse getEnvironment() {
+
         PingResponse pingResponse = new PingResponse();
         pingResponse.environment = systemService.getEnvironment();
         pingResponse.projectId = systemService.getProjectId();

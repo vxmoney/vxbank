@@ -108,17 +108,15 @@ public class Event1V1ResultsIntegrationTest {
             Assertions.assertNotNull(participantResult.vxEventId);
         }
 
-      List<VxEventResult> resultList =  VxDsService.getListByEventId(VxEventResult.class,systemService.getVxBankDatastore(),vxEvent.id);
+        List<VxEventResult> resultList = VxDsService.getListByEventId(VxEventResult.class,
+                systemService.getVxBankDatastore(),
+                vxEvent.id);
 
         //
 
         EventCloseParams closeParams = new EventCloseParams();
         closeParams.vxEventId = vxEvent.id;
-     EventCloseResponse response = EventHelper.closeEvent(restTemplate,
-                port,
-                creator.vxToken,
-             closeParams,
-                200);
+        EventCloseResponse response = EventHelper.closeEvent(restTemplate, port, creator.vxToken, closeParams, 200);
         Assertions.assertEquals(VxEvent.State.closed, response.state);
 
 

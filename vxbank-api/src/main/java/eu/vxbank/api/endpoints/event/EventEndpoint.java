@@ -2,9 +2,12 @@ package eu.vxbank.api.endpoints.event;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.Transfer;
 import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegration;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.modelmapper.ModelMapper;
@@ -26,6 +29,9 @@ public class EventEndpoint {
 
     @Autowired
     VxStripeKeys stripeKeys;
+
+    @Autowired
+    private VxIntegrationConfig vxIntegrationConfig;
 
     @PostMapping
     public EventCreateResponse create(Authentication auth, @RequestBody EventCreateParams params) throws
@@ -270,7 +276,7 @@ public class EventEndpoint {
         return true;
     }
 
-    private void closePayed1v1Event(VxUser currentUser, VxEvent vxEvent) {
+    private void closePayed1v1Event(VxUser currentUser, VxEvent vxEvent) throws StripeException {
 
         // check current user is participant
         List<VxEventParticipant> participantList = VxDsService.getListByEventId(VxEventParticipant.class,
@@ -290,7 +296,111 @@ public class EventEndpoint {
 
         // check tax and event prises do not exceed available funds
 
-        throw new IllegalStateException("Please implement this: close1v1");
+        checkEventPaymentsMatch1v1ResultsThenProcessThem(vxEvent.id);
+    }
+
+    private void checkEventPaymentsMatch1v1ResultsThenProcessThem(Long eventId) throws StripeException {
+        List<VxEventResult> resultList = VxDsService.getListByEventId(VxEventResult.class,
+                systemService.getVxBankDatastore(),
+                eventId);
+        Optional<VxEventResult> optionalVxEventResult = resultList.stream()
+                .filter(r -> r.state.equals(VxEventResult.State.active))
+                .findAny();
+        if (optionalVxEventResult.isEmpty()) {
+            throw new IllegalStateException("We have no results");
+        }
+
+        List<VxEventPayment> payments = VxDsService.getListByEventId(VxEventPayment.class,
+                systemService.getVxBankDatastore(),
+                eventId);
+        Long totalDebit = payments.stream()
+                .filter(p -> p.type.equals(VxEventPayment.Type.debit))
+                .mapToLong(VxEventPayment::getValue)
+                .sum();
+        Long totalCredit = payments.stream()
+                .filter(p -> p.type.equals(VxEventPayment.Type.credit))
+                .mapToLong(VxEventPayment::getValue)
+                .sum();
+        Long availableFunds = totalDebit - totalCredit;
+        if (availableFunds <= 0) {
+            throw new IllegalStateException("There are no funds available availableFunds=" + availableFunds);
+        }
+
+        VxIntegration vxGaming = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxGaming);
+        Long vxGamingFees = computePercentage(availableFunds, vxGaming.integrationPercentage);
+
+        if (vxGamingFees <= 0) {
+            throw new IllegalStateException("gaming fees are not positive");
+        }
+        if (vxGamingFees >= availableFunds) {
+            throw new IllegalStateException("gaming fees are grater then available funds");
+        }
+
+        VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), eventId);
+        if (vxEvent.state == VxEvent.State.closed){
+            throw new IllegalStateException("Event is already closed");
+        }
+
+        // build fees to vxGaming
+        VxEventPayment vxFeesPayment = VxEventPayment.builder()
+                .vxEventId(eventId)
+                .vxUserId(vxGaming.vxUserId)
+                .type(VxEventPayment.Type.credit)
+                .currency(vxEvent.currency)
+                .value(vxGamingFees)
+                .state(VxEventPayment.State.complete)
+                .description("VxGaming fees")
+                .build();
+
+        // build prise to winner;
+        VxEventResult result = optionalVxEventResult.get();
+        Long winnerUserId = result.participantId;
+        List<VxStripeConfig> winnerConfigList = VxDsService.getByUserId(VxStripeConfig.class,
+                systemService.getVxBankDatastore(),
+                winnerUserId);
+        if (winnerConfigList.size() != 1) {
+            throw new IllegalStateException("winnerConfigList.size()=" + winnerConfigList.size());
+        }
+        String winnerStripeId = winnerConfigList.get(0).stripeAccountId;
+        Long priseValue = availableFunds - vxGamingFees;
+
+        VxEventPayment vxPrisePayment = VxEventPayment.builder()
+                .vxEventId(eventId)
+                .vxUserId(winnerUserId)
+                .type(VxEventPayment.Type.credit)
+                .currency(vxEvent.currency)
+                .value(priseValue)
+                .state(VxEventPayment.State.complete)
+                .description("VxGaming 1v1 winner")
+                .build();
+
+
+        // send fees to vxGaming
+        Transfer vxGamingTransfer = VxStripeUtil.sendFundsToStripeAccount(stripeKeys.stripeSecretKey,
+                vxGaming.vxStripeId,
+                vxGamingFees,
+                vxEvent.currency);
+        Transfer vxWinnerTransfer = VxStripeUtil.sendFundsToStripeAccount(stripeKeys.stripeSecretKey,
+                winnerStripeId,
+                priseValue,
+                vxEvent.currency);
+
+        // set transfer id values
+        vxFeesPayment.setStripeTransferId(vxGamingTransfer.getId());
+        vxPrisePayment.setStripeTransferId(vxWinnerTransfer.getId());
+
+        // persist fees
+        VxDsService.persist(VxPayment.class, systemService.getVxBankDatastore(), vxFeesPayment);
+        VxDsService.persist(VxPayment.class, systemService.getVxBankDatastore(), vxPrisePayment);
+
+        // close the event
+        vxEvent.state = VxEvent.State.closed;
+        VxDsService.persist(VxEvent.class, systemService.getVxBankDatastore(), vxEvent);
+    }
+
+    private Long computePercentage(Long value, Long percentage) {
+        Long result = (value * percentage) / 100;
+        return result;
     }
 
 

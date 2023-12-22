@@ -43,5 +43,6 @@ public class VxEventPayment {
     public State state;
 
     public String description;
+    public String stripeTransferId;
 
 }

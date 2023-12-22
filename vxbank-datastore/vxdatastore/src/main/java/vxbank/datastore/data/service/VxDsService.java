@@ -84,6 +84,7 @@ public class VxDsService {
     }
 
 
+    @Deprecated
     public static <T> List<T> getByUserId(Long userId,
                                           Map<String, Object> filterList,
                                           VxBankDatastore ds,
@@ -100,6 +101,18 @@ public class VxDsService {
         query = query.chunkAll();
         List<T> list = query.list();
 
+
+        return list;
+    }
+
+    public static <T> List<T> getByUserId(Class<T> vxClass, VxBankDatastore ds, Long userId) {
+
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("userId", userId);
+
+        query = query.chunkAll();
+        List<T> list = query.list();
 
         return list;
     }
