@@ -180,7 +180,7 @@ public class EventEndpoint {
                 .mapToLong(VxEventPayment::getValue)
                 .sum();
 
-        Long availableFunds = totalCredit - totalDebit;
+        Long availableFunds = totalDebit - totalCredit;
         response.availableFunds = availableFunds;
 
         return response;
