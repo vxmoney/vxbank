@@ -212,9 +212,13 @@ public class EventEndpoint {
         VxUser currentUser = systemService.validateUserAndStripeConfig(auth);
 
         VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), params.vxEventId);
+        if (vxEvent.state == VxEvent.State.closed){
+            throw new IllegalStateException("Event is already closed");
+        }
         if (VxEvent.Type.payed1V1.equals(vxEvent.type)) {
             closePayed1v1Event(currentUser, vxEvent);
         }
+
 
         EventCloseResponse response = EventCloseResponse.newInstance(vxEvent);
         return response;

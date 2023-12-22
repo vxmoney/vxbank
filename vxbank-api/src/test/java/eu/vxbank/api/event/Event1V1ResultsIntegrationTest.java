@@ -119,6 +119,9 @@ public class Event1V1ResultsIntegrationTest {
         EventCloseResponse response = EventHelper.closeEvent(restTemplate, port, creator.vxToken, closeParams, 200);
         Assertions.assertEquals(VxEvent.State.closed, response.state);
 
+        // try to close second time but it should fail fast
+        EventHelper.closeEvent(restTemplate, port, creator.vxToken, closeParams, 500);
+
 
     }
 
