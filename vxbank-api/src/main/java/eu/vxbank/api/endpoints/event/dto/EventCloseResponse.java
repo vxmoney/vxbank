@@ -1,9 +1,10 @@
 package eu.vxbank.api.endpoints.event.dto;
 
-import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
+import lombok.Data;
 import org.modelmapper.ModelMapper;
 import vxbank.datastore.data.models.VxEvent;
 
+@Data
 public class EventCloseResponse {
 
     public Long id;

@@ -73,7 +73,7 @@ public class EventEndpoint {
         VxEventPayment vxEventPayment = VxEventPayment.builder()
                 .vxEventId(vxEvent.id)
                 .vxUserId(vxUser.id)
-                .type(VxEventPayment.Type.credit)
+                .type(VxEventPayment.Type.debit)
                 .state(VxEventPayment.State.complete)
                 .description("Event seed funds added by event creator: stripeChargeId" + charge.getId())
                 .value(params.entryPrice)
@@ -399,7 +399,7 @@ public class EventEndpoint {
     }
 
     private Long computePercentage(Long value, Long percentage) {
-        Long result = (value * percentage) / 100;
+        Long result = (value * percentage) / (100 * 100);
         return result;
     }
 
