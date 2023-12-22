@@ -239,7 +239,7 @@ public class EventEndpoint {
 
         // all participants need to have a proposal
         Set<Long> whoDidNotUpdatedResults = new HashSet<>(participantSet);
-        activeResults.forEach(r -> whoDidNotUpdatedResults.remove(r.vxEventId));
+        activeResults.forEach(r -> whoDidNotUpdatedResults.remove(r.vxUserId));
         if (whoDidNotUpdatedResults.size() > 0) {
             throw new IllegalStateException("All participants need to have a proposal");
             //return false;
@@ -280,12 +280,15 @@ public class EventEndpoint {
             throw new IllegalStateException("You are not a participant. You are not allowed to close this event");
         }
 
+        // check all are good 1v1 results
         List<VxEventResult> resultList = VxDsService.getListByEventId(VxEventResult.class,
                 systemService.getVxBankDatastore(),
                 vxEvent.id);
         if (!resultsAreGood1v1Results(resultList, participantList)) {
             throw new IllegalStateException("Not good 1v1 results");
         }
+
+        // check tax and event prises do not exceed available funds
 
         throw new IllegalStateException("Please implement this: close1v1");
     }

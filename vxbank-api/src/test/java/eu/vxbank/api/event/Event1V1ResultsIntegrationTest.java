@@ -22,8 +22,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxEventResult;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class Event1V1ResultsIntegrationTest {
@@ -100,11 +102,13 @@ public class Event1V1ResultsIntegrationTest {
 
             EventResultCreateResponse participantResult = EventResultHelper.create(restTemplate,
                     port,
-                    creator.vxToken,
+                    whoJoins.vxToken,
                     participantParams,
                     200);
             Assertions.assertNotNull(participantResult.vxEventId);
         }
+
+      List<VxEventResult> resultList =  VxDsService.getListByEventId(VxEventResult.class,systemService.getVxBankDatastore(),vxEvent.id);
 
         //
 

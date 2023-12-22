@@ -25,6 +25,7 @@ public class EventResultCreateParams {
 
         ModelMapper mm = new ModelMapper();
         VxEventResult eventResult = mm.map(this, VxEventResult.class);
+        eventResult.id = null;
         return eventResult;
     }
 }
