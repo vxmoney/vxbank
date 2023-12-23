@@ -3,7 +3,7 @@ package vxbank.datastore.commands;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.commands.close1v1event.VxDsCommand;
+import vxbank.datastore.VxDsCommand;
 
 import java.util.Optional;
 

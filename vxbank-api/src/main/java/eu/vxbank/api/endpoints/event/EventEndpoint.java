@@ -3,6 +3,7 @@ package eu.vxbank.api.endpoints.event;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.stripe.model.Transfer;
+import eu.vxbank.api.endpoints.event.comands.Close1v1EventCommand;
 import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -14,7 +15,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import vxbank.datastore.data.commands.close1v1event.Close1v1EventCommand;
 import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -213,14 +213,16 @@ public class EventEndpoint {
         VxUser currentUser = systemService.validateUserAndStripeConfig(auth);
 
         VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), params.vxEventId);
-        if (vxEvent.state == VxEvent.State.closed){
+        if (vxEvent.state == VxEvent.State.closed) {
             throw new IllegalStateException("Event is already closed");
         }
         if (VxEvent.Type.payed1V1.equals(vxEvent.type)) {
             //closePayed1v1Event(currentUser, vxEvent);
-            Close1v1EventCommand.execute(systemService.getVxBankDatastore(),params.vxEventId, currentUser.id);
-        }
 
+            Close1v1EventCommand command = new Close1v1EventCommand(systemService.getVxBankDatastore());
+            command.execute();
+
+        }
 
         EventCloseResponse response = EventCloseResponse.newInstance(vxEvent);
         return response;
@@ -343,7 +345,7 @@ public class EventEndpoint {
         }
 
         VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), eventId);
-        if (vxEvent.state == VxEvent.State.closed){
+        if (vxEvent.state == VxEvent.State.closed) {
             throw new IllegalStateException("Event is already closed");
         }
 
