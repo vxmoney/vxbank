@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.data.commands.close1v1event.Close1v1EventCommand;
 import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -209,18 +210,15 @@ public class EventEndpoint {
     public EventCloseResponse closeEvent(Authentication auth, @RequestBody EventCloseParams params) throws
             StripeException {
 
-
-
         VxUser currentUser = systemService.validateUserAndStripeConfig(auth);
-
-
 
         VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), params.vxEventId);
         if (vxEvent.state == VxEvent.State.closed){
             throw new IllegalStateException("Event is already closed");
         }
         if (VxEvent.Type.payed1V1.equals(vxEvent.type)) {
-            closePayed1v1Event(currentUser, vxEvent);
+            //closePayed1v1Event(currentUser, vxEvent);
+            Close1v1EventCommand.execute(systemService.getVxBankDatastore(),params.vxEventId, currentUser.id);
         }
 
 

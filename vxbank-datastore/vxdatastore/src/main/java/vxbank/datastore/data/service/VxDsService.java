@@ -4,6 +4,7 @@ import com.googlecode.objectify.cmd.Query;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.*;
 
+import javax.swing.plaf.PanelUI;
 import java.util.*;
 
 public class VxDsService {
@@ -180,6 +181,10 @@ public class VxDsService {
         List<VxEventParticipant> participantList = query.chunkAll()
                 .list();
         return participantList;
+    }
+
+    public static void run(Runnable command){
+
     }
 
 }

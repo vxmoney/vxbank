@@ -1,9 +1,13 @@
 package vxbank.datastore.data.commands.close1v1event;
 
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxEventParticipant;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.security.PublicKey;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Close1v1EventCommand {
@@ -20,13 +24,11 @@ public class Close1v1EventCommand {
         this.vxEventId = vxEventId;
     }
 
-    public static Map<String, Long> execute(VxBankDatastore ds, Long vxEventId) {
-        Map<String, Long> result = new HashMap<>();
-        ds.ofy.transactNew(() -> {
-            result.put(VX_GAMING_PAYMENT_ID, 1L);
-            result.put(WINNER_PAYMENT_ID, 2L);
+    public static void execute(VxBankDatastore ds, Runnable runnable) {
+        ds.ofy.transact(() -> {
+            runnable.run();
         });
-
-        return result;
     }
+
+
 }
