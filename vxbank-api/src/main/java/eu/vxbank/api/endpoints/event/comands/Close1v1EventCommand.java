@@ -47,8 +47,6 @@ public class Close1v1EventCommand extends VxDsCommand {
 
         checkCurrentUserIsParticipant();
         checkAllAreGoodResults();
-
-
         checkEventPaymentsMatch1v1ResultsThenProcessThem(params.vxEventId);
 
     }
