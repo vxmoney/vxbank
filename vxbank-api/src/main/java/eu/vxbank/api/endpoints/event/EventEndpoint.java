@@ -219,7 +219,9 @@ public class EventEndpoint {
         if (VxEvent.Type.payed1V1.equals(vxEvent.type)) {
             //closePayed1v1Event(currentUser, vxEvent);
 
-            Close1v1EventCommand command = new Close1v1EventCommand(systemService.getVxBankDatastore());
+            Close1v1EventCommand command = new Close1v1EventCommand(systemService.getVxBankDatastore(),
+                    currentUser.id,
+                    params);
             command.execute();
 
         }
