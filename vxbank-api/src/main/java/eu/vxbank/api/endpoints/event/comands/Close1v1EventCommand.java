@@ -6,6 +6,7 @@ import eu.vxbank.api.endpoints.event.dto.EventCloseParams;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegration;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
+import lombok.SneakyThrows;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.VxDsCommand;
 import vxbank.datastore.data.models.*;
@@ -28,10 +29,10 @@ public class Close1v1EventCommand extends VxDsCommand {
     private VxUser vxUser;
     private VxEvent vxEvent;
     private List<VxEventParticipant> participantList;
-    private  List<VxEventResult> resultList;
+    private List<VxEventResult> resultList;
 
 
-    public Close1v1EventCommand(VxBankDatastore ds, Long currentUserId, EventCloseParams params,  VxIntegration vxGaming,
+    public Close1v1EventCommand(VxBankDatastore ds, Long currentUserId, EventCloseParams params, VxIntegration vxGaming,
                                 String stripeSecretKey) {
         super(ds);
         this.currentUserId = currentUserId;
@@ -40,17 +41,16 @@ public class Close1v1EventCommand extends VxDsCommand {
         this.stripeSecretKey = stripeSecretKey;
     }
 
+    @SneakyThrows
     @Override
     public void run() {
 
         checkCurrentUserIsParticipant();
         checkAllAreGoodResults();
 
-        try {
-            checkEventPaymentsMatch1v1ResultsThenProcessThem(params.vxEventId);
-        } catch (StripeException e) {
-            throw new RuntimeException(e);
-        }
+
+        checkEventPaymentsMatch1v1ResultsThenProcessThem(params.vxEventId);
+
     }
 
     private Long computePercentage(Long value, Long percentage) {
@@ -157,12 +157,12 @@ public class Close1v1EventCommand extends VxDsCommand {
     }
 
     private void checkAllAreGoodResults() {
-        VxDsService.transactionLess(getDs(), () ->{
+        VxDsService.transactionLess(getDs(), () -> {
             resultList = VxDsService.getListByEventId(VxEventResult.class,
                     getDs(),
                     vxEvent.id);
 
-            if (!resultsAreGood1v1Results(resultList,participantList)){
+            if (!resultsAreGood1v1Results(resultList, participantList)) {
                 throw new IllegalStateException("Not good 1v1 results");
             }
 
@@ -219,21 +219,21 @@ public class Close1v1EventCommand extends VxDsCommand {
 
     private void checkCurrentUserIsParticipant() {
 
-        VxDsService.transactionLess(getDs(), () ->{
+        VxDsService.transactionLess(getDs(), () -> {
 
             vxUser = VxDsService.getById(VxUser.class, getDs(), currentUserId);
-            vxEvent = VxDsService.getById(VxEvent.class, getDs(),params.vxEventId);
+            vxEvent = VxDsService.getById(VxEvent.class, getDs(), params.vxEventId);
 
             participantList = VxDsService
                     .getListByEventId(VxEventParticipant.class, getDs(), params.vxEventId);
 
-            if (!userIsParticipant(currentUserId,participantList)){
+            if (!userIsParticipant(currentUserId, participantList)) {
                 throw new IllegalStateException("You are not a participant. You are not allowed to close this event");
             }
         });
     }
 
-    private boolean userIsParticipant(Long vxUserId , List<VxEventParticipant> list) {
+    private boolean userIsParticipant(Long vxUserId, List<VxEventParticipant> list) {
         Optional<VxEventParticipant> optionalParticipant = list.stream()
                 .filter(p -> p.vxUserId.equals(vxUserId) && p.state.equals(VxEventParticipant.State.active))
                 .findFirst();
