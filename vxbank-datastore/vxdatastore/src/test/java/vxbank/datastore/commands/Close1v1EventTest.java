@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.commands.close1v1event.Close1v1EventCommand;
 import vxbank.datastore.data.models.VxEvent;
-import vxbank.datastore.data.models.VxPayment;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.utils.TestingUtils;
 
