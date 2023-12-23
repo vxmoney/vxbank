@@ -209,7 +209,11 @@ public class EventEndpoint {
     public EventCloseResponse closeEvent(Authentication auth, @RequestBody EventCloseParams params) throws
             StripeException {
 
+
+
         VxUser currentUser = systemService.validateUserAndStripeConfig(auth);
+
+
 
         VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), params.vxEventId);
         if (vxEvent.state == VxEvent.State.closed){
