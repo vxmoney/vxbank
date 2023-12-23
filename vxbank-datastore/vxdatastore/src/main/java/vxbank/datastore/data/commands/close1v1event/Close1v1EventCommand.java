@@ -22,8 +22,11 @@ public class Close1v1EventCommand {
 
     public static Map<String, Long> execute(VxBankDatastore ds, Long vxEventId) {
         Map<String, Long> result = new HashMap<>();
-        result.put(VX_GAMING_PAYMENT_ID, 1L);
-        result.put(WINNER_PAYMENT_ID, 2L);
+        ds.ofy.transactNew(() -> {
+            result.put(VX_GAMING_PAYMENT_ID, 1L);
+            result.put(WINNER_PAYMENT_ID, 2L);
+        });
+
         return result;
     }
 }
