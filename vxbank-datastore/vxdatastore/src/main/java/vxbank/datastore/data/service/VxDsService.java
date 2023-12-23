@@ -183,8 +183,10 @@ public class VxDsService {
         return participantList;
     }
 
-    public static void run(Runnable command){
-
+    public static void transactionLess(VxBankDatastore ds, Runnable runnable){
+        ds.ofy.transactionless(()->{
+            runnable.run();
+        });
     }
 
 }
