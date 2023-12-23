@@ -5,11 +5,10 @@ import vxbank.datastore.VxDsCommand;
 
 public class Close1v1EventCommand extends VxDsCommand {
 
-    private VxBankDatastore ds;
 
 
-    public Close1v1EventCommand(VxBankDatastore ds) {
-        this.ds = ds;
+    public Close1v1EventCommand(VxBankDatastore ds){
+        super(ds);
     }
 
     @Override

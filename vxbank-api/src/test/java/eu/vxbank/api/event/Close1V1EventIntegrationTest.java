@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class Event1V1ResultsIntegrationTest {
+public class Close1V1EventIntegrationTest {
     private static final String testPassword = "secured-test-password";
 
     @LocalServerPort
@@ -44,7 +44,7 @@ public class Event1V1ResultsIntegrationTest {
     SystemService systemService;
 
     @Test
-    public void testResultsBasicFlow() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void testClose1v1() throws StripeException, FirebaseAuthException, JsonProcessingException {
 
         LoginResponse creator = SideCompleteUser.setupUser("acct_1OPVGOPkbRPH6pWE",
                 restTemplate,
