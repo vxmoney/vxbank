@@ -218,10 +218,13 @@ public class EventEndpoint {
         }
         if (VxEvent.Type.payed1V1.equals(vxEvent.type)) {
             //closePayed1v1Event(currentUser, vxEvent);
-
+            VxIntegration vxGaming = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxGaming);
             Close1v1EventCommand command = new Close1v1EventCommand(systemService.getVxBankDatastore(),
                     currentUser.id,
-                    params);
+                    params,
+                    vxGaming,
+                    stripeKeys.stripeSecretKey
+            );
             command.execute();
 
         }
