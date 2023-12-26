@@ -45,6 +45,13 @@ openIntellij() {
   nohup intellij-idea-community .
 }
 
+openIdea() {
+  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-dev-key.json"
+  export FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"
+  initDevEnvironment &
+  nohup idea .
+}
+
 unsetVariables() {
   unset GOOGLE_APPLICATION_CREDENTIALS
   unset FIREBASE_AUTH_EMULATOR_HOST
