@@ -24,6 +24,10 @@ export const AuthContextProvider = ({ children }) => {
     return () => unsubscribe()
   }, [user])
 
+  useEffect (() => {
+    console.log("vxToken value = ", vxToken)
+  },[vxToken])
+
   return <AuthContext.Provider value={{user, googleSignIn, logOut, setVxToken}}>{children}</AuthContext.Provider>;
 
 };
