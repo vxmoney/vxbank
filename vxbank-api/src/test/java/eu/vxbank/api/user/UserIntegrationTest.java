@@ -78,8 +78,6 @@ public class UserIntegrationTest {
                 .setPassword(testPassword); // Set a secure password for the user
 
         UserRecord userRecord = firebaseAuth.createUser(request);
-        String userId = userRecord.getUid();
-        System.out.println("userId=" + userId);
 
         String customToken = firebaseAuth.createCustomToken(userRecord.getUid());
         String idToken = swapOnLocalhostCustomTokenForIdToken(customToken);
@@ -139,6 +137,7 @@ public class UserIntegrationTest {
         // Example assertion (you should replace this with your actual assertions)
         Assertions.assertNotNull(loginResponse);
         Assertions.assertEquals(userParams.email, loginResponse.email);
+        Assertions.assertNotNull(loginResponse.vxUser);
 
 
         // ping who am I
