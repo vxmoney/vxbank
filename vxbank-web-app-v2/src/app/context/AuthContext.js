@@ -35,17 +35,12 @@ export const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     console.log("vxToken value = ", vxToken);
+    localStorage.setItem("vxToken", vxToken);
   }, [vxToken]);
 
   useEffect(() => {
-    // Check if there is a token in localStorage
     const storedToken = localStorage.getItem("vxToken");
-
-    // Set the token in state if it exists, otherwise set it to null
     setVxToken(storedToken || null);
-
-    // Log the token value during initialization (optional)
-    console.log("Token during initialization:", storedToken);
   }, []);
 
   return (
