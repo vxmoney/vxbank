@@ -6,7 +6,7 @@ import { UserAuth } from "../context/AuthContext";
 export default function LocalAuthExample() {
 
 
-  const { user, googleSignIn, logOut, setVxToken } = UserAuth();
+  const { user, googleSignIn, logOut, setVxToken, vxToken } = UserAuth();
 
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
@@ -56,7 +56,8 @@ export default function LocalAuthExample() {
   const callSetVxToken = async() =>{
     try{
       console.log("callSetVxToken async called")
-      setVxToken("setVxValue message")
+      setVxToken(loginResponse.vxToken)
+      console.log("vxToken value inside localAuth", vxToken);
     }catch(error){
       console.log("callSetVxToken erro", error)
     }
@@ -149,7 +150,7 @@ export default function LocalAuthExample() {
 
         <div class="col-span-3">
           <p>
-            Set vxToken
+            vxToken = {vxToken}
           </p>
         </div>
       </div>

@@ -28,7 +28,7 @@ export const AuthContextProvider = ({ children }) => {
     console.log("vxToken value = ", vxToken)
   },[vxToken])
 
-  return <AuthContext.Provider value={{user, googleSignIn, logOut, setVxToken}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{user, googleSignIn, logOut, vxToken, setVxToken}}>{children}</AuthContext.Provider>;
 
 };
 
