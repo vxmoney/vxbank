@@ -19,13 +19,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const [vxUserInfo, setVxUserInfo] = useState(() => {
     const storedVxUserInfo = localStorage.getItem("vxUserInfo");
-    try{
-    return storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null;
-
-    }catch (error){
-      console.error("Error parsing vxUserInfo:", error);
-      return null;
-    }
+    return storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null;   
   });
 
   const googleSignIn = () => {

@@ -14,7 +14,7 @@ export default function LocalAuthExample() {
     setVxUserInfo,
   } = UserAuth();
 
-  console.log("vxUserInfo", vxUserInfo);
+  console.log("vxUserInfo", vxUserInfo.name);
 
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
@@ -184,7 +184,7 @@ export default function LocalAuthExample() {
           <p>
             {vxUserInfo && (
               <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
-                {formatPayload(vxUserInfo)}
+               {JSON.stringify(vxUserInfo, null, 2)}
               </pre>
             )}
           </p>
