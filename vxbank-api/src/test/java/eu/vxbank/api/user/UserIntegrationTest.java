@@ -138,6 +138,7 @@ public class UserIntegrationTest {
         Assertions.assertNotNull(loginResponse);
         Assertions.assertEquals(userParams.email, loginResponse.email);
         Assertions.assertNotNull(loginResponse.vxUser);
+        Assertions.assertNotNull(loginResponse.vxUser.name);
 
 
         // ping who am I

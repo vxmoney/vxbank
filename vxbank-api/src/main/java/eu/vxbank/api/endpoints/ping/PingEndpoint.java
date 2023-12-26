@@ -105,9 +105,11 @@ public class PingEndpoint {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         long timeStamp = (new Date()).getTime();
         String email = String.format("user_%s@example.com", timeStamp);
+        String name = String.format("user_%s", timeStamp);
 
 
         UserRecord.CreateRequest request = new UserRecord.CreateRequest().setEmail(email)
+                .setDisplayName(name)
                 .setEmailVerified(false)
                 .setPassword("secure-password"); // Set a secure password for the user
 
