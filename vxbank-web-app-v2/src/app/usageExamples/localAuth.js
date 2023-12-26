@@ -56,6 +56,7 @@ export default function LocalAuthExample() {
   const callSetVxToken = async() =>{
     try{
       console.log("callSetVxToken async called")
+      setVxToken("setVxValue message")
     }catch(error){
       console.log("callSetVxToken erro", error)
     }
