@@ -1,16 +1,23 @@
 import { pingAPI } from "@/api/ping";
 import { userAPI } from "@/api/user";
 import { useState } from "react";
-import { UserAuth } from "../context/AuthContext"; 
+import { UserAuth } from "../context/AuthContext";
 
 export default function LocalAuthExample() {
-
-
-  const { user, googleSignIn, logOut, setVxToken, vxToken } = UserAuth();
+  const {
+    user,
+    googleSignIn,
+    logOut,
+    setVxToken,
+    vxToken,
+    vxUserInfo,
+    setVxUserInfo,
+  } = UserAuth();
 
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
-  const whoAmIMessage = "Who am I?. To find out call the backend and pass the vxToken";
+  const whoAmIMessage =
+    "Who am I?. To find out call the backend and pass the vxToken";
 
   const [pingResponse, setPingResponse] = useState(null);
   const [formattedResponse, setFormattedResponse] = useState(initialMessage);
@@ -18,7 +25,9 @@ export default function LocalAuthExample() {
   const [loginFormattedResponse, setLoginFormattedResponse] =
     useState(initialLoginMessage);
   const [whoAmIResponse, setWhoAmIResponse] = useState(null);
-  const [whoAmIFormattedResponse, setWhoAmIFormattedResponse] = useState(whoAmIMessage);
+  const [whoAmIFormattedResponse, setWhoAmIFormattedResponse] =
+    useState(whoAmIMessage);
+  const [formatedUserInfo, setFormatedUserInfo] = useState(vxUserInfo);
 
   const fetchGenerateFirebaseIdToken = async () => {
     try {
@@ -37,6 +46,7 @@ export default function LocalAuthExample() {
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setLoginResponse(response.data);
       setLoginFormattedResponse(formattedResponse);
+      setVxUserInfo(response);
     } catch (error) {
       console.log("fetchLoginError: ", error);
     }
@@ -51,17 +61,28 @@ export default function LocalAuthExample() {
     } catch (error) {
       console.log("fetchPingWhoAmIError: ", error);
     }
-  }
+  };
 
-  const callSetVxToken = async() =>{
-    try{
-      console.log("callSetVxToken async called")
-      setVxToken(loginResponse.vxToken)
-      console.log("vxToken value inside localAuth", vxToken);
-    }catch(error){
-      console.log("callSetVxToken erro", error)
+  function formatPayload(payload){
+    const formatedPayload = JSON.stringify(payload.data, null, 2);
+    return formatedPayload;
+  } 
+
+  const callSetVxToken = async () => {
+    try {
+      setVxToken(loginResponse.vxToken);
+    } catch (error) {
+      console.log("callSetVxToken error", error);
     }
-  }
+  };
+
+  const callSetVxUserInfo = async () => {
+    try {
+      setVxUserInfo(loginResponse);
+    } catch (error) {
+      console.log("callSetVxUserInfo error", error);
+    }
+  };
 
   return (
     <div className="p-4">
@@ -149,12 +170,25 @@ export default function LocalAuthExample() {
         </div>
 
         <div class="col-span-3">
-          <p>
-            vxToken = {vxToken}
-          </p>
+          <p>vxToken = {vxToken}</p>
         </div>
       </div>
 
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
+          <p class="mb-4">decoded vxUserInfo from context</p>
+        </div>
+
+        <div class="col-span-3">
+          <p>
+            {vxUserInfo && (
+              <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
+                {formatPayload(vxUserInfo)}
+              </pre>
+            )}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

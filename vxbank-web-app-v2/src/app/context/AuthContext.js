@@ -17,6 +17,11 @@ export const AuthContextProvider = ({ children }) => {
     return storedToken || null;
   });
 
+  const [vxUserInfo, setVxUserInfo] = useState(() => {
+    const storedVxUserInfo = localStorage.getItem("vxUserInfo");
+    return storedVxUserInfo || null;
+  });
+
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider);
@@ -37,15 +42,20 @@ export const AuthContextProvider = ({ children }) => {
     console.log("vxToken value = ", vxToken);
     localStorage.setItem("vxToken", vxToken);
   }, [vxToken]);
+  useEffect(() => {
+    localStorage.setItem("vxUserInfo", vxUserInfo);
+  }, [vxUserInfo]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("vxToken");
     setVxToken(storedToken || null);
+    const storedVxUserInfo = localStorage.getItem("vxUserInfo");
+    setVxUserInfo(storedVxUserInfo || null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, googleSignIn, logOut, vxToken, setVxToken }}
+      value={{ user, googleSignIn, logOut, vxToken, setVxToken, vxUserInfo, setVxUserInfo }}
     >
       {children}
     </AuthContext.Provider>
