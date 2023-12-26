@@ -16,12 +16,6 @@ export const AuthContextProvider = ({ children }) => {
     const storedToken = localStorage.getItem("vxToken");
     return storedToken || null;
   });
-  
-  const [vxUser, setVxUser] = useState(() => {
-    // Try to get the token from localStorage on component mount
-    const storedVxUser = localStorage.getItem("vxUser");
-    return storedVxUser || null;
-  });
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
@@ -45,17 +39,13 @@ export const AuthContextProvider = ({ children }) => {
   }, [vxToken]);
 
   useEffect(() => {
-    localStorage.setItem("vxUser", vxUser);
-  }, [vxUser]);
-
-  useEffect(() => {
     const storedToken = localStorage.getItem("vxToken");
     setVxToken(storedToken || null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, googleSignIn, logOut, vxToken, setVxToken , vxUser, setVxUser}}
+      value={{ user, googleSignIn, logOut, vxToken, setVxToken }}
     >
       {children}
     </AuthContext.Provider>
