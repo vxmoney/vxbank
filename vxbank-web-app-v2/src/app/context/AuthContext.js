@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [vxToken, setVxToken] = useState(null);
 
   const googleSignIn = () =>{
     const provider = new GoogleAuthProvider()
@@ -23,7 +24,7 @@ export const AuthContextProvider = ({ children }) => {
     return () => unsubscribe()
   }, [user])
 
-  return <AuthContext.Provider value={{user, googleSignIn, logOut}}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{user, googleSignIn, logOut, setVxToken}}>{children}</AuthContext.Provider>;
 };
 
 export const UserAuth = () => {
