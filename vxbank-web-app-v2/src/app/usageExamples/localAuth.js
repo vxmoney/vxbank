@@ -14,7 +14,7 @@ export default function LocalAuthExample() {
     setVxUserInfo,
   } = UserAuth();
 
-  console.log("vxUserInfo", vxUserInfo.name);
+  console.log("vxUserInfo", vxUserInfo ? vxUserInfo.name : null);
 
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
@@ -47,7 +47,7 @@ export default function LocalAuthExample() {
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setLoginResponse(response.data);
       setLoginFormattedResponse(formattedResponse);
-      setVxUserInfo(JSON.stringify(response.data));
+      setVxUserInfo(response.data);
     } catch (error) {
       console.log("fetchLoginError: ", error);
     }
@@ -64,10 +64,7 @@ export default function LocalAuthExample() {
     }
   };
 
-  function formatPayload(payload) {
-    const formatedPayload = JSON.stringify(payload, null, 2);
-    return formatedPayload;
-  }
+  
 
   const callSetVxToken = async () => {
     try {
