@@ -1,8 +1,13 @@
 import { pingAPI } from "@/api/ping";
 import { userAPI } from "@/api/user";
 import { useState } from "react";
+import { UserAuth } from "../context/AuthContext"; 
 
 export default function LocalAuthExample() {
+
+
+  const { user, googleSignIn, logOut, setVxToken } = UserAuth();
+
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
   const whoAmIMessage = "Who am I?. To find out call the backend and pass the vxToken";
@@ -45,6 +50,14 @@ export default function LocalAuthExample() {
       setWhoAmIFormattedResponse(formattedResponse);
     } catch (error) {
       console.log("fetchPingWhoAmIError: ", error);
+    }
+  }
+
+  const callSetVxToken = async() =>{
+    try{
+      console.log("callSetVxToken async called")
+    }catch(error){
+      console.log("callSetVxToken erro", error)
     }
   }
 
@@ -118,6 +131,24 @@ export default function LocalAuthExample() {
                 {whoAmIFormattedResponse}
               </pre>
             )}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
+          <p class="mb-4">Step 3: Find you who am I using the vxToken</p>
+          <button
+            onClick={callSetVxToken}
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Set vxToken
+          </button>
+        </div>
+
+        <div class="col-span-3">
+          <p>
+            Set vxToken
           </p>
         </div>
       </div>

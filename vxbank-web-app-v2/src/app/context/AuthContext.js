@@ -25,6 +25,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [user])
 
   return <AuthContext.Provider value={{user, googleSignIn, logOut, setVxToken}}>{children}</AuthContext.Provider>;
+
 };
 
 export const UserAuth = () => {
