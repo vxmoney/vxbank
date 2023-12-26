@@ -14,6 +14,8 @@ export default function LocalAuthExample() {
     setVxUserInfo,
   } = UserAuth();
 
+  console.log("vxUserInfo", vxUserInfo);
+
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
   const whoAmIMessage =
@@ -27,7 +29,6 @@ export default function LocalAuthExample() {
   const [whoAmIResponse, setWhoAmIResponse] = useState(null);
   const [whoAmIFormattedResponse, setWhoAmIFormattedResponse] =
     useState(whoAmIMessage);
-  const [formatedUserInfo, setFormatedUserInfo] = useState(vxUserInfo);
 
   const fetchGenerateFirebaseIdToken = async () => {
     try {
@@ -46,7 +47,7 @@ export default function LocalAuthExample() {
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setLoginResponse(response.data);
       setLoginFormattedResponse(formattedResponse);
-      setVxUserInfo(response);
+      setVxUserInfo(JSON.stringify(response.data));
     } catch (error) {
       console.log("fetchLoginError: ", error);
     }
@@ -63,10 +64,10 @@ export default function LocalAuthExample() {
     }
   };
 
-  function formatPayload(payload){
-    const formatedPayload = JSON.stringify(payload.data, null, 2);
+  function formatPayload(payload) {
+    const formatedPayload = JSON.stringify(payload, null, 2);
     return formatedPayload;
-  } 
+  }
 
   const callSetVxToken = async () => {
     try {

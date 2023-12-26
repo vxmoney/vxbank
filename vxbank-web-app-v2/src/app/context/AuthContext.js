@@ -19,7 +19,13 @@ export const AuthContextProvider = ({ children }) => {
 
   const [vxUserInfo, setVxUserInfo] = useState(() => {
     const storedVxUserInfo = localStorage.getItem("vxUserInfo");
-    return storedVxUserInfo || null;
+    try{
+    return storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null;
+
+    }catch (error){
+      console.error("Error parsing vxUserInfo:", error);
+      return null;
+    }
   });
 
   const googleSignIn = () => {
@@ -43,14 +49,14 @@ export const AuthContextProvider = ({ children }) => {
     localStorage.setItem("vxToken", vxToken);
   }, [vxToken]);
   useEffect(() => {
-    localStorage.setItem("vxUserInfo", vxUserInfo);
+    localStorage.setItem("vxUserInfo", JSON.stringify(vxUserInfo));
   }, [vxUserInfo]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("vxToken");
     setVxToken(storedToken || null);
     const storedVxUserInfo = localStorage.getItem("vxUserInfo");
-    setVxUserInfo(storedVxUserInfo || null);
+   // setVxUserInfo(storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null);
   }, []);
 
   return (
