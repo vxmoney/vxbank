@@ -62,9 +62,9 @@ public class UserEndpoint {
         LoginResponse response = new LoginResponse();
         response.id = vxUser.id;
         response.email = vxUser.email;
+        response.name = vxUser.name;
         response.message = "all good";
         response.vxToken = tokenInfo.vxToken;
-        response.vxUser = vxUser;
 
 
         return response;

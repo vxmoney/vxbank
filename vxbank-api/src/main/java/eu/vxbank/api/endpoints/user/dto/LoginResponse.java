@@ -9,12 +9,12 @@ public class LoginResponse {
 
     public Long id;
     public String email;
+    public String name;
     public String message;
     public String vxToken;
     public VxStripeConfig.State stripeConfigState;
     public List<Funds> availableFundsList;
     public String stripeId;
-    public VxUser vxUser;
 
 
 }
