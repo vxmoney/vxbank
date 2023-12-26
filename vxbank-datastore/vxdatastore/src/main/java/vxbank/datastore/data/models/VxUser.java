@@ -19,5 +19,6 @@ public class VxUser {
 
     @Index
     public String email;
+    public String name;
 
 }

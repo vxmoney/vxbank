@@ -6,6 +6,7 @@ import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.endpoints.user.dto.TokenInfo;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.services.VxFirebaseAuthService;
+import eu.vxbank.api.services.dao.ValidateFirebaseResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,9 +29,10 @@ public class UserEndpoint {
     @Autowired
     SystemService systemService;
 
-    private VxUser createNewUser(String email, VxBankDatastore ds) {
+    private VxUser createNewUser(String email, String name, VxBankDatastore ds) {
         VxUser vxUser = new VxUser();
         vxUser.email = email;
+        vxUser.name = name;
         VxUser persistedUser = VxDsService.persist(vxUser, ds, VxUser.class);
         return persistedUser;
     }
@@ -41,12 +43,14 @@ public class UserEndpoint {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
 
-        String email = vxFirebaseAuthService.validateFirebaseIdTokenAndGetEmail(loginParams.firebaseIdToken);
+        ValidateFirebaseResponse validateResponse = vxFirebaseAuthService.validateFirebaseIdTokenAndGetData(loginParams.firebaseIdToken);
 
+        String email = validateResponse.email;
         VxBankDatastore ds = systemService.getVxBankDatastore();
         Optional<VxUser> optionalUser = VxDsService.getUserByEmail(email, ds);
         if (optionalUser.isEmpty()) {
-            VxUser user = createNewUser(email, ds);
+            String name = validateResponse.name;
+            VxUser user = createNewUser(email, name,  ds);
             optionalUser = Optional.of(user);
         }
 
@@ -60,6 +64,8 @@ public class UserEndpoint {
         response.email = vxUser.email;
         response.message = "all good";
         response.vxToken = tokenInfo.vxToken;
+        response.vxUser = vxUser;
+
 
         return response;
     }

@@ -73,6 +73,7 @@ public class UserIntegrationTest {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest request = new UserRecord.CreateRequest().setEmail(email)
+                .setDisplayName("name_"+email)
                 .setEmailVerified(true)
                 .setPassword(testPassword); // Set a secure password for the user
 

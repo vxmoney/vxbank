@@ -5,7 +5,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import eu.vxbank.api.endpoints.user.dto.TokenInfo;
+import eu.vxbank.api.services.dao.ValidateFirebaseResponse;
 import jakarta.annotation.PostConstruct;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -13,7 +15,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -69,13 +70,19 @@ public class VxFirebaseAuthService {
         return tokenInfo;
     }
 
-    public String validateFirebaseIdTokenAndGetEmail(String firebaseIdToken) throws FirebaseAuthException {
+    public ValidateFirebaseResponse validateFirebaseIdTokenAndGetData(String firebaseIdToken) throws FirebaseAuthException {
         FirebaseToken decodedToken = FirebaseAuth.getInstance()
                 .verifyIdToken(firebaseIdToken);
         String email = decodedToken.getEmail();
         String uid = decodedToken.getUid();
+        String name = decodedToken.getName();
 
-        return email;
+
+        ValidateFirebaseResponse response = new ValidateFirebaseResponse();
+        response.email = email;
+        response.name = name;
+
+        return response;
     }
 
     public TokenInfo buildTokenForUser(Long userId, String email, Optional<Long> optionalExpirySeconds){
