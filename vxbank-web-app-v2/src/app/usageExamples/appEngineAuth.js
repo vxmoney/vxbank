@@ -4,7 +4,7 @@ import { useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 
 export default function AppEngineAuthExample() {
-  const { user } = UserAuth();
+  const { user, setVxToken, vxToken, vxUserInfo, setVxUserInfo } = UserAuth();
   console.log("Firebase user:", user);
 
   const initialMessage =
@@ -22,16 +22,7 @@ export default function AppEngineAuthExample() {
   const [whoAmIFormattedResponse, setWhoAmIFormattedResponse] =
     useState(whoAmIMessage);
 
-  const fetchGenerateFirebaseIdToken = async () => {
-    try {
-      const response = await pingAPI.generateFirebaseIdToken();
-      const formattedResponse = JSON.stringify(response.data, null, 2);
-      setPingResponse(response.data);
-      setFormattedResponse(formattedResponse);
-    } catch (error) {
-      console.log("fetchPingError: ", error);
-    }
-  };
+  
 
   const fetchLogin = async () => {
     try {
@@ -39,6 +30,7 @@ export default function AppEngineAuthExample() {
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setLoginResponse(response.data);
       setLoginFormattedResponse(formattedResponse);
+      setVxUserInfo(response.data);
     } catch (error) {
       console.log("fetchLoginError: ", error);
     }
@@ -52,6 +44,14 @@ export default function AppEngineAuthExample() {
       setWhoAmIFormattedResponse(formattedResponse);
     } catch (error) {
       console.log("fetchPingWhoAmIError: ", error);
+    }
+  };
+
+  const callSetVxToken = async () => {
+    try {
+      setVxToken(loginResponse.vxToken);
+    } catch (error) {
+      console.log("callSetVxToken error", error);
     }
   };
 
@@ -119,6 +119,38 @@ export default function AppEngineAuthExample() {
               </pre>
             )}
           </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
+          <p class="mb-4">Step 3: Find you who am I using the vxToken</p>
+          <button
+            onClick={callSetVxToken}
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Set vxToken
+          </button>
+        </div>
+
+        <div class="col-span-3">
+          <p>vxToken = {vxToken}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
+          <p class="mb-4">decoded vxUserInfo from context</p>
+        </div>
+
+        <div class="col-span-3">
+          <p>
+            {vxUserInfo && (
+              <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
+               {JSON.stringify(vxUserInfo, null, 2)}
+              </pre>
+            )}
+          </p>
         </div>
       </div>
     </div>
