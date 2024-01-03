@@ -5,7 +5,6 @@ import { UserAuth } from "../context/AuthContext";
 
 export default function AppEngineAuthExample() {
   const { user, setVxToken, vxToken, vxUserInfo, setVxUserInfo } = UserAuth();
-  console.log("Firebase user:", user);
 
   const initialMessage =
     "Not needed. Check the top bar to see if you are logged in";

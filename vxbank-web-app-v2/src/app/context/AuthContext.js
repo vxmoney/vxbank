@@ -5,6 +5,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { userAPI } from "@/api/user";
 import { auth } from "../firebase";
 
 const AuthContext = createContext();
@@ -30,13 +31,34 @@ export const AuthContextProvider = ({ children }) => {
     }
   });
 
+  const removeVxUserInfo = () => {
+    setVxUserInfo(null);
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem("vxUserInfo");
+    }
+  };
+
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider);
+  
+    // Sign in with Google and update local state when successful
+    signInWithPopup(auth, provider)
+      .then(async (result) => {
+        const { user, credential } = result;
+        setUser(user);
+        console.log("AuthContext user", user);
+        // Additional logic if needed
+        const response = await userAPI.login(user.accessToken);
+        setVxUserInfo(response.data);
+      })
+      .catch((error) => {
+        console.error("Google Sign-In Error:", error);
+      });
   };
 
   const logOut = () => {
     signOut(auth);
+    removeVxUserInfo();
   };
 
   useEffect(() => {
@@ -47,7 +69,6 @@ export const AuthContextProvider = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
-    console.log("vxToken value = ", vxToken);
     localStorage.setItem("vxToken", vxToken);
   }, [vxToken]);
   useEffect(() => {
@@ -71,6 +92,7 @@ export const AuthContextProvider = ({ children }) => {
         setVxToken,
         vxUserInfo,
         setVxUserInfo,
+        removeVxUserInfo,
       }}
     >
       {children}
