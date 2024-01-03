@@ -13,13 +13,21 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [vxToken, setVxToken] = useState(() => {
     // Try to get the token from localStorage on component mount
-    const storedToken = localStorage.getItem("vxToken");
-    return storedToken || null;
+    if (typeof localStorage !== "undefined") {
+      const storedToken = localStorage.getItem("vxToken");
+      return storedToken || null;
+    } else {
+      return null;
+    }
   });
 
   const [vxUserInfo, setVxUserInfo] = useState(() => {
-    const storedVxUserInfo = localStorage.getItem("vxUserInfo");
-    return storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null;   
+    if (typeof localStorage !== "undefined") {
+      const storedVxUserInfo = localStorage.getItem("vxUserInfo");
+      return storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null;
+    }else{
+      return null;
+    }
   });
 
   const googleSignIn = () => {
@@ -50,12 +58,20 @@ export const AuthContextProvider = ({ children }) => {
     const storedToken = localStorage.getItem("vxToken");
     setVxToken(storedToken || null);
     const storedVxUserInfo = localStorage.getItem("vxUserInfo");
-   // setVxUserInfo(storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null);
+    // setVxUserInfo(storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, googleSignIn, logOut, vxToken, setVxToken, vxUserInfo, setVxUserInfo }}
+      value={{
+        user,
+        googleSignIn,
+        logOut,
+        vxToken,
+        setVxToken,
+        vxUserInfo,
+        setVxUserInfo,
+      }}
     >
       {children}
     </AuthContext.Provider>
