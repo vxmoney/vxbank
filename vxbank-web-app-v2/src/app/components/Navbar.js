@@ -27,11 +27,11 @@ export default function Navbar() {
   const handleSignOut = async () => {
     try {
       await logOut();
-      removeVxUserInfo();
     } catch (error) {
       console.log(error);
     }
   };
+
 
   return (
     <div className="h-20 w-full border-b-2 flex items-center justify-between p-2">
@@ -50,15 +50,15 @@ export default function Navbar() {
         </li>
       </ul>
       <ul className="flex">
-        {user ? (
-          <li className="p-2 cursor-pointer">{user.displayName}</li>
+        {vxUserInfo  ? (
+          <li className="p-2 cursor-pointer">{vxUserInfo?.email}</li>
         ) : (
           <li onClick={handleSignIn} className="p-2 cursor-pointer">
             Login
           </li>
         )}
 
-        {user ? (
+        {vxUserInfo ? (
           <li onClick={handleSignOut} className="p-2 cursor-pointer">
             Logout
           </li>
