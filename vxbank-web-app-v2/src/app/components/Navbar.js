@@ -1,24 +1,17 @@
 import Link from "next/link";
 import { UserAuth } from "../context/AuthContext";
-import { userAPI } from "@/api/user";
 
 export default function Navbar() {
   const {
-    user,
     googleSignIn,
     logOut,
-    setVxToken,
-    vxToken,
     vxUserInfo,
-    setVxUserInfo,
-    removeVxUserInfo
   } = UserAuth();
 
   const handleSignIn = async () => {
     console.log("Handle sign in");
     try {
       await googleSignIn();
-      console.log("User", user);
     } catch (error) {
       console.log(error);
     }
