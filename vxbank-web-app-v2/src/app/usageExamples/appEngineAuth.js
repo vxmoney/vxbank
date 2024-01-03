@@ -37,7 +37,7 @@ export default function AppEngineAuthExample() {
 
   const fetchPingWhoAmI = async () => {
     try {
-      const response = await pingAPI.whoAmI(loginResponse.vxToken);
+      const response = await pingAPI.whoAmI(vxUserInfo.vxToken);
       const formattedResponse = JSON.stringify(response.data, null, 2);
       setWhoAmIResponse(response.data);
       setWhoAmIFormattedResponse(formattedResponse);
