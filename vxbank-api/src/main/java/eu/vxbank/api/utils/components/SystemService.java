@@ -137,6 +137,9 @@ public class SystemService {
                 new HashMap<>(),
                 vxBankDatastore,
                 VxStripeConfig.class);
+        if (configList.isEmpty()){
+            throw new IllegalStateException("No stripe config for userId " + userId);
+        }
         if (configList.size() != 1) {
             throw new IllegalStateException("We found multiple configuration for userId " + userId);
         }
