@@ -64,8 +64,6 @@ export default function LocalAuthExample() {
     }
   };
 
-  
-
   const callSetVxToken = async () => {
     try {
       setVxToken(loginResponse.vxToken);
@@ -82,6 +80,21 @@ export default function LocalAuthExample() {
     }
   };
 
+  const generateUserAndLgoIn = async () => {
+    try {
+      const response = await pingAPI.generateFirebaseIdToken();
+      const formattedResponse = JSON.stringify(response.data, null, 2);
+     
+
+      const loginResponse = await userAPI.login(
+        response.data.testFirebaseIdToken
+      );
+      setVxUserInfo(loginResponse.data);
+    } catch (error) {
+      console.log("generateUserAndLgoIn error", error);
+    }
+  };
+
   return (
     <div className="p-4">
       <p class="mb-3 text-gray-500 dark:text-gray-400">
@@ -89,6 +102,25 @@ export default function LocalAuthExample() {
         test the ui without having to deploy. It is very helpful for backend
         debuting.
       </p>
+
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
+          <p class="mb-4">Step 0: Generate user and login</p>
+          <button
+            onClick={generateUserAndLgoIn}
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Generate user and login
+          </button>
+        </div>
+
+        <div class="col-span-3">
+          <p>
+            Use this if you are not logged or you want to login as a new random user.
+          </p>
+          <p>This is all you need to start basic frontend development with localhost support</p>
+        </div>
+      </div>
 
       <div class="grid grid-cols-4 gap-4 p-4">
         <div class="col-span-1">
@@ -181,12 +213,14 @@ export default function LocalAuthExample() {
           <p>
             {vxUserInfo && (
               <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
-               {JSON.stringify(vxUserInfo, null, 2)}
+                {JSON.stringify(vxUserInfo, null, 2)}
               </pre>
             )}
           </p>
         </div>
       </div>
+
+      
     </div>
   );
 }
