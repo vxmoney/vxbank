@@ -37,13 +37,13 @@ public class SideLinkUserTest {
     @Test
     public void sideLinkUserAndAddFundsTest() throws FirebaseAuthException, JsonProcessingException {
 
-        boolean testDisabled = true;
+        boolean testDisabled = false;
         if (testDisabled) {
             System.out.println("End of test");
             return;
         }
 
-        String vxToken = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMiIsInVpZCI6MjIsImlzcyI6InNlbGYiLCJleHAiOjE3MDQ0MTY3NTEsImlhdCI6MTcwNDQwOTU1MSwiZW1haWwiOiJ1c2VyXzE3MDQ0MDk1NTE2ODVAZXhhbXBsZS5jb20ifQ.VvucKrY-N154Uem3wsVwNYMSeYRQ62_EsJdTRnK0M43yTEmNxPAhFVd1UBQErfO0LW1vl-VIhYlgUjHT1ECYlTVgyCqWjL1YOEpo6WgRp0bzFLUY9Sce7_DGcnxF2CzhnQU7ZuvYHTyqqauU10zG-2QCYwBkhA8vQgGMxhFYMH3zsGv_VLsaZeMBpFHY7Z4IbTMh9YhmKc7fFoLrOf423yW3WfIQOkOADi7R6TwDJj3cLhvt6cCoazgh-DJ2wRDShH1tLx7F3NUcJk2JfpsCatw6nWxMrsHLO-4hZn4mub7cZEOWG-PwA9gvR2ey302ygMtcysqBAPY_CPxa3Es94A";
+        String vxToken = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzMyIsInVpZCI6MzMsImlzcyI6InNlbGYiLCJleHAiOjE3MDQ0MTk2NDMsImlhdCI6MTcwNDQxMjQ0MywiZW1haWwiOiJ1c2VyXzE3MDQ0MTI0NDM3NThAZXhhbXBsZS5jb20ifQ.j2rItxbMwyNEW2QzlP6DCksS9QatZsmj3XumiARDJl-VCJ_ttM3UZotyWHyfDdVfPYWmDlHhkDP2HD9oBwB7MAl7DIp8LGLX_tihl0hQAjs2WR-hVWieXkvlBmX0TY5GnaVZJgZ2iQecYSeuEhgjq6U1iAltkVdyPlV4_FSTDsDBULlVIpfJuAi0oRAI8-LPFdUIYRNCb2coSVtOHHXlMOhgtBrwSJF59SVXJsjxWHCAryrM4o9BPKUzND53Tx2676gr515lnb5rJY3wmA41mYoz9UZOCp-Q6sPlFDgrI9T_YCciV8jNaBRx09CGkKuTY0maMi6IE_Ca6Z64-77e9A";
         String stripeId = "acct_1OUyNpB1kQZowFak";
 
         LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
