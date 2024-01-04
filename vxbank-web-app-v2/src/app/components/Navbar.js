@@ -39,6 +39,9 @@ export default function Navbar() {
           <Link href="/profile">Profile</Link>
         </li>
         <li className="p-2 cursor-pointer">
+          <Link href="/events">Events</Link>
+        </li>
+        <li className="p-2 cursor-pointer">
           <Link href="/usageExamples">DeveloperExamples</Link>
         </li>
       </ul>
