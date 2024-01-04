@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
+import { eventAPI } from "@/api/event";
 
 const CreateEventModal = () => {
   const { vxUserInfo } = UserAuth();
@@ -25,21 +26,16 @@ const CreateEventModal = () => {
     e.preventDefault();
     // Here, you can use formData to send the object to your endpoint or perform any other actions
     console.log(eventCreateParams);
-    // Example: Call your API endpoint with the formData object
-    // fetch('your_endpoint_url', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //   // Handle response
-    // })
-    // .catch(error => {
-    //   // Handle error
-    // });
+    eventAPI
+      .create(vxUserInfo.vxToken, eventCreateParams)
+      .then((response) => {
+        console.log("Event created:", response.data);
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error creating event:", error);
+        // Handle error
+      });
   };
 
   const closeModal = () => {
