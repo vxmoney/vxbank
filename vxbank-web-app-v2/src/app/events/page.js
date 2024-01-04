@@ -16,22 +16,11 @@ export default function EventsHome() {
             class="flex items-center"
             type="button"
           >
-            <svg
-              class="w-6 h-6 text-gray-500 dark:text-gray-400 mr-2"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 18 20"
-            >
-              <path d="M16 8H10V2a2 2 0 0 0-4 0v6H2a2 2 0 0 0 0 4h4v6a2 2 0 0 0 4 0v-6h6a2 2 0 0 0 0-4Z" />
-            </svg>
             <span class="text-gray-500 dark:text-gray-400">Create event</span>
           </button>
         </div>
       </section>
 
-      
-      
       <CreateEventModal />
     </div>
   );
