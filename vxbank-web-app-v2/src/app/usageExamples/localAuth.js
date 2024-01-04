@@ -124,6 +124,22 @@ export default function LocalAuthExample() {
 
       <div class="grid grid-cols-4 gap-4 p-4">
         <div class="col-span-1">
+          <p class="mb-4">decoded vxUserInfo from context</p>
+        </div>
+
+        <div class="col-span-3">
+          <p>
+            {vxUserInfo && (
+              <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
+                {JSON.stringify(vxUserInfo, null, 2)}
+              </pre>
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
           <p class="mb-4">Step 1: generate a random user</p>
           <button
             onClick={fetchGenerateFirebaseIdToken}
@@ -204,21 +220,7 @@ export default function LocalAuthExample() {
         </div>
       </div>
 
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-1">
-          <p class="mb-4">decoded vxUserInfo from context</p>
-        </div>
-
-        <div class="col-span-3">
-          <p>
-            {vxUserInfo && (
-              <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
-                {JSON.stringify(vxUserInfo, null, 2)}
-              </pre>
-            )}
-          </p>
-        </div>
-      </div>
+     
 
       
     </div>
