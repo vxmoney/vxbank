@@ -1,5 +1,47 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { UserAuth } from "../context/AuthContext";
+
 const CreateEventModal = () => {
+  const { vxUserInfo } = UserAuth();
+
+  const [eventCreateParams, setEventCreateParams] = useState({
+    vxUserId: vxUserInfo.id,
+    type: "payed1V1",
+    vxIntegrationId: "vxGaming",
+    title: "League of legends",
+    currency: "eur",
+    entryPrice: "500",
+  });
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setEventCreateParams((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here, you can use formData to send the object to your endpoint or perform any other actions
+    console.log(eventCreateParams);
+    // Example: Call your API endpoint with the formData object
+    // fetch('your_endpoint_url', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   // Handle response
+    // })
+    // .catch(error => {
+    //   // Handle error
+    // });
+  };
+
   const closeModal = () => {
     const modal = document.getElementById("default-modal");
     modal.classList.add("hidden");
@@ -84,63 +126,48 @@ const CreateEventModal = () => {
           </div>
           {/* Modal body */}
 
-          <form className="p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <form
+            className="p-4 md:p-5 border-b rounded-t dark:border-gray-600"
+            onSubmit={handleSubmit}
+          >
             <div className="grid gap-6 mb-6 md:grid-cols-2">
-              {/* First Name Section */}
+              {/* Title Section */}
               <div>
                 <label
-                  htmlFor="first_name"
+                  htmlFor="title"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  First name
+                  Event title
                 </label>
                 <input
                   type="text"
-                  id="first_name"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="John"
+                  placeholder="League of legends challenge"
                   required
+                  id="title"
+                  value={eventCreateParams.title}
+                  onChange={handleInputChange}
                 />
               </div>
 
-              {/* Last Name Section */}
+              {/* Entry Price Section */}
               <div>
                 <label
-                  htmlFor="last_name"
+                  htmlFor="entryPrice"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Last name
+                  Entry Price (in cents)
                 </label>
                 <input
-                  type="text"
-                  id="last_name"
+                  type="number"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Doe"
+                  placeholder="Enter price in cents"
                   required
+                  id="entryPrice"
+                  value={eventCreateParams.entryPrice}
+                  onChange={handleInputChange}
                 />
               </div>
-            </div>
-
-            {/* Language Section */}
-            <div>
-              <label
-                htmlFor="language"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Language
-              </label>
-              <select
-                id="language"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-              >
-                <option value="" disabled selected>
-                  Select a language
-                </option>
-                <option value="romanian">Romanian</option>
-                <option value="french">French</option>
-                <option value="english">English</option>
-              </select>
             </div>
           </form>
 
@@ -149,6 +176,7 @@ const CreateEventModal = () => {
             <button
               type="button"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              onClick={handleSubmit}
             >
               I accept
             </button>
