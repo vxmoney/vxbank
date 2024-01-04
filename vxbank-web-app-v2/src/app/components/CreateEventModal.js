@@ -43,7 +43,7 @@ const CreateEventModal = () => {
       id="default-modal"
       tabIndex="-1"
       aria-hidden="true"
-      className="hidden overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex items-center justify-center"
+      className="hidden overflow-y-auto overflow-x-hidden fixed inset-x-0 top-1/8 z-50 flex items-center justify-center"
     >
       <div className="relative p-4 w-full max-w-2xl max-h-full">
         {/* Modal content */}
