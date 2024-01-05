@@ -14,16 +14,28 @@ const instance = axios.create({
 });
 
 export const eventAPI = {
-  whoAmI: (vxToken) => {
-    const headers = {
-      Authorization: `Bearer ${vxToken}`,
-    };
-    return instance.get("/whoAmI", { headers });
-  },
   create: (vxToken, eventData) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
     return instance.post("", eventData, { headers });
+  },
+  search: (
+    vxToken,
+    vxIntegrationId = "vxGaming",
+    stateList = ["openForRegistration", "inProgress", "closed"],
+    offset = 0,
+    limit = 5
+  ) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    const params = {
+      vxIntegrationId,
+      stateList: stateList.join(","),
+      offset,
+      limit,
+    };
+    return instance.get("", { headers, params });
   },
 };
