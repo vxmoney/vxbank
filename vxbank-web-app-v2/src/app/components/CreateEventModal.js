@@ -22,6 +22,12 @@ const CreateEventModal = () => {
     }));
   };
 
+  const closeModal = () => {
+    const modal = document.getElementById("default-modal");
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here, you can use formData to send the object to your endpoint or perform any other actions
@@ -30,18 +36,13 @@ const CreateEventModal = () => {
       .create(vxUserInfo.vxToken, eventCreateParams)
       .then((response) => {
         console.log("Event created:", response.data);
+        closeModal();
         // Handle successful response
       })
       .catch((error) => {
         console.error("Error creating event:", error);
         // Handle error
       });
-  };
-
-  const closeModal = () => {
-    const modal = document.getElementById("default-modal");
-    modal.classList.add("hidden");
-    modal.setAttribute("aria-hidden", "true");
   };
 
   useEffect(() => {
