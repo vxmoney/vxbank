@@ -168,6 +168,8 @@ public class VxDsService {
             query.filter("state !=", state);
         }
 
+        // order by createTimeStamp
+        query = query.order("-createTimeStamp");
 
         query = query.chunkAll();
         List<VxEvent> eventList = query.list();

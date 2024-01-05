@@ -40,6 +40,7 @@ public class VxEvent  {
     public String vxIntegrationId;
 
     public String title;
+    @Index
     public Long createTimeStamp;
     public String currency;
     public Long entryPrice;
