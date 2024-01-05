@@ -43,7 +43,7 @@ public class SideLinkUserTest {
             return;
         }
 
-        String vxToken = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzMyIsInVpZCI6MzMsImlzcyI6InNlbGYiLCJleHAiOjE3MDQ0MTk2NDMsImlhdCI6MTcwNDQxMjQ0MywiZW1haWwiOiJ1c2VyXzE3MDQ0MTI0NDM3NThAZXhhbXBsZS5jb20ifQ.j2rItxbMwyNEW2QzlP6DCksS9QatZsmj3XumiARDJl-VCJ_ttM3UZotyWHyfDdVfPYWmDlHhkDP2HD9oBwB7MAl7DIp8LGLX_tihl0hQAjs2WR-hVWieXkvlBmX0TY5GnaVZJgZ2iQecYSeuEhgjq6U1iAltkVdyPlV4_FSTDsDBULlVIpfJuAi0oRAI8-LPFdUIYRNCb2coSVtOHHXlMOhgtBrwSJF59SVXJsjxWHCAryrM4o9BPKUzND53Tx2676gr515lnb5rJY3wmA41mYoz9UZOCp-Q6sPlFDgrI9T_YCciV8jNaBRx09CGkKuTY0maMi6IE_Ca6Z64-77e9A";
+        String vxToken = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIiwidWlkIjoxLCJpc3MiOiJzZWxmIiwiZXhwIjoxNzA0NDUxNTA4LCJpYXQiOjE3MDQ0NDQzMDgsImVtYWlsIjoidXNlcl8xNzA0NDQ0MzA3Nzg1QGV4YW1wbGUuY29tIn0.CJSy_oMtMFzmpajEs4Sy07vDiKggttczavYp3dut8DMd1P0Pyvc-zB7BmxJ1Q425Y8Zy5TwGkjfFKr0IpoFCjHm1HiaKxX7E3hY7ZhqFc1l7tbqe1LKJLef7tEh4EAf2uKPslxNjb6c0wTSz_NVlRqCSACMMII9a4kdFENRGCVFOWvQvRF4VgwTAW6nQWT_h48NWco9a-14imYZQ9k12BKLQ0zsV4buRNIr4RjwLEqlPwFBPn4B320mdnNMDafd1LZVOUWkQH2lDghVv9IEuqCNe5Z0E2Lv1oNnKz8-LrlVopLmzBZzcSagaRBJzgG3SmacDOnU8Iwjxy7gsKc0yIg";
         String stripeId = "acct_1OUyNpB1kQZowFak";
 
         LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);

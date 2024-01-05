@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import CreateEventModal from "../components/CreateEventModal";
+import EventsComponent from "../components/EventsComponent";
 
 export default function EventsHome() {
   return (
@@ -22,6 +23,7 @@ export default function EventsHome() {
       </section>
 
       <CreateEventModal />
+      <EventsComponent />
     </div>
   );
 }
