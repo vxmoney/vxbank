@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { eventAPI } from '@/api/event';
-import { UserAuth } from '../context/AuthContext';
+import React, { useEffect, useState } from "react";
+import { UserAuth } from "../context/AuthContext";
 import { useVxContext } from "../context/VxContext";
 
 export default function EventsComponent() {
-  
-  const {events, fetchEvents} = useVxContext();
+  const { events, fetchEvents } = useVxContext();
 
   const { vxUserInfo } = UserAuth();
 
@@ -14,8 +12,8 @@ export default function EventsComponent() {
     if (vxUserInfo && vxUserInfo?.vxToken) {
       fetchEvents(vxUserInfo?.vxToken);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
 
   return (
     <div className="p-2 relative overflow-x-auto">
@@ -37,20 +35,17 @@ export default function EventsComponent() {
           </tr>
         </thead>
         <tbody>
-          {events.map(event => (
-            <tr key={event.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          {events.map((event) => (
+            <tr
+              key={event.id}
+              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            >
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {event.id}
               </td>
-              <td className="px-6 py-4">
-                {event.title}
-              </td>
-              <td className="px-6 py-4">
-                {event.state}
-              </td>
-              <td className="px-6 py-4">
-                {event.entryPrice}
-              </td>
+              <td className="px-6 py-4">{event.title}</td>
+              <td className="px-6 py-4">{event.state}</td>
+              <td className="px-6 py-4">{event.entryPrice}</td>
             </tr>
           ))}
         </tbody>
