@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { eventAPI } from '@/api/event';
 import { UserAuth } from '../context/AuthContext';
+import { useVxContext } from "../context/VxContext";
 
 export default function EventsComponent() {
-  const [events, setEvents] = useState([]);
+  
+  const {events, fetchEvents} = useVxContext();
+
   const { vxUserInfo } = UserAuth();
 
   useEffect(() => {
-    const vxToken = vxUserInfo?.vxToken;
-
-    eventAPI.search(vxToken)
-      .then(response => {
-        setEvents(response.data.eventList);
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-        // Handle errors if needed
-      });
+    // Check if vxToken is available before calling fetchEvents
+    if (vxUserInfo && vxUserInfo?.vxToken) {
+      fetchEvents(vxUserInfo?.vxToken);
+    }
   }, []);
+  
 
   return (
     <div className="p-2 relative overflow-x-auto">
