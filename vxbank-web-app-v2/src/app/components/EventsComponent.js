@@ -11,7 +11,6 @@ export default function EventsComponent() {
 
     eventAPI.search(vxToken)
       .then(response => {
-        console.log('API Response:', response.data);
         setEvents(response.data.eventList);
       })
       .catch(error => {

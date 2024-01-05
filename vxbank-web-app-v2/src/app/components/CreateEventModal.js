@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { eventAPI } from "@/api/event";
+import { useVxContext } from "../context/VxContext";
 
 const CreateEventModal = () => {
   const { vxUserInfo } = UserAuth();
+  const { fetchEvents } = useVxContext();
 
   const [eventCreateParams, setEventCreateParams] = useState({
     vxUserId: vxUserInfo?.id,
@@ -37,6 +39,7 @@ const CreateEventModal = () => {
       .create(vxUserInfo?.vxToken, eventCreateParams)
       .then((response) => {
         console.log("Event created:", response.data);
+        fetchEvents(vxUserInfo?.vxToken)
         closeModal();
         // Handle successful response
       })
