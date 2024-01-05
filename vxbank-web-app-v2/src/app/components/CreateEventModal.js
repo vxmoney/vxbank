@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { eventAPI } from "@/api/event";
@@ -6,7 +7,7 @@ const CreateEventModal = () => {
   const { vxUserInfo } = UserAuth();
 
   const [eventCreateParams, setEventCreateParams] = useState({
-    vxUserId: vxUserInfo.id,
+    vxUserId: vxUserInfo?.id,
     type: "payed1V1",
     vxIntegrationId: "vxGaming",
     title: "League of legends",
@@ -33,7 +34,7 @@ const CreateEventModal = () => {
     // Here, you can use formData to send the object to your endpoint or perform any other actions
     console.log(eventCreateParams);
     eventAPI
-      .create(vxUserInfo.vxToken, eventCreateParams)
+      .create(vxUserInfo?.vxToken, eventCreateParams)
       .then((response) => {
         console.log("Event created:", response.data);
         closeModal();
