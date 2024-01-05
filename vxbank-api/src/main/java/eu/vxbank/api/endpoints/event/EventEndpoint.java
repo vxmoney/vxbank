@@ -195,8 +195,6 @@ public class EventEndpoint {
                                       @RequestParam(name = "stateList") List<VxEvent.State> stateList,
                                       @RequestParam(name = "offset", defaultValue = "0") Long offset,
                                       @RequestParam(name = "limit", defaultValue = "5") Long limit) {
-        System.out.println("offset = " + offset);
-        System.out.println("limit = " + limit);
 
         List<VxEvent> vxEventList = VxDsService.searchEvent(systemService.getVxBankDatastore(),
                 vxIntegrationId.toString(),
