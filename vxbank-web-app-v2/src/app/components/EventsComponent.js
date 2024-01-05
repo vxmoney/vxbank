@@ -14,7 +14,7 @@ export default function EventsComponent() {
     if (vxUserInfo && vxUserInfo?.vxToken) {
       fetchEvents(vxUserInfo?.vxToken);
     }
-  }, []);
+  }, [fetchEvents, vxUserInfo]);
   
 
   return (
