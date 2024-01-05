@@ -21,6 +21,7 @@ public class CommandExampleTest {
         public Long idUserPayment;
         public Long idVxGamingPayment;
         private CommandExample(VxBankDatastore mds){
+            super(ds);
             this.mds = mds;
         }
 
