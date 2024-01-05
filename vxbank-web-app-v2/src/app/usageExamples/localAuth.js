@@ -84,7 +84,6 @@ export default function LocalAuthExample() {
     try {
       const response = await pingAPI.generateFirebaseIdToken();
       const formattedResponse = JSON.stringify(response.data, null, 2);
-     
 
       const loginResponse = await userAPI.login(
         response.data.testFirebaseIdToken
@@ -93,6 +92,24 @@ export default function LocalAuthExample() {
     } catch (error) {
       console.log("generateUserAndLgoIn error", error);
     }
+  };
+
+  const callRequestFunds = async () => {
+    let requestParams = {
+      userId: vxUserInfo.id,
+      amount: 1000,
+      currency: "eur",
+    };
+    pingAPI
+      .requestFunds(vxUserInfo.vxToken, requestParams)
+      .then((response) => {
+        console.log("Funds requested:", response.data);
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error requesting funds:", error);
+        // Handle error
+      });
   };
 
   return (
@@ -116,9 +133,13 @@ export default function LocalAuthExample() {
 
         <div class="col-span-3">
           <p>
-            Use this if you are not logged or you want to login as a new random user.
+            Use this if you are not logged or you want to login as a new random
+            user.
           </p>
-          <p>This is all you need to start basic frontend development with localhost support</p>
+          <p>
+            This is all you need to start basic frontend development with
+            localhost support
+          </p>
         </div>
       </div>
 
@@ -134,6 +155,26 @@ export default function LocalAuthExample() {
                 {JSON.stringify(vxUserInfo, null, 2)}
               </pre>
             )}
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 p-4">
+        <div class="col-span-1">
+          <p class="mb-4">Ad more funds</p>
+          <button
+            onClick={callRequestFunds}
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Request funds
+          </button>
+        </div>
+
+        <div class="col-span-3">
+          <p>It adds more funds to the current user</p>
+          <p>
+            Is not that simple in the real world. This will fail in production
+            and also in develop when the stars are not alined
           </p>
         </div>
       </div>
@@ -219,10 +260,6 @@ export default function LocalAuthExample() {
           <p>vxToken = {vxToken}</p>
         </div>
       </div>
-
-     
-
-      
     </div>
   );
 }

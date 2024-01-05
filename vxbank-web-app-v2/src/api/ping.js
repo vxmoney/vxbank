@@ -21,4 +21,10 @@ export const pingAPI = {
     };
     return instance.get("/whoAmI", { headers });
   },
+  requestFunds: (vxToken, requestFundsParams) =>{
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post("/requestFunds", requestFundsParams, { headers });
+  }
 };
