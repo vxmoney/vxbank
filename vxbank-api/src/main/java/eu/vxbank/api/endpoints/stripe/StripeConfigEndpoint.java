@@ -85,14 +85,15 @@ public class StripeConfigEndpoint {
         StripeConfigInitiateConfigResponse response = new StripeConfigInitiateConfigResponse();
 
         String stripeKey = stripeKeys.stripeSecretKey;
-
+        String refreshRedirectUrl = systemService.getStripeRefreshRedirectUrl();
         if (stripeConfigs.isEmpty()) {
 
             // create first config
             Account account = VxStripeUtil.createExpressAccount(stripeKey);
 
             String stripeAccountId = account.getId();
-            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, stripeAccountId);
+
+            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, stripeAccountId, refreshRedirectUrl);
 
             //create stripe config in progress
             VxStripeConfig config = VxStripeConfig.builder()
@@ -130,7 +131,8 @@ public class StripeConfigEndpoint {
 
             }
 
-            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, config.stripeAccountId);
+            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, config.stripeAccountId,
+                    refreshRedirectUrl);
             StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
             initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
             initiateConfigResponse.url = accountLink.getUrl();

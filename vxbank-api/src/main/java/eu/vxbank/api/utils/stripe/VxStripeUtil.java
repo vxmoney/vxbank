@@ -8,7 +8,6 @@ import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
 import com.stripe.param.ChargeCreateParams;
-import com.stripe.param.TransferCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.user.dto.Funds;
 import vxbank.datastore.data.models.VxPayment;
@@ -66,13 +65,13 @@ public class VxStripeUtil {
         return account;
     }
 
-    public static AccountLink createAccountLink(String stripeKey, String connectedAccountId) throws StripeException {
+    public static AccountLink createAccountLink(String stripeKey, String connectedAccountId, String refreshRedirectUrl) throws StripeException {
         Stripe.apiKey = stripeKey;
 
         AccountLinkCreateParams params = AccountLinkCreateParams.builder()
                 .setAccount(connectedAccountId)
-                .setRefreshUrl("https://example.com/reauth")
-                .setReturnUrl("https://example.com/return")
+                .setRefreshUrl(refreshRedirectUrl)
+                .setReturnUrl(refreshRedirectUrl)
                 .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                 .build();
 

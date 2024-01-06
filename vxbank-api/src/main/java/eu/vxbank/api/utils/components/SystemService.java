@@ -115,7 +115,8 @@ public class SystemService {
                 return getClass().getClassLoader()
                         .getResourceAsStream("vxbank-eu-prod-key.json");
             default:
-                throw new IllegalStateException("Not supported getDatastoreCredentialsInputStream for env: " + environment);
+                throw new IllegalStateException(
+                        "Not supported getDatastoreCredentialsInputStream for env: " + environment);
         }
     }
 
@@ -125,9 +126,9 @@ public class SystemService {
         String email = jwtToken.getClaim("email");
         Long userId = Long.valueOf(auth.getName());
 
-        Optional<VxUser> optionalVxUser = VxDsService.getUserByEmail(email,  vxBankDatastore);
+        Optional<VxUser> optionalVxUser = VxDsService.getUserByEmail(email, vxBankDatastore);
         if (optionalVxUser.isEmpty()) {
-            throw new IllegalStateException("Not able to locateUser my email " + userId);
+            throw new IllegalStateException("Not able to locateUser by email " + email);
         }
 
         VxUser vxUser = optionalVxUser.get();
@@ -137,7 +138,7 @@ public class SystemService {
                 new HashMap<>(),
                 vxBankDatastore,
                 VxStripeConfig.class);
-        if (configList.isEmpty()){
+        if (configList.isEmpty()) {
             throw new IllegalStateException("No stripe config for userId " + userId);
         }
         if (configList.size() != 1) {
@@ -151,6 +152,19 @@ public class SystemService {
 
 
         return vxUser;
+    }
+
+    public String getStripeRefreshRedirectUrl() {
+        switch (environment) {
+            case LOCALHOST -> {
+                return "http://localhost:3000/profile";
+            }
+            case DEVELOPMENT -> {
+                return "https://vxbank-eu-dev.ew.r.appspot.com/profile";
+            }
+            default -> throw new IllegalStateException("getStripeRefreshRedirectUrl Not yet available in production");
+
+        }
     }
 }
 

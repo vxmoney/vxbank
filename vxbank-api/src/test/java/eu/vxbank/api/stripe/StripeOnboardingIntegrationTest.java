@@ -310,7 +310,8 @@ public class StripeOnboardingIntegrationTest {
         Stripe.apiKey = stripeDevSecretKey;
         Account account = Account.retrieve(activeStripeAccountId);
 
-        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey, activeStripeAccountId);
+        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeDevSecretKey, activeStripeAccountId,
+                systemService.getStripeRefreshRedirectUrl());
         System.out.println("AccountLinkUrl = " + accountLink.getUrl());
 
 
