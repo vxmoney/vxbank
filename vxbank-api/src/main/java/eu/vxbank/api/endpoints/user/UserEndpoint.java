@@ -43,14 +43,15 @@ public class UserEndpoint {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
 
-        ValidateFirebaseResponse validateResponse = vxFirebaseAuthService.validateFirebaseIdTokenAndGetData(loginParams.firebaseIdToken);
+        ValidateFirebaseResponse validateResponse =
+                vxFirebaseAuthService.validateFirebaseIdTokenAndGetData(loginParams.firebaseIdToken);
 
         String email = validateResponse.email;
         VxBankDatastore ds = systemService.getVxBankDatastore();
         Optional<VxUser> optionalUser = VxDsService.getUserByEmail(email, ds);
         if (optionalUser.isEmpty()) {
             String name = validateResponse.name;
-            VxUser user = createNewUser(email, name,  ds);
+            VxUser user = createNewUser(email, name, ds);
             optionalUser = Optional.of(user);
         }
 
