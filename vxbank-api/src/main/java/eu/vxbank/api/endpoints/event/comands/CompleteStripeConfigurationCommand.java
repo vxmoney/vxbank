@@ -20,8 +20,11 @@ public class CompleteStripeConfigurationCommand extends VxDsCommand {
 
         vxStripeConfig = VxDsService.getByUserId(VxStripeConfig.class, getDs(), currentUserId)
                 .get(0);
-        vxStripeConfig.state = VxStripeConfig.State.active;
-        VxDsService.persist(vxStripeConfig, getDs(), VxStripeConfig.class);
+        if (vxStripeConfig.state != VxStripeConfig.State.active){
+            vxStripeConfig.state = VxStripeConfig.State.active;
+            VxDsService.persist(vxStripeConfig, getDs(), VxStripeConfig.class);
+        }
+
     }
 
 
