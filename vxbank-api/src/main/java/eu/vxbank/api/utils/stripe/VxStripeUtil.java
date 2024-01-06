@@ -71,7 +71,7 @@ public class VxStripeUtil {
         AccountLinkCreateParams params = AccountLinkCreateParams.builder()
                 .setAccount(connectedAccountId)
                 .setRefreshUrl(refreshRedirectUrl)
-                .setReturnUrl(refreshRedirectUrl)
+                .setReturnUrl(refreshRedirectUrl+"?configStatus=complete")
                 .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                 .build();
 

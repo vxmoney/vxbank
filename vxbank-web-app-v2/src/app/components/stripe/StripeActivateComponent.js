@@ -3,6 +3,7 @@ import configValues from "../../../api/apiConfig";
 import { stripeConfigAPI } from "@/api/stripeConfig";
 import { userAPI } from "@/api/user";
 import { UserAuth } from "@/app/context/AuthContext";
+import { useSearchParams } from "next/navigation";
 
 /**
  * How it works
@@ -18,6 +19,8 @@ import { UserAuth } from "@/app/context/AuthContext";
  */
 
 const StripeActivateComponent = ({ id, email, name }) => {
+  const searchParams = useSearchParams();
+  const configStatus = searchParams.get("configStatus");
   const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
   const { vxUserInfo, setVxUserInfo } = UserAuth();
 
@@ -35,10 +38,6 @@ const StripeActivateComponent = ({ id, email, name }) => {
       console.error("callGetStripeConfig error: ", error);
     }
   };
-
-  useEffect(() => {
-    callGetStripeConfig();
-  }, []);
 
   const initiateResumeConfiguration = async () => {
     let requestParams = {
@@ -67,6 +66,16 @@ const StripeActivateComponent = ({ id, email, name }) => {
       console.error("initiateResumeConfiguration error", error);
     }
   };
+
+  useEffect(() => {
+    callGetStripeConfig();
+    console.log("ConfigStatus=", configStatus);
+    if (configStatus === "complete") {
+      // we got redirected by stripe so we initiate again.
+      // this will also handel the refresh part of the token
+      initiateResumeConfiguration();
+    }
+  }, []);
 
   return (
     <div className="pl-8 pr-8">
@@ -102,6 +111,12 @@ const StripeActivateComponent = ({ id, email, name }) => {
                   Initiate / Resume configuration
                 </button>
               </td>
+            </tr>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                Stripe callback value
+              </th>
+              <td className="px-6 py-4">{configStatus}</td>
             </tr>
           </tbody>
         </table>
