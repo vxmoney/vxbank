@@ -2,6 +2,7 @@
 
 import { UserAuth } from "../context/AuthContext";
 import ProfileComponent from "../components/ProfileComponent";
+import StripeActivateComponent from "../components/stripe/StripeActivateComponent";
 
 export default function Profiler() {
   const { vxUserInfo } = UserAuth();
@@ -13,6 +14,9 @@ export default function Profiler() {
   return (
     <div>
       <ProfileComponent {...vxUserInfo} />
+      {vxUserInfo.stripeConfigState !== "active" && (
+        <StripeActivateComponent {...vxUserInfo} />
+      )}
     </div>
   );
 }
