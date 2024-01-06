@@ -4,6 +4,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
+import eu.vxbank.api.endpoints.event.comands.CompleteStripeConfigurationCommand;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigFinalizeConfigResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
@@ -125,6 +126,10 @@ public class StripeConfigEndpoint {
             List<String> currentlyDueList = account.getRequirements()
                     .getCurrentlyDue();
             if (currentlyDueList.isEmpty()) {
+
+                CompleteStripeConfigurationCommand completeStripeConfigurationCommand
+                        = new CompleteStripeConfigurationCommand(systemService.getVxBankDatastore(), authId);
+                completeStripeConfigurationCommand.execute();
 
                 StripeConfigInitiateConfigResponse completeConfigResponse = new StripeConfigInitiateConfigResponse();
                 completeConfigResponse.configurationComplete = true;
