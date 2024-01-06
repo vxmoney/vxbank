@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import configValues from "../../../api/apiConfig";
 import { stripeConfigAPI } from "@/api/stripeConfig";
+import { userAPI } from "@/api/user";
 import { UserAuth } from "@/app/context/AuthContext";
 
 /**
@@ -18,7 +19,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 
 const StripeActivateComponent = ({ id, email, name }) => {
   const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
-  const { vxUserInfo } = UserAuth();
+  const { vxUserInfo, setVxUserInfo } = UserAuth();
 
   const [stripeConfigState, setStripeConfigState] = useState(null);
   const [configUrl, setConfigUrl] = useState(null);
@@ -51,8 +52,17 @@ const StripeActivateComponent = ({ id, email, name }) => {
         requestParams
       );
       console.log("initiateResponse", initiateResponse);
-      let stripeUrl = initiateResponse.data.url;
-      window.location.href = stripeUrl;
+      if (initiateResponse.data.configurationComplete) {
+        console.log("Time to refresh token");
+        const refreshResponse = await userAPI.refreshVxToken(
+          vxUserInfo.vxToken
+        );
+        console.log("refreshResponse", refreshResponse.data);
+        setVxUserInfo(refreshResponse.data);
+      } else {
+        let stripeUrl = initiateResponse.data.url;
+        window.location.href = stripeUrl;
+      }
     } catch (error) {
       console.error("initiateResumeConfiguration error", error);
     }

@@ -14,7 +14,6 @@ export default function LocalAuthExample() {
     setVxUserInfo,
   } = UserAuth();
 
-
   const initialMessage = "Please generate a random user";
   const initialLoginMessage = "Please login using the token generated above";
   const whoAmIMessage =

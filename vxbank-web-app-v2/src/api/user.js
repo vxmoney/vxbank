@@ -18,4 +18,10 @@ export const userAPI = {
     };
     return instance.post("/login", loginParams);
   },
+  refreshVxToken: (vxToken) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.get("/refreshVxToken", { headers });
+  },
 };
