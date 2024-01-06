@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import configValues from "../../../api/apiConfig";
 import { stripeConfigAPI } from "@/api/stripeConfig";
 import { UserAuth } from "@/app/context/AuthContext";
@@ -16,14 +16,11 @@ import { UserAuth } from "@/app/context/AuthContext";
  * }
  */
 
-
-const StripeActivateComponent = ({
-  id,
-  email,
-  name,
-}) => {
+const StripeActivateComponent = ({ id, email, name }) => {
   const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
   const { vxUserInfo } = UserAuth();
+
+  const [stripeConfigState, setStripeConfigState] = useState(null);
 
   const callGetStripeConfig = async () => {
     try {
@@ -31,7 +28,7 @@ const StripeActivateComponent = ({
         vxUserInfo.vxToken,
         vxUserInfo.id
       );
-      console.log("getStripeConfig", getStripeConfigResponse);
+      setStripeConfigState(getStripeConfigResponse.data.state);
     } catch (error) {
       console.error("callGetStripeConfig error: ", error);
     }
@@ -48,7 +45,7 @@ const StripeActivateComponent = ({
           Stripe activate card
         </h5>
         <p className="font-normal text-gray-700 dark:text-gray-400k">
-          You need to update you stripe configuration
+          You need to update stripe configuration
         </p>
 
         <div className="flex-grow overflow-auto">

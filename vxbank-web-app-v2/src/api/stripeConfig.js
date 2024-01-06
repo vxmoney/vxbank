@@ -44,8 +44,6 @@ export const stripeConfigAPI = {
     };
 
     const endpoint = `/getByUserId/${userId}`;
-    console.log("getByUserId endpoint", endpoint)
-    console.log("getByUserId vxToken", vxToken)
 
     return instance.get(endpoint, { headers });
   },
