@@ -1,26 +1,46 @@
+import { useEffect } from "react";
 import configValues from "../../../api/apiConfig";
+import { stripeConfigAPI } from "@/api/stripeConfig";
+import { UserAuth } from "@/app/context/AuthContext";
 
 /**
  * How it works
  * Check stripe config endpoint: stripeConfig/getByUserId/{userId}
- * 
+ *
  * If response state != active
- * Initiate stripe config initiate will handel also resume. 
+ * Initiate stripe config initiate will handel also resume.
  * Initiate config endpoint: stripeConfig/initiateConfig
  * use params
  * public class StripeConfigInitiateConfigParams {
  *     public Long userId;
  * }
  */
-const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
+
 
 const StripeActivateComponent = ({
   id,
   email,
   name,
-  stripeConfigState,
-  stripeId,
 }) => {
+  const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
+  const { vxUserInfo } = UserAuth();
+
+  const callGetStripeConfig = async () => {
+    try {
+      const getStripeConfigResponse = await stripeConfigAPI.getByUserId(
+        vxUserInfo.vxToken,
+        vxUserInfo.id
+      );
+      console.log("getStripeConfig", getStripeConfigResponse);
+    } catch (error) {
+      console.error("callGetStripeConfig error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    callGetStripeConfig();
+  }, []);
+
   return (
     <div className="pl-8 pr-8">
       <div className="block  p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ">
