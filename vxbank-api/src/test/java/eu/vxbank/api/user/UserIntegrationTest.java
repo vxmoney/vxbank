@@ -7,15 +7,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
-import eu.vxbank.api.helpers.PingHelper;
-import eu.vxbank.api.helpers.RandomUtil;
-import eu.vxbank.api.helpers.StripeConfigHelper;
-import eu.vxbank.api.helpers.UserHelper;
-import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
+import eu.vxbank.api.testutils.UserUtils;
 import eu.vxbank.api.utils.components.SystemService;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -29,10 +23,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
 
-import java.util.Map;
 import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -73,7 +65,7 @@ public class UserIntegrationTest {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest request = new UserRecord.CreateRequest().setEmail(email)
-                .setDisplayName("name_"+email)
+                .setDisplayName("name_" + email)
                 .setEmailVerified(true)
                 .setPassword(testPassword); // Set a secure password for the user
 
@@ -124,12 +116,10 @@ public class UserIntegrationTest {
         HttpEntity<LoginParams> requestEntity = new HttpEntity<>(loginParams, headers);
 
         // Make the POST request
-        ResponseEntity<LoginResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/user/login",
+        ResponseEntity<LoginResponse> responseEntity = restTemplate.exchange("http://localhost:" + port + "/user/login",
                 HttpMethod.POST,
                 requestEntity,
-                LoginResponse.class
-        );
+                LoginResponse.class);
 
         // Extract the response
         LoginResponse loginResponse = responseEntity.getBody();
@@ -144,6 +134,10 @@ public class UserIntegrationTest {
         LoginResponse pingResponse = pingWhoAmI(loginResponse.vxToken);
         Assertions.assertEquals(loginResponse.email, pingResponse.email);
 
+        // refresh token
+        LoginResponse refreshResponse = UserUtils.refreshVxToken(restTemplate, port, loginResponse.vxToken, 200);
+        Assertions.assertNotNull(refreshResponse.vxTokenExpiresAt);
+
     }
 
     private LoginResponse pingWhoAmI(String vxToken) {
@@ -156,20 +150,12 @@ public class UserIntegrationTest {
 
         // Make the GET request to /ping/whoAmI
         ResponseEntity<LoginResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/ping/whoAmI",
-                HttpMethod.GET,
-                requestEntity,
-                LoginResponse.class
-        );
+                "http://localhost:" + port + "/ping/whoAmI", HttpMethod.GET, requestEntity, LoginResponse.class);
 
         // Extract the response
         LoginResponse responseBody = responseEntity.getBody();
         return responseBody;
-
     }
-
-
-
 
 
 }

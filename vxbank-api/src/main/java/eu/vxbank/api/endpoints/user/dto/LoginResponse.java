@@ -1,7 +1,6 @@
 package eu.vxbank.api.endpoints.user.dto;
 
 import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.models.VxUser;
 
 import java.util.List;
 
@@ -12,6 +11,7 @@ public class LoginResponse {
     public String name;
     public String message;
     public String vxToken;
+    public Long vxTokenExpiresAt;
     public VxStripeConfig.State stripeConfigState;
     public List<Funds> availableFundsList;
     public String stripeId;

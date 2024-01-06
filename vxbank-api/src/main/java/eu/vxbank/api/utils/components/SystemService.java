@@ -150,7 +150,23 @@ public class SystemService {
                     "Illegal stripe config state for userId = " + userId + " state=" + stripeConfig.state);
         }
 
+        return vxUser;
+    }
 
+    public VxUser validateAndGetUser(Authentication auth){
+        Jwt jwtToken = (Jwt) auth.getPrincipal();
+        String email = jwtToken.getClaim("email");
+        Long userId = Long.valueOf(auth.getName());
+
+        Optional<VxUser> optionalVxUser = VxDsService.getUserByEmail(email, vxBankDatastore);
+        if (optionalVxUser.isEmpty()) {
+            throw new IllegalStateException("Not able to locateUser by email " + email);
+        }
+
+        VxUser vxUser = optionalVxUser.get();
+        if (optionalVxUser.isEmpty()) {
+            throw new IllegalStateException("Not able to locateUser by email " + email);
+        }
         return vxUser;
     }
 
