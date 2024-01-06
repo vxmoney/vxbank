@@ -22,6 +22,7 @@ deployOnDev() {
     gcloud config get-value project
     npm run build
     gcloud app deploy --quiet
+    initEnvLocalhost
 }
 
 deployOnProd() {
@@ -30,4 +31,5 @@ deployOnProd() {
     gcloud config get-value project
     npm run build
     gcloud app deploy --quiet
+    initEnvLocalhost
 }
