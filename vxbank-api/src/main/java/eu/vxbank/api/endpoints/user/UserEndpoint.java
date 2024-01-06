@@ -65,6 +65,11 @@ public class UserEndpoint {
 
         VxUser vxUser = optionalUser.get();
 
+       LoginResponse loginResponse = buildLoginResponse(vxUser);
+       return loginResponse;
+    }
+
+    private LoginResponse buildLoginResponse (VxUser vxUser){
         TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
 
 
