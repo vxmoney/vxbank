@@ -1,4 +1,17 @@
 import configValues from "../../../api/apiConfig";
+
+/**
+ * How it works
+ * Check stripe config endpoint: stripeConfig/getByUserId/{userId}
+ * 
+ * If response state != active
+ * Initiate stripe config initiate will handel also resume. 
+ * Initiate config endpoint: stripeConfig/initiateConfig
+ * use params
+ * public class StripeConfigInitiateConfigParams {
+ *     public Long userId;
+ * }
+ */
 const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
 
 const StripeActivateComponent = ({
