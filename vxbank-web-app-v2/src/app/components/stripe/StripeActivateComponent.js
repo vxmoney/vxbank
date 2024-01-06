@@ -39,9 +39,24 @@ const StripeActivateComponent = ({ id, email, name }) => {
     callGetStripeConfig();
   }, []);
 
-  const initiateResumeConfiguration = async () =>{
-    console.log("clicked initiate resume configuration")
-  }
+  const initiateResumeConfiguration = async () => {
+    let requestParams = {
+      userId: vxUserInfo.id,
+    };
+    try {
+      console.log("clicked initiate resume configuration");
+      //window.location.href = 'https://www.google.com'
+      const initiateResponse = await stripeConfigAPI.initiateConfig(
+        vxUserInfo.vxToken,
+        requestParams
+      );
+      console.log("initiateResponse", initiateResponse);
+      let stripeUrl = initiateResponse.data.url;
+      window.location.href = stripeUrl;
+    } catch (error) {
+      console.error("initiateResumeConfiguration error", error);
+    }
+  };
 
   return (
     <div className="pl-8 pr-8">
