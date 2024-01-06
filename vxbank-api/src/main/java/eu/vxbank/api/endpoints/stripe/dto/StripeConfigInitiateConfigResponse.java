@@ -9,4 +9,5 @@ public class StripeConfigInitiateConfigResponse {
     public VxStripeConfig.State state;
     public Long expiresAt;
     public String url;
+    public Boolean configurationComplete;
 }

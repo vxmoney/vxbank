@@ -125,9 +125,13 @@ public class StripeConfigEndpoint {
             List<String> currentlyDueList = account.getRequirements()
                     .getCurrentlyDue();
             if (currentlyDueList.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "We need to clarify our onboarding flow. " +
-                                "This account configuration is complete. No need to initiate configuration");
+
+                StripeConfigInitiateConfigResponse completeConfigResponse = new StripeConfigInitiateConfigResponse();
+                completeConfigResponse.configurationComplete = true;
+                return  completeConfigResponse;
+//                throw new ResponseStatusException(HttpStatus.CONFLICT,
+//                        "We need to clarify our onboarding flow. " +
+//                                "This account configuration is complete. No need to initiate configuration");
 
             }
 
@@ -139,6 +143,7 @@ public class StripeConfigEndpoint {
             initiateConfigResponse.userId = params.userId;
             initiateConfigResponse.stripeAccountId = config.stripeAccountId;
             initiateConfigResponse.state = config.state;
+            initiateConfigResponse.configurationComplete = false;
             return initiateConfigResponse;
         }
     }
