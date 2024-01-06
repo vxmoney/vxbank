@@ -113,44 +113,43 @@ public class StripeConfigEndpoint {
             initiateConfigResponse.state = config.state;
             return initiateConfigResponse;
 
-        } else {
-            // just create new link so frontend can try again
-            VxStripeConfig config = stripeConfigs.get(0);
-            if (config.state != VxStripeConfig.State.configurationInProgress) {
-                throw new IllegalStateException("You can try this only if configuration is in progress");
-            }
+        }
 
-            Stripe.apiKey = stripeKey;
-            Account account = Account.retrieve(config.stripeAccountId);
 
-            List<String> currentlyDueList = account.getRequirements()
-                    .getCurrentlyDue();
-            if (currentlyDueList.isEmpty()) {
+        // just create new link so frontend can try again
+        VxStripeConfig config = stripeConfigs.get(0);
 
-                CompleteStripeConfigurationCommand completeStripeConfigurationCommand
-                        = new CompleteStripeConfigurationCommand(systemService.getVxBankDatastore(), authId);
-                completeStripeConfigurationCommand.execute();
+        Stripe.apiKey = stripeKey;
+        Account account = Account.retrieve(config.stripeAccountId);
 
-                StripeConfigInitiateConfigResponse completeConfigResponse = new StripeConfigInitiateConfigResponse();
-                completeConfigResponse.configurationComplete = true;
-                return  completeConfigResponse;
+        List<String> currentlyDueList = account.getRequirements()
+                .getCurrentlyDue();
+        if (currentlyDueList.isEmpty()) {
+
+            CompleteStripeConfigurationCommand completeStripeConfigurationCommand
+                    = new CompleteStripeConfigurationCommand(systemService.getVxBankDatastore(), authId);
+            completeStripeConfigurationCommand.execute();
+
+            StripeConfigInitiateConfigResponse completeConfigResponse = new StripeConfigInitiateConfigResponse();
+            completeConfigResponse.configurationComplete = true;
+            return completeConfigResponse;
 //                throw new ResponseStatusException(HttpStatus.CONFLICT,
 //                        "We need to clarify our onboarding flow. " +
 //                                "This account configuration is complete. No need to initiate configuration");
 
-            }
-
-            AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, config.stripeAccountId,
-                    refreshRedirectUrl);
-            StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
-            initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
-            initiateConfigResponse.url = accountLink.getUrl();
-            initiateConfigResponse.userId = params.userId;
-            initiateConfigResponse.stripeAccountId = config.stripeAccountId;
-            initiateConfigResponse.state = config.state;
-            initiateConfigResponse.configurationComplete = false;
-            return initiateConfigResponse;
         }
+
+        AccountLink accountLink = VxStripeUtil.createAccountLink(stripeKey, config.stripeAccountId,
+                refreshRedirectUrl);
+        StripeConfigInitiateConfigResponse initiateConfigResponse = new StripeConfigInitiateConfigResponse();
+        initiateConfigResponse.expiresAt = accountLink.getExpiresAt();
+        initiateConfigResponse.url = accountLink.getUrl();
+        initiateConfigResponse.userId = params.userId;
+        initiateConfigResponse.stripeAccountId = config.stripeAccountId;
+        initiateConfigResponse.state = config.state;
+        initiateConfigResponse.configurationComplete = false;
+        return initiateConfigResponse;
+
     }
 
 
