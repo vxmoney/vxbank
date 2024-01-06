@@ -49,7 +49,7 @@ public class UserEndpoint {
      * Checks the firebase token and if there is no user with the sed email then it creates it.
      */
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException {
+    public LoginResponse login(@RequestBody LoginParams loginParams) throws FirebaseAuthException, StripeException {
 
         ValidateFirebaseResponse validateResponse =
                 vxFirebaseAuthService.validateFirebaseIdTokenAndGetData(loginParams.firebaseIdToken);
@@ -69,31 +69,15 @@ public class UserEndpoint {
        return loginResponse;
     }
 
-    private LoginResponse buildLoginResponse (VxUser vxUser){
-        TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
-
-
-        LoginResponse response = new LoginResponse();
-        response.id = vxUser.id;
-        response.email = vxUser.email;
-        response.name = vxUser.name;
-        response.message = "all good";
-        response.vxToken = tokenInfo.vxToken;
-
-
-        return response;
-    }
-
-    @GetMapping("/refreshVxToken")
-    @ResponseBody
-    public LoginResponse refreshVxToken(Authentication authentication) throws StripeException {
-        VxUser vxUser = systemService.validateAndGetUser(authentication);
+    private LoginResponse buildLoginResponse (VxUser vxUser) throws StripeException {
         TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.id = vxUser.id;
         loginResponse.email = vxUser.email;
+        loginResponse.name = vxUser.name;
         loginResponse.vxTokenExpiresAt = tokenInfo.expiresAt;
+        loginResponse.vxToken = tokenInfo.vxToken;
 
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
@@ -110,6 +94,14 @@ public class UserEndpoint {
         }
 
         return loginResponse;
+    }
+
+    @GetMapping("/refreshVxToken")
+    @ResponseBody
+    public LoginResponse refreshVxToken(Authentication authentication) throws StripeException {
+        VxUser vxUser = systemService.validateAndGetUser(authentication);
+        LoginResponse response = buildLoginResponse(vxUser);
+        return response;
     }
 
 
