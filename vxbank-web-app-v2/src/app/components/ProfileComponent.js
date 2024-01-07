@@ -19,6 +19,7 @@ const ProfileComponent = ({ id, email, name, stripeConfigState, stripeId }) => {
         console.error("refreshVxToken error: ", error);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     refreshVxToken();
   }, []);
 

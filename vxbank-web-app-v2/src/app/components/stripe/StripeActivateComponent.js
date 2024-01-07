@@ -73,6 +73,10 @@ const StripeActivateComponent = ({ id, email, name }) => {
     if (configStatus === "complete") {
       // we got redirected by stripe so we initiate again.
       // this will also handel the refresh part of the token
+      // backend will complete the back onboarding
+      // frontend will close activate component
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       initiateResumeConfiguration();
     }
   }, []);
