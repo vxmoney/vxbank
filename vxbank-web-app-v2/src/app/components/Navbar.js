@@ -1,12 +1,15 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const {
-    googleSignIn,
-    logOut,
-    vxUserInfo,
-  } = UserAuth();
+  const { googleSignIn, logOut, vxUserInfo } = UserAuth();
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSignIn = async () => {
     console.log("Handle sign in");
@@ -24,7 +27,6 @@ export default function Navbar() {
       console.log(error);
     }
   };
-
 
   return (
     <div className="h-20 w-full border-b-2 flex items-center justify-between p-2">
@@ -46,19 +48,19 @@ export default function Navbar() {
         </li>
       </ul>
       <ul className="flex">
-        {vxUserInfo  ? (
-          <li className="p-2 cursor-pointer">{vxUserInfo?.email}</li>
-        ) : (
-          <li onClick={handleSignIn} className="p-2 cursor-pointer">
-            Login
-          </li>
-        )}
-
-        {vxUserInfo ? (
-          <li onClick={handleSignOut} className="p-2 cursor-pointer">
-            Logout
-          </li>
-        ) : null}
+        {isClient &&
+          (vxUserInfo === null ? (
+            <li onClick={handleSignIn} className="p-2 cursor-pointer">
+              Login
+            </li>
+          ) : (
+            <>
+              <li className="p-2 cursor-pointer">{vxUserInfo?.email}</li>
+              <li onClick={handleSignOut} className="p-2 cursor-pointer">
+                Logout
+              </li>
+            </>
+          ))}
       </ul>
     </div>
   );
