@@ -56,17 +56,17 @@ export default function AppEngineAuthExample() {
 
   return (
     <div className="p-4">
-      <p class="mb-3 text-gray-500 dark:text-gray-400">
+      <p className="mb-3 text-gray-500 dark:text-gray-400">
         This connects to appengine. No need to generate fake token. You can use
         the real firebase id to swap for a vxToken.
       </p>
 
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-1">
-          <p class="mb-4">Step 1: generate a random user</p>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Step 1: generate a random user</p>
         </div>
 
-        <div class="col-span-3">
+        <div className="col-span-3">
           <p>
             {formattedResponse && (
               <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
@@ -77,18 +77,18 @@ export default function AppEngineAuthExample() {
         </div>
       </div>
 
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-1">
-          <p class="mb-4">Step 2: Login using this token</p>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Step 2: Login using this token</p>
           <button
             onClick={fetchLogin}
-            class="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Login
           </button>
         </div>
 
-        <div class="col-span-3">
+        <div className="col-span-3">
           <p>
             {loginFormattedResponse && (
               <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
@@ -99,18 +99,18 @@ export default function AppEngineAuthExample() {
         </div>
       </div>
 
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-1">
-          <p class="mb-4">Step 3: Find you who am I using the vxToken</p>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Step 3: Find you who am I using the vxToken</p>
           <button
             onClick={fetchPingWhoAmI}
-            class="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Who am I?
           </button>
         </div>
 
-        <div class="col-span-3">
+        <div className="col-span-3">
           <div>
             {whoAmIFormattedResponse && (
               <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
@@ -121,28 +121,28 @@ export default function AppEngineAuthExample() {
         </div>
       </div>
 
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-1">
-          <p class="mb-4">Step 3: Find you who am I using the vxToken</p>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Step 3: Find you who am I using the vxToken</p>
           <button
             onClick={callSetVxToken}
-            class="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Set vxToken
           </button>
         </div>
 
-        <div class="col-span-3">
+        <div className="col-span-3">
           <p>vxToken = {vxToken}</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-4 gap-4 p-4">
-        <div class="col-span-1">
-          <p class="mb-4">decoded vxUserInfo from context</p>
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">decoded vxUserInfo from context</p>
         </div>
 
-        <div class="col-span-3">
+        <div className="col-span-3">
           <p>
             {vxUserInfo && (
               <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
