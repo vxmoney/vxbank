@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
+import ThemeSwitch from "./ThemeSwitch";
 
 export default function Navbar() {
   const { googleSignIn, logOut, vxUserInfo } = UserAuth();
@@ -61,7 +62,9 @@ export default function Navbar() {
               </li>
             </>
           ))}
+          <ThemeSwitch/>
       </ul>
+      
     </div>
   );
 }
