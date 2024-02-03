@@ -11,10 +11,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.ping.dto.FirebaseSwapResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
-import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingResponse;
+import eu.vxbank.api.endpoints.ping.dto.*;
 import eu.vxbank.api.endpoints.user.dto.Funds;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.utils.components.SystemService;
@@ -216,5 +213,14 @@ public class PingEndpoint {
         return response;
     }
 
+    @GetMapping("/ping/initiateVxGaming")
+    @ResponseBody
+    public PingInitiateVxGamingResponse initiateVxGaming() {
+
+        PingInitiateVxGamingResponse response = new PingInitiateVxGamingResponse();
+        response.payUrl = "Hello payment url";
+
+        return response;
+    }
 
 }

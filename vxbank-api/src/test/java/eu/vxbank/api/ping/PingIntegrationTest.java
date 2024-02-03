@@ -2,6 +2,7 @@ package eu.vxbank.api.ping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
+import eu.vxbank.api.endpoints.ping.dto.PingInitiateVxGamingResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
 import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
@@ -132,16 +133,13 @@ public class PingIntegrationTest {
         // stripe id: acct_1OPQvwPmPYe3loud
 
         String path = String.format("http://localhost:%d/ping/initiateVxGaming", port);
-        PingResponse pingResponse = this.restTemplate.getForObject(path, PingResponse.class);
+        PingInitiateVxGamingResponse initiateResponse = this.restTemplate.getForObject(path, PingInitiateVxGamingResponse.class);
 
+        Assertions.assertNotNull(initiateResponse);
+        Assertions.assertNotNull(initiateResponse.payUrl);
 
-        System.out.println("Port = " + port);
-
-        Package springSecurityPackage = org.springframework.security.core.Authentication.class.getPackage();
-        String springSecurityVersion = springSecurityPackage.getImplementationVersion();
-        System.out.println("Spring security version: " + springSecurityVersion);
-
-
+        System.out.println("Urd: "  + initiateResponse.payUrl);
+        System.out.println("Use card: 4000000000000077");
     }
 
 
