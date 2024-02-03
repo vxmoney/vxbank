@@ -124,4 +124,25 @@ public class PingIntegrationTest {
 
 
     }
+
+    @Test
+    public void initiateVxGamingTest() throws FirebaseAuthException, JsonProcessingException {
+
+
+        // stripe id: acct_1OPQvwPmPYe3loud
+
+        String path = String.format("http://localhost:%d/ping/initiateVxGaming", port);
+        PingResponse pingResponse = this.restTemplate.getForObject(path, PingResponse.class);
+
+
+        System.out.println("Port = " + port);
+
+        Package springSecurityPackage = org.springframework.security.core.Authentication.class.getPackage();
+        String springSecurityVersion = springSecurityPackage.getImplementationVersion();
+        System.out.println("Spring security version: " + springSecurityVersion);
+
+
+    }
+
+
 }
