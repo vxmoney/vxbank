@@ -129,11 +129,10 @@ public class PingIntegrationTest {
     @Test
     public void initiateVxGamingTest() throws FirebaseAuthException, JsonProcessingException {
 
+        String email = RandomUtil.generateRandomEmail();
+        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
 
-        // stripe id: acct_1OPQvwPmPYe3loud
-
-        String path = String.format("http://localhost:%d/ping/initiateVxGaming", port);
-        PingInitiateVxGamingResponse initiateResponse = this.restTemplate.getForObject(path, PingInitiateVxGamingResponse.class);
+        PingInitiateVxGamingResponse initiateResponse = PingHelper.initiateVxGaming(vxToken, restTemplate, port, 200);
 
         Assertions.assertNotNull(initiateResponse);
         Assertions.assertNotNull(initiateResponse.payUrl);

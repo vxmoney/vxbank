@@ -215,7 +215,7 @@ public class PingEndpoint {
 
     @GetMapping("/ping/initiateVxGaming")
     @ResponseBody
-    public PingInitiateVxGamingResponse initiateVxGaming() {
+    public PingInitiateVxGamingResponse initiateVxGaming(Authentication authentication) {
 
         PingInitiateVxGamingResponse response = new PingInitiateVxGamingResponse();
         response.payUrl = "Hello payment url";
