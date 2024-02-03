@@ -2,6 +2,7 @@ package eu.vxbank.api.ping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
+import eu.vxbank.api.endpoints.ping.dto.PingInitiateVxGamingResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
 import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
@@ -124,4 +125,21 @@ public class PingIntegrationTest {
 
 
     }
+
+    @Test
+    public void initiateVxGamingTest() throws FirebaseAuthException, JsonProcessingException {
+
+        String email = RandomUtil.generateRandomEmail();
+        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
+
+        PingInitiateVxGamingResponse initiateResponse = PingHelper.initiateVxGaming(vxToken, restTemplate, port, 200);
+
+        Assertions.assertNotNull(initiateResponse);
+        Assertions.assertNotNull(initiateResponse.payUrl);
+
+        System.out.println("Urd: "  + initiateResponse.payUrl);
+        System.out.println("Use card: 4000000000000077");
+    }
+
+
 }

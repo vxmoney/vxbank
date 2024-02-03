@@ -3,6 +3,7 @@ package eu.vxbank.api.helpers;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
+import eu.vxbank.api.endpoints.ping.dto.PingInitiateVxGamingResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
 import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
 import eu.vxbank.api.endpoints.ping.dto.PingResponse;
@@ -89,5 +90,26 @@ public class PingHelper {
         PingRequestFundsResponse response = responseEntity.getBody();
         return response;
 
+    }
+
+    public static PingInitiateVxGamingResponse initiateVxGaming(String vxToken,
+                                                                TestRestTemplate restTemplate,
+                                                                int port,
+                                                                int expectedStatusCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<PingInitiateVxGamingResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/ping/initiateVxGaming", HttpMethod.GET, requestEntity, PingInitiateVxGamingResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        PingInitiateVxGamingResponse responseBody = responseEntity.getBody();
+        return responseBody;
     }
 }
