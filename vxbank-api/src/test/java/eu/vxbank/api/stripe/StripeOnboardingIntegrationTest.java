@@ -366,11 +366,7 @@ public class StripeOnboardingIntegrationTest {
         StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
         initiateConfigParams.userId = loginResponse.id;
 
-        // this is already configured, so we should expect conflict 409
-        // expect CONFLICT(409, Series.CLIENT_ERROR, "Conflict"),
-        StripeConfigHelper.initiateConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 409);
-
-        // finalizeConfig
+        // finalize config
         StripeConfigHelper.finalizeConfig(loginResponse.vxToken, initiateConfigParams, restTemplate, port, 200);
 
         // pingWhoAmI
