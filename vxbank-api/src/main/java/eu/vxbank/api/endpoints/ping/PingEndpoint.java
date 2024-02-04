@@ -238,7 +238,6 @@ public class PingEndpoint {
         StripeSessionCreateResponse stripeResponse = createStripeSessionInitiateVxGaming(stripeKeys.stripeSecretKey);
 
 
-
         PingInitiateVxGamingResponse response = new PingInitiateVxGamingResponse();
         response.payUrl = stripeResponse.url;
 
@@ -246,8 +245,7 @@ public class PingEndpoint {
         return response;
     }
 
-    private StripeSessionCreateResponse createStripeSessionInitiateVxGaming( String stripeKey) throws
-            StripeException {
+    private StripeSessionCreateResponse createStripeSessionInitiateVxGaming(String stripeKey) throws StripeException {
 
         if (systemService.getEnvironment() == Environment.PRODUCTION) {
             throw new IllegalStateException("You can not request funds in production");
@@ -258,6 +256,89 @@ public class PingEndpoint {
         // Line item details
         Map<String, Object> priceData = new HashMap<>();
         priceData.put("currency", "eur");
+        Long timeStamp = new Date().getTime();
+        priceData.put("product_data", Map.of("name", "initiate vx gaming"));
+        priceData.put("unit_amount", 10000000L);
+
+        Map<String, Object> lineItem = new HashMap<>();
+        lineItem.put("price_data", priceData);
+        lineItem.put("quantity", 1);
+
+        // Line items list
+        List<Object> lineItems = new ArrayList<>();
+        lineItems.add(lineItem);
+
+        String successUrl = String.format("http://localhost:3000/vxpayment/sucess?paymentId=%s", "initiateVxGaming");
+        String cancelUrl = String.format("http://localhost:3000/vxpayment/cancel?paymentId=%s", "initiateVxGaming");
+
+        // Session parameters
+        Map<String, Object> params = new HashMap<>();
+        params.put("line_items", lineItems);
+        params.put("success_url", successUrl);
+        params.put("cancel_url", cancelUrl);
+        params.put("mode", "payment");
+
+        Session session = Session.create(params);
+        System.out.println("Checkout Session URL: " + session.getUrl());
+        System.out.println("StripeSessionId = " + session.getId());
+        System.out.println("paymentId");
+
+        StripeSessionCreateResponse stripeSessionResponse = new StripeSessionCreateResponse();
+        stripeSessionResponse.url = session.getUrl();
+        stripeSessionResponse.stripeSessionId = session.getId();
+        return stripeSessionResponse;
+    }
+
+    @PostMapping("/ping/initiateVxGamingCurrency")
+    @ResponseBody
+    public PingInitiateVxGamingResponse initiateVxGamingCurrency(Authentication authentication,
+                                                                 @RequestBody InitiateVxGamingParams initiateVxGamingParams) throws
+            StripeException {
+
+        if (systemService.getEnvironment() == Environment.PRODUCTION) {
+            throw new IllegalStateException("You can not request funds in production");
+        }
+
+        Jwt jwtToken = (Jwt) authentication.getPrincipal();
+        String email = jwtToken.getClaim("email");
+
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.id = Long.valueOf(authentication.getName());
+        loginResponse.email = email;
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        List<VxStripeConfig> configList = VxDsService.getByUserId(loginResponse.id,
+                new HashMap<>(),
+                ds,
+                VxStripeConfig.class);
+
+
+        StripeSessionCreateResponse stripeResponse =
+                createStripeSessionInitiateVxGamingCurrency(stripeKeys.stripeSecretKey,
+                initiateVxGamingParams);
+
+
+        PingInitiateVxGamingResponse response = new PingInitiateVxGamingResponse();
+        response.payUrl = stripeResponse.url;
+
+
+        return response;
+    }
+
+    private StripeSessionCreateResponse createStripeSessionInitiateVxGamingCurrency(String stripeSecretKey,
+                                                                                    InitiateVxGamingParams initiateVxGamingParams) throws
+            StripeException {
+
+        if (systemService.getEnvironment() == Environment.PRODUCTION) {
+            throw new IllegalStateException("You can not request funds in production");
+        }
+
+        Stripe.apiKey = stripeSecretKey;
+
+        // Line item details
+        Map<String, Object> priceData = new HashMap<>();
+        priceData.put("currency", initiateVxGamingParams.currency);
         Long timeStamp = new Date().getTime();
         priceData.put("product_data", Map.of("name", "initiate vx gaming"));
         priceData.put("unit_amount", 10000000L);
