@@ -155,7 +155,8 @@ public class PingIntegrationTest {
         Assertions.assertNotNull(initiateResponse);
         Assertions.assertNotNull(initiateResponse.payUrl);
 
-        throw new IllegalStateException("Please finish and print the url and card to use");
+        System.out.println("Urd: " + initiateResponse.payUrl);
+        System.out.println("Use card: 4000000000000077");
     }
 
 }
