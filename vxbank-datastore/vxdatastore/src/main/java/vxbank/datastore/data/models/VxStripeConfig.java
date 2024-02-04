@@ -30,4 +30,7 @@ public class VxStripeConfig {
 
     public State state;
 
+    @Index
+    public String currency;
+
 }

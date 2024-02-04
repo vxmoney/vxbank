@@ -36,6 +36,16 @@ public class VxStripeConfigTest {
         return persistedConfig;
     }
 
+    private VxStripeConfig persistStripeConfig(Long userId, String currency) {
+        VxStripeConfig config = VxStripeConfig.builder()
+                .userId(userId)
+                .state(VxStripeConfig.State.notConfigured)
+                .currency(currency)
+                .build();
+        VxStripeConfig persistedConfig = VxDsService.persist(config, ds, VxStripeConfig.class);
+        return persistedConfig;
+    }
+
 
     @Test
     void testCreateAndGetByUserId() {
@@ -52,6 +62,34 @@ public class VxStripeConfigTest {
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);
+        Assertions.assertEquals(1, configuredList.size());
+        VxStripeConfig config = configuredList.get(0);
+        Assertions.assertNotNull(config.id);
+        Assertions.assertEquals(vxUser.id, config.userId);
+    }
+
+    @Test
+    void testCreateAndGetByUserIdAndCurrency() {
+        VxUser vxUser = persistRandomUser();
+
+        List<VxStripeConfig> emptyList = VxDsService.getListByUserIdAndCurrencyEventId(
+                VxStripeConfig.class,
+                ds,
+                vxUser.id,
+                "ron");
+
+        Assertions.assertEquals(0, emptyList.size());
+
+        VxStripeConfig stripeConfig = persistStripeConfig(vxUser.id, "ron");
+        persistStripeConfig(vxUser.id, "eur");
+        Assertions.assertNotNull(stripeConfig.id);
+        Assertions.assertEquals(vxUser.id, stripeConfig.userId);
+
+        List<VxStripeConfig> configuredList = VxDsService.getListByUserIdAndCurrencyEventId(
+                VxStripeConfig.class,
+                ds,
+                vxUser.id,
+                "ron");
         Assertions.assertEquals(1, configuredList.size());
         VxStripeConfig config = configuredList.get(0);
         Assertions.assertNotNull(config.id);

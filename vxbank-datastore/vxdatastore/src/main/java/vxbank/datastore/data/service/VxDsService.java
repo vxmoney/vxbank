@@ -191,4 +191,19 @@ public class VxDsService {
         });
     }
 
+    public static <T> List<T> getListByUserIdAndCurrencyEventId(Class<T> vxClass, VxBankDatastore ds,
+                                                                Long userId,
+                                                                String currency) {
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("userId", userId)
+                .filter("currency", currency);
+
+
+        query = query.chunkAll();
+        List<T> list = query.list();
+
+
+        return list;
+    }
 }

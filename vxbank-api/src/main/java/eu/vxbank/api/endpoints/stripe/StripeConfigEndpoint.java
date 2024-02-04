@@ -216,6 +216,8 @@ public class StripeConfigEndpoint {
                     "You are trying to initiate configuration of someone else");
         }
 
+
+
         throw new IllegalStateException("Please finish this");
     }
 
