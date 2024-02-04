@@ -7,12 +7,14 @@ import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
 import com.stripe.param.AccountLinkCreateParams;
+import com.stripe.param.BalanceRetrieveParams;
 import com.stripe.param.ChargeCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.user.dto.Funds;
 import vxbank.datastore.data.models.VxPayment;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class VxStripeUtil {
     public static StripeSessionCreateResponse createStripeSession(VxPayment vxPayment, String stripeKey) throws
@@ -155,5 +157,21 @@ public class VxStripeUtil {
                         .build())
                 .toList();
         return availableFundsList;
+    }
+
+    public static List<Funds> getPlatformFundsList(String stripeSecretKey) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+
+        BalanceRetrieveParams params = BalanceRetrieveParams.builder().build();
+        Balance balance = Balance.retrieve(params, RequestOptions.getDefault());
+
+        List<Funds> platformFundsList = balance.getAvailable().stream()
+                .map(available -> Funds.builder()
+                        .amount(available.getAmount())
+                        .currency(available.getCurrency())
+                        .build())
+                .collect(Collectors.toList());
+
+        return platformFundsList;
     }
 }

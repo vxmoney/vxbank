@@ -188,9 +188,12 @@ public class PingEndpoint {
     public PingRequestFundsResponse requestFunds(Authentication auth, @RequestBody PingRequestFundsParams params) throws
             StripeException {
 
+
         if (systemService.getEnvironment() == Environment.PRODUCTION) {
             throw new IllegalStateException("You can not request funds in production");
         }
+
+        List<Funds> platformFunds = VxStripeUtil.getPlatformFundsList(stripeKeys.stripeSecretKey);
 
         VxStripeConfig vxStripeConfig = VxDsService.getByUserId(params.userId,
                         new HashMap<>(),
