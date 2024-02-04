@@ -5,10 +5,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
 import com.stripe.model.AccountLink;
 import eu.vxbank.api.endpoints.event.comands.CompleteStripeConfigurationCommand;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigFinalizeConfigResponse;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
+import eu.vxbank.api.endpoints.stripe.dto.*;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -63,6 +60,7 @@ public class StripeConfigEndpoint {
 
         return response;
     }
+
 
     @PostMapping("/initiateConfig")
     @ResponseBody
@@ -203,6 +201,22 @@ public class StripeConfigEndpoint {
         finalizeConfigResponse.state = updatedConfig.state;
 
         return finalizeConfigResponse;
+    }
+
+    @PostMapping("/initiateSpecificCurrency")
+    @ResponseBody
+    public StripeConfigInitiateConfigResponse initiateSpecificCurrency(
+            @RequestBody StripeConfigInitiateSpecificCurrencyParams params,
+            Authentication authentication){
+
+        // check security
+        Long authId = Long.valueOf(authentication.getName());
+        if (!authId.equals(params.userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "You are trying to initiate configuration of someone else");
+        }
+
+        throw new IllegalStateException("Please finish this");
     }
 
 }
