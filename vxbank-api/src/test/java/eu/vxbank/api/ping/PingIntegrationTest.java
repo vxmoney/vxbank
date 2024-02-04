@@ -159,4 +159,45 @@ public class PingIntegrationTest {
         System.out.println("Use card: 4000000000000077");
     }
 
+    @Test
+    public void testFaucetRequestFundsSpecificCurrencyTest() throws FirebaseAuthException, JsonProcessingException {
+
+
+        // stripe id: acct_1OPQvwPmPYe3loud
+
+        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
+
+        loginResponse = UserHelper.refreshToken(restTemplate,
+                loginResponse.vxToken,
+                port,
+                200);
+
+//        Funds initialFunds = loginResponse.availableFundsList.stream()
+//                .filter(fItem -> fItem.getCurrency()
+//                        .equals("ron"))
+//                .findFirst()
+//                .get();
+
+        PingRequestFundsParams params = PingRequestFundsParams.builder()
+                .userId(loginResponse.id)
+                .amount(1000L)
+                .currency("ron")
+                .build();
+
+        PingRequestFundsResponse requestFundsResponse = PingHelper.requestFunds(restTemplate,
+                port,
+                loginResponse.vxToken,
+                params,
+                200);
+
+        Assertions.assertNotNull(requestFundsResponse);
+
+        Funds funds = requestFundsResponse.fundsList.stream()
+                .filter(fItem -> fItem.getCurrency()
+                        .equals("ron"))
+                .findFirst()
+                .get();
+        Assertions.assertTrue(funds.amount > 0);
+    }
+
 }

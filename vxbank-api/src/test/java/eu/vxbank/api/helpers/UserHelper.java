@@ -5,9 +5,11 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import eu.vxbank.api.endpoints.ping.dto.PingInitiateVxGamingResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginParams;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.testutils.SwapTokenUtil;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -75,5 +77,27 @@ public class UserHelper {
         String vxToken = loginResponse.vxToken;
 
         return vxToken;
+    }
+
+
+    public static LoginResponse refreshToken(TestRestTemplate restTemplate,
+                                             String vxToken,
+                                             int port,
+                                             int expectedStatusCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<LoginResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/user/refreshVxToken", HttpMethod.GET, requestEntity, LoginResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        LoginResponse responseBody = responseEntity.getBody();
+        return responseBody;
     }
 }
