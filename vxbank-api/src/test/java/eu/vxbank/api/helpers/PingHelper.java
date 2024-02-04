@@ -1,13 +1,6 @@
 package eu.vxbank.api.helpers;
 
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
-import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingInitiateVxGamingResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
-import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingResponse;
-import eu.vxbank.api.endpoints.stripe.dto.StripeConfigGetByUserIdResponse;
+import eu.vxbank.api.endpoints.ping.dto.*;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -111,5 +104,34 @@ public class PingHelper {
 
         PingInitiateVxGamingResponse responseBody = responseEntity.getBody();
         return responseBody;
+    }
+
+    public static PingInitiateVxGamingResponse initiateVxGamingCurrency(String vxToken,
+                                                                        TestRestTemplate restTemplate,
+                                                                        int port,
+                                                                        InitiateVxGamingParams params,
+                                                                        int expectedStatusCode) {
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<InitiateVxGamingParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<PingInitiateVxGamingResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/ping/initiateVxGamingCurrency",
+                HttpMethod.POST,
+                requestEntity,
+                PingInitiateVxGamingResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        PingInitiateVxGamingResponse response = responseEntity.getBody();
+        return response;
     }
 }

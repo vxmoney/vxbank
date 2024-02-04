@@ -2,10 +2,7 @@ package eu.vxbank.api.ping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
-import eu.vxbank.api.endpoints.ping.dto.PingInitiateVxGamingResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsParams;
-import eu.vxbank.api.endpoints.ping.dto.PingRequestFundsResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingResponse;
+import eu.vxbank.api.endpoints.ping.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.Funds;
@@ -137,9 +134,28 @@ public class PingIntegrationTest {
         Assertions.assertNotNull(initiateResponse);
         Assertions.assertNotNull(initiateResponse.payUrl);
 
-        System.out.println("Urd: "  + initiateResponse.payUrl);
+        System.out.println("Urd: " + initiateResponse.payUrl);
         System.out.println("Use card: 4000000000000077");
     }
 
+    @Test
+    public void initiateVxGamingCurrency() throws FirebaseAuthException, JsonProcessingException {
+        String email = RandomUtil.generateRandomEmail();
+        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
+
+        InitiateVxGamingParams initiateVxGamingParams = new InitiateVxGamingParams();
+        initiateVxGamingParams.currency = "ron";
+
+        PingInitiateVxGamingResponse initiateResponse = PingHelper.initiateVxGamingCurrency(vxToken,
+                restTemplate,
+                port,
+                initiateVxGamingParams,
+                200);
+
+        Assertions.assertNotNull(initiateResponse);
+        Assertions.assertNotNull(initiateResponse.payUrl);
+
+        throw new IllegalStateException("Please finish and print the url and card to use");
+    }
 
 }

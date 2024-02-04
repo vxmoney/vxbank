@@ -238,7 +238,6 @@ public class PingEndpoint {
         StripeSessionCreateResponse stripeResponse = createStripeSessionInitiateVxGaming(stripeKeys.stripeSecretKey);
 
 
-
         PingInitiateVxGamingResponse response = new PingInitiateVxGamingResponse();
         response.payUrl = stripeResponse.url;
 
@@ -246,8 +245,7 @@ public class PingEndpoint {
         return response;
     }
 
-    private StripeSessionCreateResponse createStripeSessionInitiateVxGaming( String stripeKey) throws
-            StripeException {
+    private StripeSessionCreateResponse createStripeSessionInitiateVxGaming(String stripeKey) throws StripeException {
 
         if (systemService.getEnvironment() == Environment.PRODUCTION) {
             throw new IllegalStateException("You can not request funds in production");
@@ -289,6 +287,15 @@ public class PingEndpoint {
         stripeSessionResponse.url = session.getUrl();
         stripeSessionResponse.stripeSessionId = session.getId();
         return stripeSessionResponse;
+    }
+
+    @PostMapping("/ping/initiateVxGamingCurrency")
+    @ResponseBody
+    public PingInitiateVxGamingResponse initiateVxGamingCurrency(Authentication authentication,
+                                                                 @RequestBody InitiateVxGamingParams initiateVxGamingParams) throws
+            StripeException {
+
+        throw new IllegalStateException("Please implement this");
     }
 
 }
