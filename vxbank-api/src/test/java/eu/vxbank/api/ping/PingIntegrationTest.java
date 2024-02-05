@@ -92,7 +92,8 @@ public class PingIntegrationTest {
 
         // stripe id: acct_1OPQvwPmPYe3loud
 
-        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
+        // LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
+        LoginResponse loginResponse = setupUser("acct_1OgLAUBRcIPQP1ZF");
         Funds initialFunds = loginResponse.availableFundsList.stream()
                 .filter(fItem -> fItem.getCurrency()
                         .equals("eur"))
@@ -165,7 +166,8 @@ public class PingIntegrationTest {
 
         // stripe id: acct_1OPQvwPmPYe3loud
 
-        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
+//        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud"); // eur
+        LoginResponse loginResponse = setupUser("acct_1OgLAUBRcIPQP1ZF"); // ron
 
         loginResponse = UserHelper.refreshToken(restTemplate,
                 loginResponse.vxToken,
