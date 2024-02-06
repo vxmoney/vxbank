@@ -166,8 +166,10 @@ public class PingIntegrationTest {
 
         // stripe id: acct_1OPQvwPmPYe3loud
 
-//        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud"); // eur
-        LoginResponse loginResponse = setupUser("acct_1OgLAUBRcIPQP1ZF"); // ron
+        //LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud"); // eur
+        //LoginResponse loginResponse = setupUser("acct_1OgLAUBRcIPQP1ZF"); // ron
+        LoginResponse loginResponse = setupUser("acct_1OgqHAB36QPiP0qI"); // eur + ron
+
 
         loginResponse = UserHelper.refreshToken(restTemplate,
                 loginResponse.vxToken,
@@ -200,6 +202,7 @@ public class PingIntegrationTest {
                 .findFirst()
                 .get();
         Assertions.assertTrue(funds.amount > 0);
+
     }
 
 }
