@@ -3,10 +3,7 @@ package eu.vxbank.api.endpoints.user;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.user.dto.Funds;
-import eu.vxbank.api.endpoints.user.dto.LoginParams;
-import eu.vxbank.api.endpoints.user.dto.TokenInfo;
-import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.endpoints.user.dto.*;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.services.dao.ValidateFirebaseResponse;
 import eu.vxbank.api.utils.components.SystemService;
@@ -65,11 +62,11 @@ public class UserEndpoint {
 
         VxUser vxUser = optionalUser.get();
 
-       LoginResponse loginResponse = buildLoginResponse(vxUser);
-       return loginResponse;
+        LoginResponse loginResponse = buildLoginResponse(vxUser);
+        return loginResponse;
     }
 
-    private LoginResponse buildLoginResponse (VxUser vxUser) throws StripeException {
+    private LoginResponse buildLoginResponse(VxUser vxUser) throws StripeException {
         TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
 
         LoginResponse loginResponse = new LoginResponse();
@@ -101,6 +98,25 @@ public class UserEndpoint {
     public LoginResponse refreshVxToken(Authentication authentication) throws StripeException {
         VxUser vxUser = systemService.validateAndGetUser(authentication);
         LoginResponse response = buildLoginResponse(vxUser);
+        return response;
+    }
+
+    @GetMapping("/getStripeLoginLink")
+    @ResponseBody
+    public UserStripeLinkResponse getStripeLoginLink(Authentication authentication) throws StripeException {
+        VxUser vxUser = systemService.validateAndGetUser(authentication);
+
+        VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
+                        new HashMap<>(),
+                        systemService.getVxBankDatastore(),
+                        VxStripeConfig.class)
+                .get(0);
+
+        String stripeSecretKey = stripeKeys.stripeSecretKey;
+        String stripeAccountId = vxStripeConfig.stripeAccountId;
+        String uri = VxStripeUtil.createLoginLink(stripeSecretKey, stripeAccountId);
+        UserStripeLinkResponse response = new UserStripeLinkResponse();
+        response.uri = uri;
         return response;
     }
 

@@ -5,10 +5,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
-import com.stripe.param.AccountCreateParams;
-import com.stripe.param.AccountLinkCreateParams;
-import com.stripe.param.BalanceRetrieveParams;
-import com.stripe.param.ChargeCreateParams;
+import com.stripe.param.*;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.user.dto.Funds;
 import vxbank.datastore.data.models.VxPayment;
@@ -173,5 +170,17 @@ public class VxStripeUtil {
                 .collect(Collectors.toList());
 
         return platformFundsList;
+    }
+
+    public static String createLoginLink(String stripeSecretKey,
+                                         String stripeAccountId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+
+        LoginLinkCreateOnAccountParams params =
+                LoginLinkCreateOnAccountParams.builder().build();
+
+        LoginLink loginLink = LoginLink.createOnAccount(stripeAccountId, params,
+                RequestOptions.getDefault());
+        return loginLink.getUrl();
     }
 }
