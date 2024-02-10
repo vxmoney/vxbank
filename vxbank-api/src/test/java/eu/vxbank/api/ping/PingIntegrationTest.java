@@ -125,7 +125,7 @@ public class PingIntegrationTest {
     }
 
     @Test
-    public void initiateVxGamingTest() throws FirebaseAuthException, JsonProcessingException {
+    public void initiateVxGamingEurCurrency() throws FirebaseAuthException, JsonProcessingException {
 
         String email = RandomUtil.generateRandomEmail();
         String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
