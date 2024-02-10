@@ -201,12 +201,13 @@ public class PingEndpoint {
                         VxStripeConfig.class)
                 .get(0);
 
-        List<Funds> clientFundsList =
-                VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, vxStripeConfig.stripeAccountId);
-        Optional<Funds> currentClientFundsForSpecificCurrency = clientFundsList.stream().filter(funds -> funds.currency.equals(
-                params.currency        )).findFirst();
-        if (currentClientFundsForSpecificCurrency.isEmpty()){
-            throw new IllegalStateException("Client can not process respective currency. "+ params.currency);
+        List<Funds> clientFundsList = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey,
+                vxStripeConfig.stripeAccountId);
+        Optional<Funds> currentClientFundsForSpecificCurrency = clientFundsList.stream()
+                .filter(funds -> funds.currency.equals(params.currency))
+                .findFirst();
+        if (currentClientFundsForSpecificCurrency.isEmpty()) {
+            throw new IllegalStateException("Client can not process respective currency. " + params.currency);
         }
 
         VxStripeUtil.sendFundsToStripeAccount(stripeKeys.stripeSecretKey,
