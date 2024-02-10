@@ -64,13 +64,15 @@ public class VxStripeUtil {
         return account;
     }
 
-    public static AccountLink createAccountLink(String stripeKey, String connectedAccountId, String refreshRedirectUrl) throws StripeException {
+    public static AccountLink createAccountLink(String stripeKey,
+                                                String connectedAccountId,
+                                                String refreshRedirectUrl) throws StripeException {
         Stripe.apiKey = stripeKey;
 
         AccountLinkCreateParams params = AccountLinkCreateParams.builder()
                 .setAccount(connectedAccountId)
                 .setRefreshUrl(refreshRedirectUrl)
-                .setReturnUrl(refreshRedirectUrl+"?configStatus=complete")
+                .setReturnUrl(refreshRedirectUrl + "?configStatus=complete")
                 .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                 .build();
 
@@ -156,13 +158,36 @@ public class VxStripeUtil {
         return availableFundsList;
     }
 
+    public static List<BankAccount> getClientAcctiveBankAcctountList(String stripeSecretKey,
+                                                                     String stripeAccountId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        Account account = Account.retrieve(stripeAccountId);
+
+        Set<BankAccount> bankAccountList = account.getExternalAccounts()
+                .getData()
+                .stream()
+                .filter(item -> item instanceof BankAccount)
+                .map(item -> (BankAccount) item)
+                .collect(Collectors.toSet());
+
+        List<BankAccount> activeBankList = bankAccountList.stream()
+                .filter(bAccount -> bAccount.getRequirements()
+                        .getPendingVerification()
+                        .isEmpty())
+                .toList();
+
+        return activeBankList;
+    }
+
     public static List<Funds> getPlatformFundsList(String stripeSecretKey) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
-        BalanceRetrieveParams params = BalanceRetrieveParams.builder().build();
+        BalanceRetrieveParams params = BalanceRetrieveParams.builder()
+                .build();
         Balance balance = Balance.retrieve(params, RequestOptions.getDefault());
 
-        List<Funds> platformFundsList = balance.getAvailable().stream()
+        List<Funds> platformFundsList = balance.getAvailable()
+                .stream()
                 .map(available -> Funds.builder()
                         .amount(available.getAmount())
                         .currency(available.getCurrency())
@@ -172,15 +197,25 @@ public class VxStripeUtil {
         return platformFundsList;
     }
 
-    public static String createLoginLink(String stripeSecretKey,
-                                         String stripeAccountId) throws StripeException {
+    public static String createLoginLink(String stripeSecretKey, String stripeAccountId) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
-        LoginLinkCreateOnAccountParams params =
-                LoginLinkCreateOnAccountParams.builder().build();
+        LoginLinkCreateOnAccountParams params = LoginLinkCreateOnAccountParams.builder()
+                .build();
 
-        LoginLink loginLink = LoginLink.createOnAccount(stripeAccountId, params,
-                RequestOptions.getDefault());
+        LoginLink loginLink = LoginLink.createOnAccount(stripeAccountId, params, RequestOptions.getDefault());
         return loginLink.getUrl();
+    }
+
+    public static Boolean clientCanReceivePaymentInCurrency(String stripeSecretKey,
+                                                            String stripeAccountId,
+                                                            String currency) throws StripeException {
+
+        List<BankAccount> accountList = getClientAcctiveBankAcctountList(stripeSecretKey, stripeAccountId);
+        Optional<BankAccount> optionalBankAccount = accountList.stream()
+                .filter(account -> account.getCurrency()
+                        .equals(currency))
+                .findAny();
+        return optionalBankAccount.isPresent();
     }
 }

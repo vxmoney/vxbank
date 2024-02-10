@@ -8,10 +8,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Charge;
 import com.stripe.model.checkout.Session;
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.ping.dto.*;
 import eu.vxbank.api.endpoints.user.dto.Funds;
@@ -22,7 +19,6 @@ import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.enums.Environment;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -201,12 +197,11 @@ public class PingEndpoint {
                         VxStripeConfig.class)
                 .get(0);
 
-        List<Funds> clientFundsList = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey,
-                vxStripeConfig.stripeAccountId);
-        Optional<Funds> currentClientFundsForSpecificCurrency = clientFundsList.stream()
-                .filter(funds -> funds.currency.equals(params.currency))
-                .findFirst();
-        if (currentClientFundsForSpecificCurrency.isEmpty()) {
+        Boolean clientCanReceivePaymentInCurrency =
+                VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
+                vxStripeConfig.stripeAccountId,
+                params.currency);
+        if (!clientCanReceivePaymentInCurrency){
             throw new IllegalStateException("Client can not process respective currency. " + params.currency);
         }
 
