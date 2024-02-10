@@ -158,18 +158,7 @@ public class SecondCurrencyIntegrationTest {
         return setup;
     }
 
-    @Test
-    public void test01InitiateSecondCurrency() throws FirebaseAuthException, JsonProcessingException {
 
-        Setup setup = buildSetup();
-
-        StripeConfigInitiateSpecificCurrencyParams params = new StripeConfigInitiateSpecificCurrencyParams();
-        params.userId =setup.userId;
-
-        StripeConfigInitiateConfigResponse initiateSecondCurrencyResponse =
-                StripeConfigHelper.initiateSpecificCurrency(setup.vxToken, restTemplate,port,params,200                );
-        Assertions.assertNotNull(initiateSecondCurrencyResponse);
-    }
 
 
 }

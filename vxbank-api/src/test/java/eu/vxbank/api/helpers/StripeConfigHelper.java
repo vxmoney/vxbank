@@ -95,31 +95,4 @@ public class StripeConfigHelper {
         return responseBody;
     }
 
-    public static StripeConfigInitiateConfigResponse initiateSpecificCurrency(String vxToken,
-                                                                              TestRestTemplate restTemplate,
-                                                                              int port,
-                                                                              StripeConfigInitiateSpecificCurrencyParams params,
-                                                                              int expectedStatusCode) {
-        // Set up the HTTP headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
-
-        // Create the HTTP entity with the request body and headers
-        HttpEntity<StripeConfigInitiateSpecificCurrencyParams> requestEntity = new HttpEntity<>(params, headers);
-
-        ResponseEntity<StripeConfigInitiateConfigResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/stripeConfig/initiateSpecificCurrency",
-                HttpMethod.POST,
-                requestEntity,
-                StripeConfigInitiateConfigResponse.class
-        );
-
-        int statusCode = responseEntity.getStatusCodeValue();
-        Assertions.assertEquals(expectedStatusCode, statusCode);
-
-        StripeConfigInitiateConfigResponse responseBody = responseEntity.getBody();
-        return responseBody;
-
-    }
 }

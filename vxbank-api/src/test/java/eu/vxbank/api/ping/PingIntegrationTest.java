@@ -87,13 +87,10 @@ public class PingIntegrationTest {
     }
 
     @Test
-    public void testFaucetRequestFundsTest() throws FirebaseAuthException, JsonProcessingException {
+    public void testFaucetValues() throws FirebaseAuthException, JsonProcessingException {
 
 
-        // stripe id: acct_1OPQvwPmPYe3loud
-
-        // LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
-        LoginResponse loginResponse = setupUser("acct_1OgLAUBRcIPQP1ZF");
+        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud");
         Funds initialFunds = loginResponse.availableFundsList.stream()
                 .filter(fItem -> fItem.getCurrency()
                         .equals("eur"))
@@ -161,7 +158,7 @@ public class PingIntegrationTest {
     }
 
     @Test
-    public void testFaucetRequestFundsSpecificCurrencyTest() throws FirebaseAuthException, JsonProcessingException {
+    public void testFaucetRonTest() throws FirebaseAuthException, JsonProcessingException {
 
 
         // stripe id: acct_1OPQvwPmPYe3loud
@@ -199,6 +196,51 @@ public class PingIntegrationTest {
         Funds funds = requestFundsResponse.fundsList.stream()
                 .filter(fItem -> fItem.getCurrency()
                         .equals("ron"))
+                .findFirst()
+                .get();
+        Assertions.assertTrue(funds.amount > 0);
+
+    }
+
+    @Test
+    public void testFaucetEurTest() throws FirebaseAuthException, JsonProcessingException {
+
+
+        // stripe id: acct_1OPQvwPmPYe3loud
+
+        //LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud"); // eur
+        //LoginResponse loginResponse = setupUser("acct_1OgLAUBRcIPQP1ZF"); // ron
+        LoginResponse loginResponse = setupUser("acct_1OPQvwPmPYe3loud"); // eur
+
+
+        loginResponse = UserHelper.refreshToken(restTemplate,
+                loginResponse.vxToken,
+                port,
+                200);
+
+//        Funds initialFunds = loginResponse.availableFundsList.stream()
+//                .filter(fItem -> fItem.getCurrency()
+//                        .equals("ron"))
+//                .findFirst()
+//                .get();
+
+        PingRequestFundsParams params = PingRequestFundsParams.builder()
+                .userId(loginResponse.id)
+                .amount(1000L)
+                .currency("eur")
+                .build();
+
+        PingRequestFundsResponse requestFundsResponse = PingHelper.requestFunds(restTemplate,
+                port,
+                loginResponse.vxToken,
+                params,
+                200);
+
+        Assertions.assertNotNull(requestFundsResponse);
+
+        Funds funds = requestFundsResponse.fundsList.stream()
+                .filter(fItem -> fItem.getCurrency()
+                        .equals("eur"))
                 .findFirst()
                 .get();
         Assertions.assertTrue(funds.amount > 0);

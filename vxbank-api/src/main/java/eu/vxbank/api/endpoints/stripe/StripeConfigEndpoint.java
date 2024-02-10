@@ -204,39 +204,6 @@ public class StripeConfigEndpoint {
         return finalizeConfigResponse;
     }
 
-    @PostMapping("/initiateSpecificCurrency")
-    @ResponseBody
-    public StripeConfigInitiateConfigResponse initiateSpecificCurrency(
-            @RequestBody StripeConfigInitiateSpecificCurrencyParams params,
-            Authentication authentication) throws StripeException {
 
-        // check security
-        Long authId = Long.valueOf(authentication.getName());
-        if (!authId.equals(params.userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "You are trying to initiate configuration of someone else");
-        }
-
-        VxBankDatastore ds = systemService.getVxBankDatastore();
-        Optional<VxStripeConfig> optionalDefaultConfig = VxDsService.getByUserId(params.userId,
-                new HashMap<>(),
-                ds,
-                VxStripeConfig.class)
-                .stream()
-                .filter(config -> config.currency == null)
-                .findFirst();
-
-        if (optionalDefaultConfig.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "You are trying to initiate initiateSpecificCurrency but default config was not finalized");
-        }
-
-        VxStripeConfig defaultConfig = optionalDefaultConfig.get();
-
-        Stripe.apiKey = stripeKeys.stripeSecretKey;
-        Account account = Account.retrieve(defaultConfig.stripeAccountId);
-
-        throw new IllegalStateException("It seams that we do not need to do this. ");
-    }
 
 }
