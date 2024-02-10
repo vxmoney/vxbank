@@ -35,6 +35,18 @@ public class SideLinkUserTest {
     @Autowired
     SystemService systemService;
 
+    /**
+     * Instructions
+     * - bootRun
+     * - . scripts/configDevEnviromentScripts.sh
+     * - openVsCode
+     * - . scripts/configDevEnviromentScripts.sh
+     * - initEnvLocalhost
+     * - npm run dev
+     * - DeveloperExamples/GenerateUserAndLogin
+     * - Copy vxToken
+     * - Update TestEnvValues.SPECIAL_VX_TOKEN value
+     */
     @Test
     public void sideLinkUserAndAddFundsTest() throws FirebaseAuthException, JsonProcessingException {
 
