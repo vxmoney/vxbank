@@ -97,3 +97,8 @@ stopDevEnvironment() {
 pingLocal() {
   curl localhost:8080/ping/getEnvironment
 }
+
+deployDatastoreIndexOnDev(){
+  gcloud config set project vxbank-eu-dev
+  gcloud datastore indexes create ./src/main/appengine/index.yaml
+}

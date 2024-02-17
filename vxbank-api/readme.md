@@ -35,4 +35,7 @@ export MY_BASE_URL=://localhost:8080
 
 # ping
 curl --location --request GET "${MY_PROTOCOL}${MY_BASE_URL}/ping/getEnvironment"
+
+# deploy index
+
 ```

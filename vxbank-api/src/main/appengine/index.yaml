@@ -1,0 +1,6 @@
+indexes:
+  - kind: VxEvent
+    properties:
+      - name: vxIntegrationId
+      - name: createTimeStamp
+        direction: desc
