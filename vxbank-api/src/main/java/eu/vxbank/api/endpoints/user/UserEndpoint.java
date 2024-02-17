@@ -3,6 +3,7 @@ package eu.vxbank.api.endpoints.user;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.stripe.dto.StripeCurrency;
 import eu.vxbank.api.endpoints.user.dto.*;
 import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.services.dao.ValidateFirebaseResponse;
@@ -17,9 +18,8 @@ import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -86,11 +86,59 @@ public class UserEndpoint {
             VxStripeConfig config = configList.get(0);
             loginResponse.stripeConfigState = config.state;
 
-            List<Funds> availableFunds = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, config.stripeAccountId);
+            List<Funds> immutableFunds = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, config.stripeAccountId);
+            List<Funds> availableFunds = new ArrayList<>(immutableFunds);
             loginResponse.availableFundsList = availableFunds;
+
+            //check add zero if eur are missing from that list.
+            String stripeSecretKey = stripeKeys.stripeSecretKey;
+            String userStripeAccountId = config.stripeAccountId;
+
+            // check and eur if necessary
+            Optional<Funds> optionalEuro = buildEmtpyFundsIfNotPresentAndUserCanProcessThem(stripeSecretKey,
+                    userStripeAccountId,
+                    StripeCurrency.eur,
+                    availableFunds);
+            optionalEuro.ifPresent(availableFunds::add);
+
+            // check and add ron if necessary
+            Optional<Funds> optionalRon = buildEmtpyFundsIfNotPresentAndUserCanProcessThem(stripeSecretKey,
+                    userStripeAccountId,
+                    StripeCurrency.ron,
+                    availableFunds);
+            optionalRon.ifPresent(availableFunds::add);
         }
 
         return loginResponse;
+    }
+
+    private Optional<Funds> buildEmtpyFundsIfNotPresentAndUserCanProcessThem(String stripeSecretKey,
+                                                                             String userStripeAccountId,
+                                                                             StripeCurrency currency,
+                                                                             List<Funds> listToCheck) throws
+            StripeException {
+        // if currency already there then we do nothing
+        Set<StripeCurrency> set = listToCheck.stream()
+                .map(funds -> StripeCurrency.valueOf(funds.currency))
+                .collect(Collectors.toSet());
+        if (set.contains(currency)) {
+            return Optional.empty();
+        }
+
+        // if user can not process currency we do noting
+        Boolean clientCanReceivePaymentInCurrency = VxStripeUtil.clientCanReceivePaymentInCurrency(stripeSecretKey,
+                userStripeAccountId,
+                currency.toString());
+        if (!clientCanReceivePaymentInCurrency) {
+            return Optional.empty();
+        }
+
+        // client can process but no funds in the list. We just add zero funds.
+        Funds zeroFunds = Funds.builder()
+                .amount(0L)
+                .currency(currency.toString())
+                .build();
+        return Optional.of(zeroFunds);
     }
 
     @GetMapping("/refreshVxToken")
