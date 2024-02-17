@@ -149,9 +149,23 @@ export default function LocalAuthExample() {
   return (
     <div className="p-4">
       <p className="mb-3 text-gray-500 dark:text-gray-400">
-        This will work only if you are using localhost backend. It is useful to
-        test the ui without having to deploy. It is very helpful for backend
-        debuting.
+      <p>
+            Useful tools to help you kick off your testing session. Before you
+            use them, make sure that you have logged in and activated your bank
+            account. Check the User Profile tab for extra information and follow
+            the links if necessary.
+          </p>
+          <p>
+            What is what:
+            <ul className="list-disc ml-4">
+              <li>
+                initiate platform funds: Use this only if you are the first user
+                for today that starts to test the platform
+              </li>
+              <li>Request EUR: call this if you need euro in your account</li>
+              <li>Request RON: call this if you need ron in your account</li>
+            </ul>
+          </p>
       </p>
 
       <div className="grid grid-cols-4 gap-4 p-4">

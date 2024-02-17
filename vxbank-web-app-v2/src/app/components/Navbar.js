@@ -45,7 +45,7 @@ export default function Navbar() {
           <Link href="/events">Events</Link>
         </li>
         <li className="p-2 cursor-pointer">
-          <Link href="/usageExamples">DeveloperExamples</Link>
+          <Link href="/usageExamples">TestingCorner</Link>
         </li>
       </ul>
       <ul className="flex">

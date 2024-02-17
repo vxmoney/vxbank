@@ -36,7 +36,7 @@ export default function UsageExamples() {
               }`}
               onClick={() => setActiveTab("Localhost")}
             >
-              Localhost auth
+              Testing initialization tools
             </a>
           </li>
 
