@@ -26,5 +26,11 @@ export const pingAPI = {
       Authorization: `Bearer ${vxToken}`,
     };
     return instance.post("/requestFunds", requestFundsParams, { headers });
+  },
+  initiateVxGamingCurrency: (vxToken, initiateVxGamingParams) =>{
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post("/initiateVxGamingCurrency", initiateVxGamingParams, { headers });
   }
 };

@@ -128,6 +128,24 @@ export default function LocalAuthExample() {
       });
   };
 
+  const callInitiateVxGamingCurrency = async (currency) => {
+    let initiateVxGamingParams = {
+      currency: currency,
+    };
+    pingAPI
+      .initiateVxGamingCurrency(vxUserInfo.vxToken, initiateVxGamingParams)
+      .then((response) => {
+        console.log("initiateVxGamingCurrency response:", response.data);
+        // Handle successful response
+        // Open the payUrl in a new window/tab
+        window.open(response.data.payUrl, "_blank");
+      })
+      .catch((error) => {
+        console.error("Error initiateVxGamingCurrency:", error);
+        // Handle error
+      });
+  };
+
   return (
     <div className="p-4">
       <p className="mb-3 text-gray-500 dark:text-gray-400">
@@ -149,7 +167,8 @@ export default function LocalAuthExample() {
 
         <div className="col-span-3">
           <p>
-            Use this if you are not logged or you want to login as a new random
+            Use this only if you are using the localhost backend services. Call
+            this if you are not logged or you want to login as a new random
             user.
           </p>
           <p>
@@ -172,6 +191,52 @@ export default function LocalAuthExample() {
               </pre>
             )}
           </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Platform funds</p>
+          <button
+            onClick={() => callInitiateVxGamingCurrency("eur")}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Initiate platform euro funds
+          </button>
+        </div>
+
+        <div className="col-span-3">
+          <p>It adds more euro to the platform.</p>
+          <ul className="list-disc ml-4">
+            <li>
+              It only works in testing and you only need to call this once a day
+            </li>
+            <li>Use this card info after you get redirected</li>
+            <li>Card: 4000000000000077</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Platform funds</p>
+          <button
+            onClick={() => callInitiateVxGamingCurrency("ron")}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Initiate platform ron funds
+          </button>
+        </div>
+
+        <div className="col-span-3">
+          <p>It adds more ron to the platform.</p>
+          <ul className="list-disc ml-4">
+            <li>
+              It only works in testing and you only need to call this once a day
+            </li>
+            <li>Use this card info after you get redirected</li>
+            <li>Card: 4000000000000077</li>
+          </ul>
         </div>
       </div>
 
