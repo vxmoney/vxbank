@@ -110,6 +110,24 @@ export default function LocalAuthExample() {
       });
   };
 
+  const callRequestRon = async () => {
+    let requestParams = {
+      userId: vxUserInfo.id,
+      amount: 1000,
+      currency: "ron",
+    };
+    pingAPI
+      .requestFunds(vxUserInfo.vxToken, requestParams)
+      .then((response) => {
+        console.log("Funds requested:", response.data);
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error requesting funds:", error);
+        // Handle error
+      });
+  };
+
   return (
     <div className="p-4">
       <p className="mb-3 text-gray-500 dark:text-gray-400">
@@ -164,12 +182,32 @@ export default function LocalAuthExample() {
             onClick={callRequestFunds}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Request funds
+            Request EUR
           </button>
         </div>
 
         <div className="col-span-3">
-          <p>It adds more funds to the current user</p>
+          <p>It adds more euro to the current user</p>
+          <p>
+            Is not that simple in the real world. This will fail in production
+            and also in develop when the stars are not alined
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-4 p-4">
+        <div className="col-span-1">
+          <p className="mb-4">Ad more funds</p>
+          <button
+            onClick={callRequestRon}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Request RON
+          </button>
+        </div>
+
+        <div className="col-span-3">
+          <p>It adds more ron to the current user</p>
           <p>
             Is not that simple in the real world. This will fail in production
             and also in develop when the stars are not alined
