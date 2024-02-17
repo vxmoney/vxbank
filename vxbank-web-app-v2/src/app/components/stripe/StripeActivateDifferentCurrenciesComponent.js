@@ -16,62 +16,23 @@ const StripeActivateDifferentCurrenciesComponent = ({ id, email, name }) => {
   const { frontendPort, frontendBaseUrl, frontendProtocol } = configValues;
   const { vxUserInfo, setVxUserInfo } = UserAuth();
 
-  const [stripeConfigState, setStripeConfigState] = useState(null);
-  const [configUrl, setConfigUrl] = useState(null);
-
-  const callGetStripeConfig = async () => {
+  const callGetStripeLoginLink = async () => {
     try {
-      const getStripeConfigResponse = await stripeConfigAPI.getByUserId(
-        vxUserInfo.vxToken,
-        vxUserInfo.id
+      const getStripeLoginLinkResponse = await userAPI.getStripeLoginLink(
+        vxUserInfo.vxToken
       );
-      setStripeConfigState(getStripeConfigResponse.data.state);
-    } catch (error) {
-      console.error("callGetStripeConfig error: ", error);
-    }
-  };
-
-  const initiateResumeConfiguration = async () => {
-    let requestParams = {
-      userId: vxUserInfo.id,
-    };
-    try {
-      console.log("clicked initiate resume configuration");
-      //window.location.href = 'https://www.google.com'
-      const initiateResponse = await stripeConfigAPI.initiateConfig(
-        vxUserInfo.vxToken,
-        requestParams
+      console.log(
+        "getStripeLoginLinkResponse",
+        getStripeLoginLinkResponse.data
       );
-      console.log("initiateResponse", initiateResponse);
-      if (initiateResponse.data.configurationComplete) {
-        console.log("Time to refresh token");
-        const refreshResponse = await userAPI.refreshVxToken(
-          vxUserInfo.vxToken
-        );
-        console.log("refreshResponse", refreshResponse.data);
-        setVxUserInfo(refreshResponse.data);
-      } else {
-        let stripeUrl = initiateResponse.data.url;
-        window.location.href = stripeUrl;
+      // Open the URI in a new tab or window
+      if (getStripeLoginLinkResponse.data.uri) {
+        window.open(getStripeLoginLinkResponse.data.uri, "_blank");
       }
     } catch (error) {
-      console.error("initiateResumeConfiguration error", error);
+      console.error("refreshVxToken error: ", error);
     }
   };
-
-  useEffect(() => {
-    callGetStripeConfig();
-    console.log("ConfigStatus=", configStatus);
-    if (configStatus === "complete") {
-      // we got redirected by stripe so we initiate again.
-      // this will also handel the refresh part of the token
-      // backend will complete the back onboarding
-      // frontend will close activate component
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      initiateResumeConfiguration();
-    }
-  }, []);
 
   return (
     <div className="pl-8 pr-8 pt-8">
@@ -93,28 +54,36 @@ const StripeActivateDifferentCurrenciesComponent = ({ id, email, name }) => {
           <tbody>
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
               <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                Stripe config state
+                vxbank dashboard
               </th>
-              <td
-                className="px-6 py-4"
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <p className="pr-2">{stripeConfigState} </p>
-
-                <button
-                  type="button"
-                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                  onClick={initiateResumeConfiguration}
+              <td className="px-6 py-4">
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
                 >
-                  Initiate / Resume configuration
-                </button>
+                  <p>
+                    This is what you need to do after you open the vxbank
+                    dashboard
+                  </p>
+                  <ul className="list-disc pl-5">
+                    <li>
+                      Open your profile logo (top right side of the screen)
+                    </li>
+                    <li>Payout details / vxbank</li>
+                    <li>Add an account</li>
+                  </ul>
+                  <button
+                    type="button"
+                    className="mt-auto py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    onClick={callGetStripeLoginLink}
+                  >
+                    Open vxbank dashboard
+                  </button>
+                </div>
               </td>
-            </tr>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                Stripe callback value
-              </th>
-              <td className="px-6 py-4">{configStatus}</td>
             </tr>
           </tbody>
         </table>

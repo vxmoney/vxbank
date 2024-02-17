@@ -67,6 +67,12 @@ const StripeActivateComponent = ({ id, email, name }) => {
     }
   };
 
+  const callGetStripeUserProfileLink = async () => {
+    let requestParams = {
+      userId: vxUserInfo.id,
+    }
+  }
+
   useEffect(() => {
     callGetStripeConfig();
     console.log("ConfigStatus=", configStatus);

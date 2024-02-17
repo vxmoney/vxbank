@@ -24,4 +24,10 @@ export const userAPI = {
     };
     return instance.get("/refreshVxToken", { headers });
   },
+  getStripeLoginLink:(vxToken) =>{
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.get("/getStripeLoginLink", { headers });
+  }
 };
