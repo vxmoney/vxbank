@@ -1,6 +1,8 @@
 indexes:
-  - kind: VxEvent
+
+  - kind: "VxEvent"
     properties:
-      - name: vxIntegrationId
-      - name: createTimeStamp
+      - name: "vxGame"
+      - name: "vxIntegrationId"
+      - name: "createTimeStamp"
         direction: desc
