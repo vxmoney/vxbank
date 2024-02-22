@@ -40,4 +40,7 @@ export const eventAPI = {
     };
     return instance.get("", { headers, params });
   },
+  getById: (eventId) => {
+    return instance.get(`/${eventId}`);
+  },
 };
