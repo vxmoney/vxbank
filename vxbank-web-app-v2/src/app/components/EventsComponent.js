@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { useVxContext } from "../context/VxContext";
+import Link from "next/link";
 
 export default function EventsComponent() {
   const { events, fetchEvents } = useVxContext();
@@ -43,7 +44,11 @@ export default function EventsComponent() {
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {event.id}
               </td>
-              <td className="px-6 py-4">{event.title}</td>
+              <td className="px-6 py-4">
+                <Link href={`/events/leagueOfLegends/${event.id}`}>
+                  {event.title}
+                </Link>
+              </td>
               <td className="px-6 py-4">{event.state}</td>
               <td className="px-6 py-4">{event.entryPrice}</td>
             </tr>
