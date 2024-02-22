@@ -14,11 +14,22 @@ function showHelp() {
 API_DIR=$(pwd)
 API_KYES_DIR="${API_DIR}/../../vxbank-security"
 OAUTH_DIR=emulators
+DATA_DIR="${API_DIR}/datastore-generated"
 
 startDatastoreEmulator() {
-  gcloud beta emulators datastore start --project=my-project-id --no-store-on-disk --consistency 1.0 --host-port=localhost:8081 &
+
+  # no store on disc
+  #  gcloud beta emulators datastore start --project=my-project-id --no-store-on-disk --consistency 1.0 --host-port=localhost:8081 &
+
+  # persisted on disk
+  gcloud beta emulators datastore start --project=my-project-id --data-dir "${DATA_DIR}" --consistency 1.0 --host-port=localhost:8081 &
+
   EMULATOR_PID=$!
   echo "Emulator PID: $EMULATOR_PID"
+}
+
+stopDatastoreEmulator() {
+  killProcessOnPort 8081
 }
 
 startOauthEmulator() {
@@ -98,7 +109,7 @@ pingLocal() {
   curl localhost:8080/ping/getEnvironment
 }
 
-deployDatastoreIndexOnDev(){
+deployDatastoreIndexOnDev() {
   gcloud config set project vxbank-eu-dev
   gcloud datastore indexes create ./src/main/appengine/index.yaml
 }
