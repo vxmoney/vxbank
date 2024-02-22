@@ -37,5 +37,5 @@ export MY_BASE_URL=://localhost:8080
 curl --location --request GET "${MY_PROTOCOL}${MY_BASE_URL}/ping/getEnvironment"
 
 # deploy index
-
+gcloud app deploy src/main/appengine/index.yaml
 ```
