@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { UserAuth } from "../../context/AuthContext";
+import Join1v1EventModal from "../leagueOfLegends/Join1v1EventModal";
 
 export default function Event1v1DetailComponent() {
   const { vxUserInfo } = UserAuth();
@@ -89,7 +90,9 @@ export default function Event1v1DetailComponent() {
               {eventData.state === "openForRegistration" && (
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleJoinEvent}
+                  data-modal-target="join-1v1-modal"
+                  data-modal-toggle="join-1v1-modal"
+                  type="button"
                 >
                   Join Event
                 </button>
@@ -101,6 +104,7 @@ export default function Event1v1DetailComponent() {
           </div>
         </div>
       )}
+      <Join1v1EventModal/>
     </div>
   );
 }
