@@ -19,10 +19,10 @@ DATA_DIR="${API_DIR}/datastore-generated"
 startDatastoreEmulator() {
 
   # no store on disc
-  #  gcloud beta emulators datastore start --project=my-project-id --no-store-on-disk --consistency 1.0 --host-port=localhost:8081 &
+  gcloud beta emulators datastore start --project=my-project-id --no-store-on-disk --consistency 1.0 --host-port=localhost:8081 &
 
   # persisted on disk
-  gcloud beta emulators datastore start --project=my-project-id --data-dir "${DATA_DIR}" --consistency 1.0 --host-port=localhost:8081 &
+  #  gcloud beta emulators datastore start --project=my-project-id --data-dir "${DATA_DIR}" --consistency 1.0 --host-port=localhost:8081 &
 
   EMULATOR_PID=$!
   echo "Emulator PID: $EMULATOR_PID"
