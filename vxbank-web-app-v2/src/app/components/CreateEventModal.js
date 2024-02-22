@@ -12,7 +12,8 @@ const CreateEventModal = () => {
     vxUserId: vxUserInfo?.id,
     type: "payed1V1",
     vxIntegrationId: "vxGaming",
-    title: "League of legends",
+    vxGame: "leagueOfLegends",
+    title: "Example 001",
     currency: "eur",
     entryPrice: "500",
   });

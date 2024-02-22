@@ -23,15 +23,17 @@ export const eventAPI = {
   search: (
     vxToken,
     vxIntegrationId = "vxGaming",
+    vxGame = "leagueOfLegends",
     stateList = ["openForRegistration", "inProgress", "closed"],
     offset = 0,
-    limit = 5
+    limit = 20
   ) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
     const params = {
       vxIntegrationId,
+      vxGame,
       stateList: stateList.join(","),
       offset,
       limit,
