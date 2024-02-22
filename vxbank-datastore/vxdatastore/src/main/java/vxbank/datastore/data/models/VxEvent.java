@@ -24,6 +24,8 @@ public class VxEvent  {
         closed,
     }
 
+
+
     @Id
     public Long id;
 
@@ -38,6 +40,9 @@ public class VxEvent  {
 
     @Index
     public String vxIntegrationId;
+
+    @Index
+    public VxGame vxGame;
 
     public String title;
     @Index

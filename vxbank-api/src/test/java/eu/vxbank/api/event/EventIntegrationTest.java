@@ -24,6 +24,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxGame;
 import vxbank.datastore.data.models.VxUser;
 
 import java.util.Arrays;
@@ -121,6 +122,7 @@ public class EventIntegrationTest {
         EventGetResponse getResponse = EventHelper.get(restTemplate, port, vxTokenUserA, eventCreateResponse.id, 200);
         Assertions.assertEquals(eventCreateResponse.id, getResponse.id);
         Assertions.assertEquals(eventPrice, getResponse.availableFunds);
+        Assertions.assertEquals(VxGame.leagueOfLegends, getResponse.vxGame);
 
         EventParticipantGetByEventIdResponse participantResponse = EventParticipantHelper.getByEventId(restTemplate,
                 port,

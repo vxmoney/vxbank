@@ -64,6 +64,7 @@ public class EventEndpoint {
                 .state(VxEvent.State.openForRegistration)
                 .type(params.type)
                 .vxIntegrationId(params.vxIntegrationId.toString())
+                .vxGame(params.vxGame)
                 .title(params.title)
                 .currency(params.currency)
                 .entryPrice(params.entryPrice)
