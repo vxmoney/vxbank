@@ -40,7 +40,12 @@ export const eventAPI = {
     };
     return instance.get("", { headers, params });
   },
-  getById: (eventId) => {
-    return instance.get(`/${eventId}`);
+  getById: (vxToken, eventId) => {
+    
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+
+    return instance.get(`/${eventId}`, { headers });
   },
 };

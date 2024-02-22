@@ -1,34 +1,33 @@
-"use client"
+"use client";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
+import { UserAuth } from "../context/AuthContext";
 
-export default function LeagueOfLegends1v1Component(){
+export default function LeagueOfLegends1v1Component() {
+  const { vxUserInfo } = UserAuth();
+  let { eventId } = useParams();
+  const [eventData, setEventData] = useState(null);
 
-    let { eventId } = useParams();
-    const [eventData, setEventData] = useState(null);
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
+        console.log("event data: ", response.data);
+        setEventData(response.data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+      }
+    };
 
-    useEffect(() => {
-        const fetchEvent = async () => {
-          try {
-            const response = await eventAPI.getById(eventId);
-            console.log("event data: ", response.data)
-            setEventData(response.data);
-          } catch (error) {
-            console.error("Error fetching event:", error);
-          }
-        };
-    
-        if (eventId) {
-          fetchEvent();
-        }
-      }, [eventId]);
+    if (eventId && vxUserInfo && vxUserInfo?.vxToken) {
+      fetchEvent();
+    }
+  }, [eventId]);
 
-    return (
-        <di>
-            <h1>
-                Hello nested id = : {eventId} 
-            </h1>
-        </di>
-    )
+  return (
+    <di>
+      <h1>Hello nested id = : {eventId}</h1>
+    </di>
+  );
 }
