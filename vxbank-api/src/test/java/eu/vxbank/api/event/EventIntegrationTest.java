@@ -145,6 +145,7 @@ public class EventIntegrationTest {
                 .vxUserId(userA.id)
                 .type(VxEvent.Type.payed1V1)
                 .vxIntegrationId(VxIntegrationId.vxGaming)
+                .vxGame(VxGame.leagueOfLegends)
                 .title(title)
                 .currency("eur")
                 .entryPrice(1000L)
@@ -163,6 +164,7 @@ public class EventIntegrationTest {
                 port,
                 vxTokenUserA,
                 VxIntegrationId.vxGaming,
+                VxGame.leagueOfLegends,
                 stateList,
                 offset,
                 limit,

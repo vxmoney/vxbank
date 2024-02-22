@@ -193,12 +193,14 @@ public class EventEndpoint {
     @GetMapping
     @ResponseBody
     public EventSearchResponse search(@RequestParam(name = "vxIntegrationId") VxIntegrationId vxIntegrationId,
+                                      @RequestParam(name = "vxGame") VxGame vxGame,
                                       @RequestParam(name = "stateList") List<VxEvent.State> stateList,
                                       @RequestParam(name = "offset", defaultValue = "0") Long offset,
                                       @RequestParam(name = "limit", defaultValue = "5") Long limit) {
 
         List<VxEvent> vxEventList = VxDsService.searchEvent(systemService.getVxBankDatastore(),
                 vxIntegrationId.toString(),
+                vxGame,
                 stateList);
 
         EventSearchResponse searchResponse = new EventSearchResponse();

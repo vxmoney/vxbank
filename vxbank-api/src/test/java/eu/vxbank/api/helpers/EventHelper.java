@@ -1,9 +1,6 @@
 package eu.vxbank.api.helpers;
 
 import eu.vxbank.api.endpoints.event.dto.*;
-import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
-import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
-import eu.vxbank.api.endpoints.ping.dto.PingResponse;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -13,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxGame;
 
 import java.util.List;
 
@@ -75,6 +73,7 @@ public class EventHelper {
                                              int port,
                                              String vxToken,
                                              VxIntegrationId vxIntegrationId,
+                                             VxGame vxGame,
                                              List<VxEvent.State> stateList,
                                              int offset,
                                              int limit,
@@ -91,7 +90,8 @@ public class EventHelper {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/event")
                 .queryParam("offset", offset)
                 .queryParam("limit", limit)
-                .queryParam("vxIntegrationId", vxIntegrationId);
+                .queryParam("vxIntegrationId", vxIntegrationId)
+                .queryParam("vxGame", vxGame);
 
 
         if (!stateList.isEmpty()) {

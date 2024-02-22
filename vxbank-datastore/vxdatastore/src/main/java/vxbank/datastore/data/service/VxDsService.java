@@ -153,11 +153,14 @@ public class VxDsService {
     }
 
 
-    public static List<VxEvent> searchEvent(VxBankDatastore ds, String vxIntegrationId, List<VxEvent.State> stateList) {
+    public static List<VxEvent> searchEvent(VxBankDatastore ds, String vxIntegrationId,
+                                            VxGame vxGame,
+                                            List<VxEvent.State> stateList) {
         Query<VxEvent> query = ds.ofy.load()
                 .type(VxEvent.class);
 
         query = query.filter("vxIntegrationId", vxIntegrationId);
+        query = query.filter("vxGame", vxGame);
 
         VxEvent.State[] eventValues = VxEvent.State.values();
         Set<VxEvent.State> eventStates = new HashSet<>(Arrays.asList(eventValues));

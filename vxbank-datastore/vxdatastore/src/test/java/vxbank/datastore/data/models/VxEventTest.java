@@ -46,6 +46,7 @@ public class VxEventTest {
                     .currency("eur")
                     .entryPrice(entryPrice)
                     .vxIntegrationId(uniqueServiceId)
+                    .vxGame(VxGame.leagueOfLegends)
                     .state(VxEvent.State.inProgress)
                     .build();
             VxDsService.persist(vxEventA, ds, VxEvent.class);
@@ -58,6 +59,7 @@ public class VxEventTest {
                     .currency("eur")
                     .entryPrice(entryPrice)
                     .vxIntegrationId(uniqueServiceId)
+                    .vxGame(VxGame.leagueOfLegends)
                     .state(VxEvent.State.openForRegistration)
                     .build();
             VxDsService.persist(vxEventB, ds, VxEvent.class);
@@ -66,7 +68,7 @@ public class VxEventTest {
 
         List<VxEvent.State> stateList = Arrays.asList(VxEvent.State.inProgress, VxEvent.State.openForRegistration);
 
-        List<VxEvent> vxEventList = VxDsService.searchEvent(ds, uniqueServiceId, stateList);
+        List<VxEvent> vxEventList = VxDsService.searchEvent(ds, uniqueServiceId,VxGame.leagueOfLegends, stateList);
         Assertions.assertEquals(2, vxEventList.size());
     }
 
