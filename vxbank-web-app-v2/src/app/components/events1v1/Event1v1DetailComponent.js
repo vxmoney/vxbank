@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { UserAuth } from "../../context/AuthContext";
 import Join1v1EventModal from "./Join1v1EventModal";
+import Event1v1ParticipantListComponent from "./Event1v1ParticipantListComponent";
 
 export default function Event1v1DetailComponent() {
   const { vxUserInfo } = UserAuth();
@@ -85,11 +86,13 @@ export default function Event1v1DetailComponent() {
             </div>
 
             {/* Join section */}
-           
           </div>
         </div>
       )}
-      <Join1v1EventModal/>
+
+      <Event1v1ParticipantListComponent eventId={eventId} />
+
+      <Join1v1EventModal />
     </div>
   );
 }
