@@ -9,11 +9,15 @@ export default function Event1v1SetResultsComponent({
 }) {
   const { vxUserInfo } = UserAuth();
 
+  console.log("resultsData", resultsData);
+
   const handelSetResults = async () => {
     try {
      const eventResultCreateParams = {
-        eventId: eventId,
-        userId: userId,
+        vxEventId: eventId,
+        vxUserId: vxUserInfo.id,
+        participantId: userId,
+        participantFinalResultPlace: "firstPlace"
       };
 
       const response = await eventResultsAPI.create(
