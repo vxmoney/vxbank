@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { UserAuth } from "../../context/AuthContext";
 
-const Join1v1EventModal = ({fetchParticipants}) => {
+const Join1v1EventModal = ({ fetchParticipants }) => {
   const { vxUserInfo } = UserAuth();
   let { eventId } = useParams();
   const [eventData, setEventData] = useState(null);
@@ -33,27 +33,29 @@ const Join1v1EventModal = ({fetchParticipants}) => {
 
   //<show hide modal section>
   // Function to show the modal
-  const showModal = () => {
-    const modal = document.getElementById("join-modal");
+  const showModal = (modalId) => {
+    const modal = document.getElementById(modalId);
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   };
 
   // Function to hide the modal
-  const hideModal = () => {
-    const modal = document.getElementById("join-modal");
+  const hideModal = (modalId) => {
+    const modal = document.getElementById(modalId);
     modal.classList.add("hidden");
     modal.classList.remove("flex");
   };
 
   // Event listener for showing the modal
   document.querySelectorAll("[data-modal-toggle]").forEach((button) => {
-    button.addEventListener("click", showModal);
+    button.addEventListener("click", () =>
+      showModal(button.dataset.modalTarget)
+    );
   });
 
   // Event listener for hiding the modal
   document.querySelectorAll("[data-modal-hide]").forEach((button) => {
-    button.addEventListener("click", hideModal);
+    button.addEventListener("click", () => hideModal(button.dataset.modalHide));
   });
   //</show hide modal section>
 
@@ -66,11 +68,32 @@ const Join1v1EventModal = ({fetchParticipants}) => {
       .then((response) => {
         console.log("Joined event response:", response.data);
         fetchParticipants();
-        hideModal();
+        hideModal("join-modal");
         // Handle successful response
       })
       .catch((error) => {
         console.error("Error joining event:", error);
+        // Handle error
+      });
+  };
+
+  const handleCloseSubmit = (e) => {
+    e.preventDefault();
+    let eventCloseParams = {
+      vxEventId: eventId,
+    };
+    // Here, you can use formData to send the object to your endpoint or perform any other actions
+    console.log(eventJoinParams); // Assuming eventJoinParams contains the necessary parameters for joining an event
+    eventAPI
+      .closeEvent(vxUserInfo?.vxToken, eventCloseParams)
+      .then((response) => {
+        console.log("Close event response:", response.data);
+        fetchParticipants();
+        hideModal("join-modal");
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error close event:", error);
         // Handle error
       });
   };
@@ -82,7 +105,6 @@ const Join1v1EventModal = ({fetchParticipants}) => {
         data-modal-target="join-modal"
         data-modal-toggle="join-modal"
         className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-        
       >
         Join event
       </button>
@@ -130,6 +152,69 @@ const Join1v1EventModal = ({fetchParticipants}) => {
               </button>
               <button
                 data-modal-hide="join-modal"
+                type="button"
+                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              >
+                No, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Close Event Modal */}
+      <button
+        type="button"
+        data-modal-target="close-event-modal"
+        data-modal-toggle="close-event-modal"
+        className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+      >
+        Close event
+      </button>
+
+      <div
+        id="close-event-modal"
+        tabIndex="-1"
+        className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+      >
+        <div className="relative p-4 w-full max-w-md max-h-full">
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button
+              type="button"
+              className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              data-modal-hide="close-event-modal"
+            >
+              <svg
+                className="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span className="sr-only">Close modal</span>
+            </button>
+            <div className="p-4 md:p-5 text-center">
+              <h3 className="pt-8 mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                Are you sure you want to close this event?
+              </h3>
+              <button
+                data-modal-hide="close-event-modal"
+                type="button"
+                className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                onClick={handleCloseSubmit}
+              >
+                Yes, I'm sure
+              </button>
+              <button
+                data-modal-hide="close-event-modal"
                 type="button"
                 className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
               >

@@ -198,19 +198,7 @@ public class Close1v1EventCommand extends VxDsCommand {
             }
         }
 
-        // prize value needs to be positive and the same
-        Set<Long> proposedValues = new HashSet<>();
-        for (VxEventResult result : activeResults) {
-            if (result.prizeValue < 0L) {
-                throw new IllegalStateException("All values need to be positive");
-                //return false;
-            }
-            proposedValues.add(result.prizeValue);
-        }
-        if (proposedValues.size() != 1) {
-            throw new IllegalStateException("All values need to be the same");
-            //return false;
-        }
+
 
         return true;
     }
