@@ -41,11 +41,16 @@ export const eventAPI = {
     return instance.get("", { headers, params });
   },
   getById: (vxToken, eventId) => {
-    
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
 
     return instance.get(`/${eventId}`, { headers });
+  },
+  join: (vxToken, eventData) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post("/join", eventData, { headers });
   },
 };

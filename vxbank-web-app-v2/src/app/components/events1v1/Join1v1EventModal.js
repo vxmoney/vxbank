@@ -5,13 +5,15 @@ import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { UserAuth } from "../../context/AuthContext";
 
-
-
 const Join1v1EventModal = () => {
-
   const { vxUserInfo } = UserAuth();
   let { eventId } = useParams();
   const [eventData, setEventData] = useState(null);
+
+  const eventJoinParams = {
+    vxUserId: vxUserInfo?.id,
+    eventId: eventId,
+  };
 
   // load event
   useEffect(() => {
@@ -56,13 +58,31 @@ const Join1v1EventModal = () => {
   });
   //</show hide modal section>
 
+  const handleJoinSubmit = (e) => {
+    e.preventDefault();
+    // Here, you can use formData to send the object to your endpoint or perform any other actions
+    console.log(eventJoinParams); // Assuming eventJoinParams contains the necessary parameters for joining an event
+    eventAPI
+      .join(vxUserInfo?.vxToken, eventJoinParams)
+      .then((response) => {
+        console.log("Joined event response:", response.data);
+        hideModal();
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error joining event:", error);
+        // Handle error
+      });
+  };
+
   return (
     <div className="pt-8 pl-8">
       <button
+        type="button"
         data-modal-target="popup-modal"
         data-modal-toggle="popup-modal"
         className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-        type="button"
+        
       >
         Join event
       </button>
@@ -101,9 +121,10 @@ const Join1v1EventModal = () => {
                 Are you sure you want to join this event?
               </h3>
               <button
-                data-modal-hide="popup-modal"
                 type="button"
+                data-modal-hide="popup-modal"
                 className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                onClick={handleJoinSubmit}
               >
                 Yes, I'm sure
               </button>
