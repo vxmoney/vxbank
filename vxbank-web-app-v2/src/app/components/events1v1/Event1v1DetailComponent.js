@@ -26,9 +26,7 @@ export default function Event1v1DetailComponent() {
     }
   }, [eventId]);
 
-  const handleJoinEvent = () => {
-    // Logic to handle joining the event
-  };
+
 
   return (
     <div>

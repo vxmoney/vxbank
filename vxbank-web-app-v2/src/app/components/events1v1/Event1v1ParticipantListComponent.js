@@ -10,7 +10,7 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
 
   console.log("eventId = ", eventId);
 
-  const {participantsList, setParticipantsList} = useState(null)
+  const [participantsList, setParticipantsList] = useState(null);
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -21,7 +21,7 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
         );
         console.log("eventParticipantResponse, ", response.data);
         //setEventData(response.data);
-        setParticipantsList(response.data)
+        setParticipantsList(response.data);
       } catch (error) {
         console.error("Error fetching event:", error);
       }
@@ -30,7 +30,7 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
     if (eventId && vxUserInfo && vxUserInfo?.vxToken) {
       fetchParticipants();
     }
-  }, []);
+  }, [eventId]);
 
   useEffect(() => {
     console.log("participantsList", participantsList);
@@ -42,38 +42,28 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              ID
+              gamerId
             </th>
             <th scope="col" className="px-6 py-3">
-              Title
-            </th>
-            <th scope="col" className="px-6 py-3">
-              State
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Entry Price
+              name
             </th>
           </tr>
         </thead>
-        {/* <tbody>
-          {events.map((event) => (
-            <tr
-              key={event.id}
-              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-            >
-              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                {event.id}
-              </td>
-              <td className="px-6 py-4">
-                <Link href={`/events/leagueOfLegends/${event.id}`}>
-                  {event.title}
-                </Link>
-              </td>
-              <td className="px-6 py-4">{event.state}</td>
-              <td className="px-6 py-4">{event.entryPrice}</td>
-            </tr>
-          ))}
-        </tbody> */}
+        {participantsList && (
+          <tbody>
+            {participantsList.participantList.map((gamer) => (
+              <tr
+                key={gamer.id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+              >
+                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  ---
+                </td>
+                <td className="px-6 py-4">{gamer.vxUserId}</td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
     </div>
   );
