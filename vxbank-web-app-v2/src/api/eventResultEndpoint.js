@@ -14,11 +14,12 @@ const instance = axios.create({
 });
 
 export const eventResultsAPI = {
-  create: (vxToken, eventData) => {
+  create: (vxToken, eventResultCreateParams) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
-    return instance.post("", eventData, { headers });
+    const params = eventResultCreateParams;
+    return instance.post("", params, { headers });
   },
   getByEventId: (vxToken, eventId) => {
     const headers = {

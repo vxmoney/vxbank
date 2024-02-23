@@ -62,7 +62,7 @@ export default function Event1v1DetailComponent() {
       console.error("Error fetching results:", error);
     }
   };
-  
+
   useEffect(() => {
     if (eventId && vxUserInfo && vxUserInfo.vxToken) {
       fetchResults();
@@ -131,12 +131,12 @@ export default function Event1v1DetailComponent() {
 
       <Event1v1ParticipantListComponent
         eventId={eventId}
-        vxUserList={
-          participantResponse && participantResponse.vxUserList
-        }
+        vxUserList={participantResponse && participantResponse.vxUserList}
+        fetchResults={fetchResults}
+        resultsData = {resultsData}
       />
 
-      <Join1v1EventModal fetchParticipants={fetchParticipants}/>
+      <Join1v1EventModal fetchParticipants={fetchParticipants} />
     </div>
   );
 }

@@ -4,8 +4,14 @@ import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { eventParticipantAPI } from "@/api/eventParticipant";
 import { UserAuth } from "../../context/AuthContext";
+import Event1v1SetResultsComponent from "./Event1v1SetResultsComponent";
 
-export default function Event1v1ParticipantListComponent({ eventId, vxUserList }) {
+export default function Event1v1ParticipantListComponent({
+  eventId,
+  vxUserList,
+  fetchResults,
+  resultsData,
+}) {
   const { vxUserInfo } = UserAuth();
 
   const [participantResponse, setParticipantsResponse] = useState(null);
@@ -28,7 +34,6 @@ export default function Event1v1ParticipantListComponent({ eventId, vxUserList }
     }
   }, [eventId]);
 
- 
   return (
     <div className="pl-8 pr-8 pt-8">
       <div className="block  p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ">
@@ -44,6 +49,7 @@ export default function Event1v1ParticipantListComponent({ eventId, vxUserList }
               <th scope="col" className="px-6 py-3">
                 name
               </th>
+              <th>-----</th>
             </tr>
           </thead>
           {vxUserList && (
@@ -57,6 +63,14 @@ export default function Event1v1ParticipantListComponent({ eventId, vxUserList }
                     ---
                   </td>
                   <td className="px-6 py-4">{gamer.name}</td>
+                  <td>
+                    <Event1v1SetResultsComponent
+                      eventId={eventId}
+                      userId={gamer.id}
+                      fetchResults={fetchResults}
+                      resultsData={resultsData}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
