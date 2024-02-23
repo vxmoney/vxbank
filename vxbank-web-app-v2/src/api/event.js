@@ -53,4 +53,10 @@ export const eventAPI = {
     };
     return instance.post("/join", eventData, { headers });
   },
+  closeEvent: (vxToken, closeEventParams) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post(`/closeEvent/${eventId}`, closeEventParams, { headers });
+  },
 };
