@@ -4,14 +4,12 @@ import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
+import eu.vxbank.api.endpoints.eventresult.dto.EventResultListResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -48,9 +46,7 @@ public class EventResultEndpoint {
 
         VxEventResult vxEventResult = params.buildVxEventResult();
         vxEventResult.state = VxEventResult.State.active;
-        VxDsService.persist(VxEventResult.class,
-                systemService.getVxBankDatastore(),
-                vxEventResult);
+        VxDsService.persist(VxEventResult.class, systemService.getVxBankDatastore(), vxEventResult);
         EventResultCreateResponse response = EventResultCreateResponse.newInstance(vxEventResult);
 
         return response;
@@ -61,6 +57,16 @@ public class EventResultEndpoint {
                 .filter(p -> p.vxUserId.equals(vxUserId))
                 .findFirst();
         return optionalParticipant.isPresent();
+    }
+
+    @GetMapping("/getByEventId/{eventId}")
+    @ResponseBody
+    public EventResultListResponse getByEventId(@PathVariable Long eventId) {
+        List<VxEventResult> resultList = VxDsService.getListByEventId(VxEventResult.class,
+                systemService.getVxBankDatastore(),
+                eventId);
+        EventResultListResponse response = EventResultListResponse.newInstance(resultList);
+        return response;
     }
 
 }

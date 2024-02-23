@@ -7,6 +7,7 @@ import eu.vxbank.api.endpoints.event.dto.EventCloseParams;
 import eu.vxbank.api.endpoints.event.dto.EventCloseResponse;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
+import eu.vxbank.api.endpoints.eventresult.dto.EventResultListResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.EventHelper;
 import eu.vxbank.api.helpers.EventResultHelper;
@@ -121,6 +122,14 @@ public class Close1V1EventIntegrationTest {
 
         // try to close second time but it should fail fast
         EventHelper.closeEvent(restTemplate, port, creator.vxToken, closeParams, 500);
+
+        // list the results using the api
+        EventResultListResponse resultListResponse = EventResultHelper.getByEventId(restTemplate,
+                port,
+                creator.vxToken,
+                vxEvent.id,
+                200);
+        Assertions.assertEquals(2, resultListResponse.eventResultList.size());
 
     }
 
