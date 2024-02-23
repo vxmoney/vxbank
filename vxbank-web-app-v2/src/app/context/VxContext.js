@@ -19,7 +19,6 @@ export const VxProvider = ({ children }) => {
 
     eventAPI.search(vxToken)
       .then(response => {
-        console.log('VxContext API Response:', response.data);
         setEvents(response.data.eventList);
       })
       .catch(error => {
