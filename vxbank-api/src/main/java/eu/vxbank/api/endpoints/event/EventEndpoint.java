@@ -109,6 +109,16 @@ public class EventEndpoint {
 
         VxEvent vxEvent = VxDsService.getById(params.eventId, systemService.getVxBankDatastore(), VxEvent.class);
 
+        //check if user not already part of the event
+        List<VxEventParticipant> initialList = VxDsService.getListByEventId(VxEventParticipant.class,
+                systemService.getVxBankDatastore(),
+                params.eventId);
+        Optional<VxEventParticipant> userAlreadyPresent = initialList.stream()
+                .filter(p -> p.vxUserId.equals(vxUser.id)).findFirst();
+        if (userAlreadyPresent.isPresent()){
+            throw new IllegalStateException("You can not join multiple times");
+        }
+
         VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
                         new HashMap<>(),
                         systemService.getVxBankDatastore(),
@@ -227,8 +237,7 @@ public class EventEndpoint {
                     currentUser.id,
                     params,
                     vxGaming,
-                    stripeKeys.stripeSecretKey
-            );
+                    stripeKeys.stripeSecretKey);
             command.execute();
 
         }

@@ -216,6 +216,9 @@ public class EventIntegrationTest {
         Assertions.assertNotNull(joinResponse);
         Assertions.assertEquals(2, joinResponse.eventActiveParticipantsCount);
 
+        // try to join again and it should fail
+        EventHelper.join(restTemplate, port, vxLoginB.vxToken, params, 500);
+
 
     }
 
