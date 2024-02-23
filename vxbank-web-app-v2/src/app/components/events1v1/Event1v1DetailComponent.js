@@ -86,21 +86,7 @@ export default function Event1v1DetailComponent() {
             </div>
 
             {/* Join section */}
-            <div className="pl-8 pr-8 pt-8">
-              {eventData.state === "openForRegistration" && (
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  data-modal-target="join-1v1-modal"
-                  data-modal-toggle="join-1v1-modal"
-                  type="button"
-                >
-                  Join Event
-                </button>
-              )}
-              {eventData.state !== "openForRegistration" && (
-                <p>This event is not open for registration.</p>
-              )}
-            </div>
+           
           </div>
         </div>
       )}
