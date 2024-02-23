@@ -62,14 +62,14 @@ export default function Event1v1ParticipantListComponent({
                   <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     ---
                   </td>
-                  <td className="px-6 py-4">{gamer.name}</td>
+                  <td className="px-6 py-4"> {gamer.email}</td>
                   <td>
                     <Event1v1SetResultsComponent
                       eventId={eventId}
                       userId={gamer.id}
                       fetchResults={fetchResults}
                       resultsData={resultsData}
-                      participantResponse = {participantResponse}
+                      participantResponse={participantResponse}
                     />
                   </td>
                 </tr>
