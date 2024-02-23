@@ -69,6 +69,7 @@ export default function Event1v1ParticipantListComponent({
                       userId={gamer.id}
                       fetchResults={fetchResults}
                       resultsData={resultsData}
+                      participantResponse = {participantResponse}
                     />
                   </td>
                 </tr>
