@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { UserAuth } from "../../context/AuthContext";
-import Join1v1EventModal from "../leagueOfLegends/Join1v1EventModal";
+import Join1v1EventModal from "./Join1v1EventModal";
 
 export default function Event1v1DetailComponent() {
   const { vxUserInfo } = UserAuth();

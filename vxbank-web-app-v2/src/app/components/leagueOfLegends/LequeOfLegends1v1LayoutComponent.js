@@ -1,6 +1,6 @@
 
 import Event1v1DetailComponent from "../events1v1/Event1v1DetailComponent";
-import Join1v1EventModal from "./Join1v1EventModal";
+import Join1v1EventModal from "../events1v1/Join1v1EventModal";
 
 export default function LeagueOfLegends1v1LayoutComponent() {
   
