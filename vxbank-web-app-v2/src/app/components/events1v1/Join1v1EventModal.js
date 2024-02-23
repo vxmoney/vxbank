@@ -20,7 +20,6 @@ const Join1v1EventModal = ({fetchParticipants}) => {
     const fetchEvent = async () => {
       try {
         const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
-        console.log("event data from modal: ", response.data);
         setEventData(response.data);
       } catch (error) {
         console.error("Error fetching event:", error);

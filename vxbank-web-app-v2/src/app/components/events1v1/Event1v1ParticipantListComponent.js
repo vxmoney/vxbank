@@ -8,8 +8,6 @@ import { UserAuth } from "../../context/AuthContext";
 export default function Event1v1ParticipantListComponent({ eventId, vxUserList }) {
   const { vxUserInfo } = UserAuth();
 
-  console.log("eventId = ", eventId);
-
   const [participantResponse, setParticipantsResponse] = useState(null);
 
   const fetchParticipants = async () => {
@@ -18,7 +16,6 @@ export default function Event1v1ParticipantListComponent({ eventId, vxUserList }
         vxUserInfo?.vxToken,
         eventId
       );
-      console.log("eventParticipantResponse, ", response.data);
       setParticipantsResponse(response.data);
     } catch (error) {
       console.error("Error fetching participants:", error);
@@ -32,8 +29,6 @@ export default function Event1v1ParticipantListComponent({ eventId, vxUserList }
   }, [eventId]);
 
  
-    console.log("vxUserList", vxUserList);
-
   return (
     <div className="pl-8 pr-8 pt-8">
       <div className="block  p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ">

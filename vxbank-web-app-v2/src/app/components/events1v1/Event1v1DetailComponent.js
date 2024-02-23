@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { eventParticipantAPI } from "@/api/eventParticipant";
+import { eventResultsAPI } from "@/api/eventResultEndpoint";
 import { UserAuth } from "../../context/AuthContext";
 import Join1v1EventModal from "./Join1v1EventModal";
 import Event1v1ParticipantListComponent from "./Event1v1ParticipantListComponent";
@@ -12,7 +13,9 @@ export default function Event1v1DetailComponent() {
   let { eventId } = useParams();
   const [eventData, setEventData] = useState(null);
   const [participantResponse, setParticipantsResponse] = useState(null);
+  const [resultsData, setResultsData] = useState(null);
 
+  // fetch event
   const fetchEvent = async () => {
     try {
       const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
@@ -28,13 +31,13 @@ export default function Event1v1DetailComponent() {
     }
   }, []);
 
+  // fetchParticipants
   const fetchParticipants = async () => {
     try {
       const response = await eventParticipantAPI.getByEventId(
         vxUserInfo?.vxToken,
         eventId
       );
-      console.log("detailEventParticipantResponse, ", response.data);
       setParticipantsResponse(response.data);
     } catch (error) {
       console.error("Error fetching participants:", error);
@@ -46,6 +49,25 @@ export default function Event1v1DetailComponent() {
       fetchParticipants();
     }
   }, [eventId]);
+
+  // fetch results
+  const fetchResults = async () => {
+    try {
+      const response = await eventResultsAPI.getByEventId(
+        vxUserInfo?.vxToken,
+        eventId
+      );
+      setResultsData(response.data);
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    }
+  };
+  
+  useEffect(() => {
+    if (eventId && vxUserInfo && vxUserInfo.vxToken) {
+      fetchResults();
+    }
+  }, []);
 
   return (
     <div>
