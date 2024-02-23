@@ -34,15 +34,15 @@ const Join1v1EventModal = () => {
   // Function to show the modal
   const showModal = () => {
     const modal = document.getElementById("popup-modal");
-    modal.classNameList.remove("hidden");
-    modal.classNameList.add("flex");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
   };
 
   // Function to hide the modal
   const hideModal = () => {
     const modal = document.getElementById("popup-modal");
-    modal.classNameList.add("hidden");
-    modal.classNameList.remove("flex");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
   };
 
   // Event listener for showing the modal
