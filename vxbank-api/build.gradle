@@ -83,7 +83,7 @@ appengine {  // App Engine tasks configuration
 		// vxbank-eu-dev
 		// vxbank-eu-prod
 		projectId = 'vxbank-eu-dev' // gcloud config set project
-		version = '0-00-010'   // gcloud to generate a version
+		version = '0-00-011'   // gcloud to generate a version
 		stopPreviousVersion = true // default - stop the current version
 		promote = true // default - & make this the current version
 	}
