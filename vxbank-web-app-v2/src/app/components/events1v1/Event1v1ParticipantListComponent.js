@@ -5,36 +5,34 @@ import { eventAPI } from "@/api/event";
 import { eventParticipantAPI } from "@/api/eventParticipant";
 import { UserAuth } from "../../context/AuthContext";
 
-export default function Event1v1ParticipantListComponent({ eventId }) {
+export default function Event1v1ParticipantListComponent({ eventId, vxUserList }) {
   const { vxUserInfo } = UserAuth();
 
   console.log("eventId = ", eventId);
 
   const [participantResponse, setParticipantsResponse] = useState(null);
 
-  useEffect(() => {
-    const fetchParticipants = async () => {
-      try {
-        const response = await eventParticipantAPI.getByEventId(
-          vxUserInfo?.vxToken,
-          eventId
-        );
-        console.log("eventParticipantResponse, ", response.data);
-        //setEventData(response.data);
-        setParticipantsResponse(response.data);
-      } catch (error) {
-        console.error("Error fetching event:", error);
-      }
-    };
+  const fetchParticipants = async () => {
+    try {
+      const response = await eventParticipantAPI.getByEventId(
+        vxUserInfo?.vxToken,
+        eventId
+      );
+      console.log("eventParticipantResponse, ", response.data);
+      setParticipantsResponse(response.data);
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
 
-    if (eventId && vxUserInfo && vxUserInfo?.vxToken) {
+  useEffect(() => {
+    if (eventId && vxUserInfo && vxUserInfo.vxToken) {
       fetchParticipants();
     }
   }, [eventId]);
 
-  useEffect(() => {
-    console.log("participantsList", participantResponse);
-  }, [participantResponse]);
+ 
+    console.log("vxUserList", vxUserList);
 
   return (
     <div className="pl-8 pr-8 pt-8">
@@ -53,9 +51,9 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
               </th>
             </tr>
           </thead>
-          {participantResponse && (
+          {vxUserList && (
             <tbody>
-              {participantResponse.vxUserList.map((gamer) => (
+              {vxUserList.map((gamer) => (
                 <tr
                   key={gamer.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"

@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
+import { eventParticipantAPI } from "@/api/eventParticipant";
 import { UserAuth } from "../../context/AuthContext";
 import Join1v1EventModal from "./Join1v1EventModal";
 import Event1v1ParticipantListComponent from "./Event1v1ParticipantListComponent";
@@ -10,23 +11,41 @@ export default function Event1v1DetailComponent() {
   const { vxUserInfo } = UserAuth();
   let { eventId } = useParams();
   const [eventData, setEventData] = useState(null);
+  const [participantResponse, setParticipantsResponse] = useState(null);
+
+  const fetchEvent = async () => {
+    try {
+      const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
+      setEventData(response.data);
+    } catch (error) {
+      console.error("Error fetching event:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
-        setEventData(response.data);
-      } catch (error) {
-        console.error("Error fetching event:", error);
-      }
-    };
-
-    if (eventId && vxUserInfo && vxUserInfo?.vxToken) {
+    if (eventId && vxUserInfo && vxUserInfo.vxToken) {
       fetchEvent();
     }
+  }, []);
+
+  const fetchParticipants = async () => {
+    try {
+      const response = await eventParticipantAPI.getByEventId(
+        vxUserInfo?.vxToken,
+        eventId
+      );
+      console.log("detailEventParticipantResponse, ", response.data);
+      setParticipantsResponse(response.data);
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (eventId && vxUserInfo && vxUserInfo.vxToken) {
+      fetchParticipants();
+    }
   }, [eventId]);
-
-
 
   return (
     <div>
@@ -88,9 +107,14 @@ export default function Event1v1DetailComponent() {
         </div>
       )}
 
-      <Event1v1ParticipantListComponent eventId={eventId} />
+      <Event1v1ParticipantListComponent
+        eventId={eventId}
+        vxUserList={
+          participantResponse && participantResponse.vxUserList
+        }
+      />
 
-      <Join1v1EventModal />
+      <Join1v1EventModal fetchParticipants={fetchParticipants}/>
     </div>
   );
 }

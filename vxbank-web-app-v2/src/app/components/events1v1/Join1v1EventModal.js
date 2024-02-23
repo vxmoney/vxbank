@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { eventAPI } from "@/api/event";
 import { UserAuth } from "../../context/AuthContext";
 
-const Join1v1EventModal = () => {
+const Join1v1EventModal = ({fetchParticipants}) => {
   const { vxUserInfo } = UserAuth();
   let { eventId } = useParams();
   const [eventData, setEventData] = useState(null);
@@ -66,6 +66,7 @@ const Join1v1EventModal = () => {
       .join(vxUserInfo?.vxToken, eventJoinParams)
       .then((response) => {
         console.log("Joined event response:", response.data);
+        fetchParticipants();
         hideModal();
         // Handle successful response
       })
