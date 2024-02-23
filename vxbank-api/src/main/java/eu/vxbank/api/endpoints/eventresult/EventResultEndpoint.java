@@ -1,7 +1,6 @@
 package eu.vxbank.api.endpoints.eventresult;
 
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateParams;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultCreateResponse;
 import eu.vxbank.api.endpoints.eventresult.dto.EventResultListResponse;
@@ -10,11 +9,13 @@ import eu.vxbank.api.utils.components.VxStripeKeys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import vxbank.datastore.data.models.*;
+import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxEventParticipant;
+import vxbank.datastore.data.models.VxEventResult;
+import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -44,12 +45,35 @@ public class EventResultEndpoint {
                     "You are trying to set results for someone that did not participated in event");
         }
 
+        if (!listContainsUserId(participantList, vxUser.id)) {
+            throw new IllegalStateException("current user not part of the participants list");
+        }
+
+        if (vxEvent.type != VxEvent.Type.payed1V1) {
+            throw new IllegalStateException("This endpoint only supports payed1V1 games");
+        }
+
+        List<VxEventResult> resultList = VxDsService.getListByEventId(VxEventResult.class,
+                systemService.getVxBankDatastore(),
+                params.vxEventId);
+        if (userAlreadyProposedResult(resultList, vxUser.id)) {
+            throw new IllegalStateException("You can propose only 1 result");
+        }
+
+
         VxEventResult vxEventResult = params.buildVxEventResult();
         vxEventResult.state = VxEventResult.State.active;
         VxDsService.persist(VxEventResult.class, systemService.getVxBankDatastore(), vxEventResult);
         EventResultCreateResponse response = EventResultCreateResponse.newInstance(vxEventResult);
 
         return response;
+    }
+
+    private boolean userAlreadyProposedResult(List<VxEventResult> resultList, Long id) {
+        Optional<VxEventResult> optionalResult = resultList.stream()
+                .filter(result -> result.vxUserId.equals(id))
+                .findFirst();
+        return optionalResult.isPresent();
     }
 
     private boolean listContainsUserId(List<VxEventParticipant> list, Long vxUserId) {
