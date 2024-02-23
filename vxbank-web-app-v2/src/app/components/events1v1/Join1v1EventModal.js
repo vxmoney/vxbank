@@ -34,14 +34,14 @@ const Join1v1EventModal = ({fetchParticipants}) => {
   //<show hide modal section>
   // Function to show the modal
   const showModal = () => {
-    const modal = document.getElementById("popup-modal");
+    const modal = document.getElementById("join-modal");
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   };
 
   // Function to hide the modal
   const hideModal = () => {
-    const modal = document.getElementById("popup-modal");
+    const modal = document.getElementById("join-modal");
     modal.classList.add("hidden");
     modal.classList.remove("flex");
   };
@@ -79,8 +79,8 @@ const Join1v1EventModal = ({fetchParticipants}) => {
     <div className="pt-8 pl-8">
       <button
         type="button"
-        data-modal-target="popup-modal"
-        data-modal-toggle="popup-modal"
+        data-modal-target="join-modal"
+        data-modal-toggle="join-modal"
         className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
         
       >
@@ -88,7 +88,7 @@ const Join1v1EventModal = ({fetchParticipants}) => {
       </button>
 
       <div
-        id="popup-modal"
+        id="join-modal"
         tabIndex="-1"
         className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
       >
@@ -97,7 +97,7 @@ const Join1v1EventModal = ({fetchParticipants}) => {
             <button
               type="button"
               className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-hide="popup-modal"
+              data-modal-hide="join-modal"
             >
               <svg
                 className="w-3 h-3"
@@ -122,14 +122,14 @@ const Join1v1EventModal = ({fetchParticipants}) => {
               </h3>
               <button
                 type="button"
-                data-modal-hide="popup-modal"
+                data-modal-hide="join-modal"
                 className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 onClick={handleJoinSubmit}
               >
                 Yes, I'm sure
               </button>
               <button
-                data-modal-hide="popup-modal"
+                data-modal-hide="join-modal"
                 type="button"
                 className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
               >
