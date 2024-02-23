@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxEventParticipant;
+import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/eventparticipant")
@@ -28,6 +30,12 @@ public class EventParticipantEndpoint {
 
         EventParticipantGetByEventIdResponse response = new EventParticipantGetByEventIdResponse();
         response.participantList = participantList;
+
+        // load the users
+        List<Long> userIdList = participantList.stream().map(participant -> participant.vxUserId)
+                .collect(Collectors.toList());
+        response.vxUserList = VxDsService.getByIdList(ds, VxUser.class, userIdList);
+
         return response;
     }
 }

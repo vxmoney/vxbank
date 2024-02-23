@@ -209,4 +209,16 @@ public class VxDsService {
 
         return list;
     }
+
+    public static <T> List<T> getByIdList(VxBankDatastore ds,
+                                            Class<T> vxClass,
+                                            List<Long> vxEventIdList) {
+       Map<Long, T> result = ds.ofy.load()
+                .type(vxClass)
+                .ids(vxEventIdList);
+       if (result.isEmpty()){
+           return Collections.emptyList();
+       }
+       return result.values().stream().toList();
+    }
 }

@@ -7,6 +7,7 @@ import vxbank.datastore.data.service.VxDsService;
 import vxbank.datastore.data.utils.TestingUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class VxEventTest {
 
@@ -70,6 +71,11 @@ public class VxEventTest {
 
         List<VxEvent> vxEventList = VxDsService.searchEvent(ds, uniqueServiceId,VxGame.leagueOfLegends, stateList);
         Assertions.assertEquals(2, vxEventList.size());
+
+        List<Long> vxEventIdList = vxEventList.stream().map(event -> event.id)
+                .collect(Collectors.toList());
+        List<VxEvent> byIdList = VxDsService.getByIdList(ds, VxEvent.class, vxEventIdList );
+        Assertions.assertEquals(2, byIdList.size());
     }
 
 }

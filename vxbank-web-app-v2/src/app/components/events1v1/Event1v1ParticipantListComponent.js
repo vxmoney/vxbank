@@ -10,7 +10,7 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
 
   console.log("eventId = ", eventId);
 
-  const [participantsList, setParticipantsList] = useState(null);
+  const [participantResponse, setParticipantsResponse] = useState(null);
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -21,7 +21,7 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
         );
         console.log("eventParticipantResponse, ", response.data);
         //setEventData(response.data);
-        setParticipantsList(response.data);
+        setParticipantsResponse(response.data);
       } catch (error) {
         console.error("Error fetching event:", error);
       }
@@ -33,8 +33,8 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
   }, [eventId]);
 
   useEffect(() => {
-    console.log("participantsList", participantsList);
-  }, [participantsList]);
+    console.log("participantsList", participantResponse);
+  }, [participantResponse]);
 
   return (
     <div className="pl-8 pr-8 pt-8">
@@ -53,9 +53,9 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
               </th>
             </tr>
           </thead>
-          {participantsList && (
+          {participantResponse && (
             <tbody>
-              {participantsList.participantList.map((gamer) => (
+              {participantResponse.vxUserList.map((gamer) => (
                 <tr
                   key={gamer.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -63,7 +63,7 @@ export default function Event1v1ParticipantListComponent({ eventId }) {
                   <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     ---
                   </td>
-                  <td className="px-6 py-4">{gamer.vxUserId}</td>
+                  <td className="px-6 py-4">{gamer.name}</td>
                 </tr>
               ))}
             </tbody>
