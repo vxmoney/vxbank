@@ -14,7 +14,6 @@ export default function Event1v1DetailComponent() {
     const fetchEvent = async () => {
       try {
         const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
-        console.log("event data: ", response.data);
         setEventData(response.data);
       } catch (error) {
         console.error("Error fetching event:", error);

@@ -1,6 +1,35 @@
 "use client";
 
+import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { eventAPI } from "@/api/event";
+import { UserAuth } from "../../context/AuthContext";
+
+
+
 const Join1v1EventModal = () => {
+
+  const { vxUserInfo } = UserAuth();
+  let { eventId } = useParams();
+  const [eventData, setEventData] = useState(null);
+
+  // load event
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await eventAPI.getById(vxUserInfo?.vxToken, eventId);
+        console.log("event data from modal: ", response.data);
+        setEventData(response.data);
+      } catch (error) {
+        console.error("Error fetching event:", error);
+      }
+    };
+
+    if (eventId && vxUserInfo && vxUserInfo?.vxToken) {
+      fetchEvent();
+    }
+  }, [eventId]);
+
   // Function to show the modal
   const showModal = () => {
     const modal = document.getElementById("popup-modal");
