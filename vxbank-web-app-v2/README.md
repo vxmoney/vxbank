@@ -54,3 +54,16 @@ npm run dev
 # deploy on appengine development environment
 deployOnDev
 ```
+
+## mac window navigation
+```bash
+# switch application
+fn + tab
+
+# switch winsow in same application
+fn + >
+
+# undow
+fn + W
+
+```
