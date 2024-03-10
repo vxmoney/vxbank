@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class PaymentDepositFiatParams {
     public Long userId;
-    public Long amount;
     public String currency;
+    public Long amount;
 }

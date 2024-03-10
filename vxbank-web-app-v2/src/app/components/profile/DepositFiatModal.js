@@ -1,4 +1,25 @@
+"use client";
+import { useEffect, useState } from "react";
+import { UserAuth } from "@/app/context/AuthContext";
+
 const DepositFiatModal = ({ currency }) => {
+  const { vxUserInfo } = UserAuth();
+
+  const [depositFiatParams, setDepositFiatParams] = useState({
+    userId: vxUserInfo?.id,
+    currency: currency,
+    amount: "500",
+  });
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    console.log("handleInputChange",id,value)
+    setDepositFiatParams((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
   //<show hide modal section>
   // Function to show the modal
   const showModal = (modalId) => {
@@ -27,7 +48,26 @@ const DepositFiatModal = ({ currency }) => {
   });
   //</show hide modal section>
 
-  let modalTitle = "deposit-modal-"+currency;
+  const handleDepositFiat = (e) => {
+    e.preventDefault();
+    // Here, you can use formData to send the object to your endpoint or perform any other actions
+    console.log(eventJoinParams); // Assuming eventJoinParams contains the necessary parameters for joining an event
+    eventAPI
+      .join(vxUserInfo?.vxToken, eventJoinParams)
+      .then((response) => {
+        console.log("Joined event response:", response.data);
+        fetchParticipants();
+        hideModal("join-modal");
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error joining event:", error);
+        setMessageAndShowAlertForABit("Error joining event");
+        // Handle error
+      });
+  };
+
+  let modalTitle = "deposit-modal-" + currency;
 
   return (
     <div>
@@ -71,7 +111,7 @@ const DepositFiatModal = ({ currency }) => {
             </button>
             <div className="p-4 md:p-5 text-center">
               <h3 className="pt-8 mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Deposit {currency}
+                Deposit {currency} {depositFiatParams.amount}
               </h3>
               <p className="text-gray-600 mb-8 dark:text-gray-300">
                 Please enter the amount you want to deposit:
@@ -80,6 +120,9 @@ const DepositFiatModal = ({ currency }) => {
                 type="number"
                 placeholder="Enter amount"
                 className="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
+                id="amount"
+                value={depositFiatParams.amount}
+                onChange={handleInputChange}
               />
               <div className="mt-6 flex justify-center">
                 <button
@@ -92,7 +135,6 @@ const DepositFiatModal = ({ currency }) => {
                 <button
                   type="button"
                   className="py-2.5 px-5 ms-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500"
-                  
                 >
                   Deposit
                 </button>
