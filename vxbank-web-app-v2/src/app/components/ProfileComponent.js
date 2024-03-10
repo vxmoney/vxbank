@@ -1,6 +1,7 @@
 import { UserAuth } from "../context/AuthContext";
 import { userAPI } from "@/api/user";
 import { useEffect, useState } from "react";
+import DepositFiatModal from "./profile/DepositFiatModal";
 
 const ProfileComponent = ({ id, email, name, stripeConfigState, stripeId }) => {
   const { vxUserInfo } = UserAuth();
@@ -39,6 +40,7 @@ const ProfileComponent = ({ id, email, name, stripeConfigState, stripeId }) => {
             >
                <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{fund.currency}</th>
                <td className="px-6 py-4">{fund.amount}</td>
+               <td className="px-6 py-4"><DepositFiatModal currency={fund.currency}/></td>
             </tr>
           ))}
         </tbody>
