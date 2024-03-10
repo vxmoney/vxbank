@@ -59,7 +59,8 @@ const DepositFiatModal = ({ currency }) => {
       .then((response) => {
         console.log("handleDepositFiat response:", response.data);
         hideModal(modalTitle);
-        // Handle successful response
+        // Open the payUrl in a new window/tab
+        window.open(response.data.payUrl, "_blank");
       })
       .catch((error) => {
         console.error("Error handleDepositFiat:", error);
