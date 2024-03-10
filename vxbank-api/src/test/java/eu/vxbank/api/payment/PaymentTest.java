@@ -9,6 +9,7 @@ import eu.vxbank.api.endpoints.payment.dto.PaymentDepositFiatResponse;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
+import eu.vxbank.api.endpoints.user.dto.Funds;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.helpers.*;
 import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
@@ -162,10 +163,21 @@ public class PaymentTest {
     @Test
     void initiateDepositFiatTest() throws FirebaseAuthException, JsonProcessingException {
         LoginResponse loginResponse = setupUser("acct_1OgqHAB36QPiP0qI"); // eur + ron
-        loginResponse = UserHelper.refreshToken(restTemplate,
-                loginResponse.vxToken,
-                port,
-                200);
+
+        {
+            loginResponse = UserHelper.refreshToken(restTemplate,
+                    loginResponse.vxToken,
+                    port,
+                    200);
+
+            System.out.println("Funds Before");
+            for (Funds funds : loginResponse.availableFundsList){
+                String message = String.format("%s %d", funds.currency, funds.amount);
+                System.out.println(message);
+            }
+        }
+
+
 
         long amount = 100L;
         String currency = "eur";
@@ -185,6 +197,18 @@ public class PaymentTest {
         Assertions.assertNotNull(depositFiatResponse);
         System.out.println("Use 4000000000000077 test card");
         System.out.println("depositFiatResponse.payUrl = " + depositFiatResponse.payUrl);
+        {
+            loginResponse = UserHelper.refreshToken(restTemplate,
+                    loginResponse.vxToken,
+                    port,
+                    200);
+
+            System.out.println("Funds Before");
+            for (Funds funds : loginResponse.availableFundsList){
+                String message = String.format("%s %d", funds.currency, funds.amount);
+                System.out.println(message);
+            }
+        }
     }
 
 
