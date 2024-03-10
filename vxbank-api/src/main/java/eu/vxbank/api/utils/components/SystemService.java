@@ -182,5 +182,18 @@ public class SystemService {
 
         }
     }
+
+    public String getStripeCancelRedirectUrl() {
+        switch (environment) {
+            case LOCALHOST -> {
+                return "http://localhost:3000/cancel";
+            }
+            case DEVELOPMENT -> {
+                return "https://vxbank-eu-dev.ew.r.appspot.com/cancel";
+            }
+            default -> throw new IllegalStateException("getStripeCancelRedirectUrl Not yet available in production");
+
+        }
+    }
 }
 

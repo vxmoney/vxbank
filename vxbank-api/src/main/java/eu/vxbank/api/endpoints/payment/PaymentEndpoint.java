@@ -5,7 +5,6 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Price;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.InvoiceItemCreateParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
@@ -17,7 +16,6 @@ import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -185,8 +183,8 @@ public class PaymentEndpoint {
                 .setPrice(price.getId()) // Use the ID of the dynamically created price
                 .setQuantity(1L);
 
-        String successUrl = String.format("http://localhost:3000/vxpayment/sucess?paymentId=%s", "depositFiat");
-        String cancelUrl = String.format("http://localhost:3000/vxpayment/cancel?paymentId=%s", "depositFiat");
+        String successUrl = systemService.getStripeRefreshRedirectUrl();
+        String cancelUrl = systemService.getStripeCancelRedirectUrl();
 
         // Session parameters
         SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
