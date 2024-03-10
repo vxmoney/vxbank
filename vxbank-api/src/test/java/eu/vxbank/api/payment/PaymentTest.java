@@ -1,16 +1,29 @@
 package eu.vxbank.api.payment;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuthException;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.helpers.PingHelper;
+import eu.vxbank.api.helpers.RandomUtil;
+import eu.vxbank.api.helpers.StripeConfigHelper;
+import eu.vxbank.api.helpers.UserHelper;
+import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
 import eu.vxbank.api.testutils.BuildUtils;
 import eu.vxbank.api.testutils.SetupUtils;
+import eu.vxbank.api.utils.components.SystemService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,12 +35,21 @@ import vxbank.datastore.data.models.VxUser;
 import java.util.Date;
 import java.util.Optional;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class PaymentTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Autowired
+    SystemService systemService;
 
     private String generateString() {
         boolean useLetters = true;
@@ -99,18 +121,50 @@ public class PaymentTest {
         System.out.println(stripeResponse.url);
     }
 
+    // ----------------
 
-    @Test
-    void depositFiatCreateTest(){
-        String mail = generateMail();
-        VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
-        VxBankDatastore ds = VxBankDatastore.init("my-project",
-                VxBankDatastore.ConnectionType.localhost,
-                Optional.empty());
-        SetupUtils.createVxUser(vxUser, ds);
-        Long vxStripeConfigId = 1L;
+    private LoginResponse setupUser(String stripeId) throws FirebaseAuthException, JsonProcessingException {
+
+
+        String email = RandomUtil.generateRandomEmail();
+        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
+
+        LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
+        Assertions.assertEquals(email, loginResponse.email);
+
+        VxUser vxUser = new VxUser();
+        vxUser.id = loginResponse.id;
+        vxUser.email = email;
+        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
+        initiateConfigParams.userId = vxUser.id;
+        StripeConfigInitiateConfigResponse initiateConfigResponse = StripeConfigHelper.initiateConfig(vxToken,
+                initiateConfigParams,
+                restTemplate,
+                port,
+                200);
+
+        Long vxUserId = vxUser.id;
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeId);
+
+        loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
+        loginResponse.vxToken = vxToken;
+
+        return loginResponse;
 
     }
+
+    /**
+     * All I need to test here is that link gets created. The rest is
+     * handeld by stripe
+     */
+    @Test
+    void initiateDepositFiatTest() throws FirebaseAuthException, JsonProcessingException {
+        LoginResponse loginResponse = setupUser("acct_1OgqHAB36QPiP0qI"); // eur + ron
+    }
+
+
 
 
 

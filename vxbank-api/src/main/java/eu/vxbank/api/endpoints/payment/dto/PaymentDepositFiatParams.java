@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentDepositFiatCreateParams {
+public class PaymentDepositFiatParams {
     public Long vxUserId;
     public Long vxStripeConfigId;
 }
