@@ -97,7 +97,21 @@ public class PaymentTest {
         System.out.println("Use 4000000000000077 test card");
         System.out.println("stripeResponse.url= ");
         System.out.println(stripeResponse.url);
+    }
+
+
+    @Test
+    void depositFiatCreateTest(){
+        String mail = generateMail();
+        VxUser vxUser = BuildUtils.buildVxUserEmailOnly(mail);
+        VxBankDatastore ds = VxBankDatastore.init("my-project",
+                VxBankDatastore.ConnectionType.localhost,
+                Optional.empty());
+        SetupUtils.createVxUser(vxUser, ds);
+        Long vxStripeConfigId = 1L;
 
     }
+
+
 
 }

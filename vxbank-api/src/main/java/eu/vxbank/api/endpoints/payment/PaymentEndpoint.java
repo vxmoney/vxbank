@@ -4,6 +4,7 @@ package eu.vxbank.api.endpoints.payment;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
+import eu.vxbank.api.endpoints.payment.dto.PaymentDepositFiatCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxPayment;
-import vxbank.datastore.data.models.VxStripeConfig;
-import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxDsService;
 
 @RestController
@@ -43,5 +42,16 @@ public class PaymentEndpoint {
 
         return stripeSessionCreateResponse;
     }
+
+    @PostMapping("/payment/depositFiat")
+    @ResponseBody
+    public StripeSessionCreateResponse depositFiat(
+            @RequestBody PaymentDepositFiatCreateParams params
+    ) throws StripeException {
+
+        throw new IllegalStateException("Please implement this");
+    }
+
+
 
 }
