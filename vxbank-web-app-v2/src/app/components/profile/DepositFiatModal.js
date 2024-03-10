@@ -11,6 +11,7 @@ const DepositFiatModal = ({ currency }) => {
     currency: currency,
     amount: "500",
   });
+  const [modalTitle, setModalTitle]= useState("deposit-modal-"+currency)
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -49,7 +50,8 @@ const DepositFiatModal = ({ currency }) => {
   });
   //</show hide modal section>
 
-  let modalTitle = "deposit-modal-" + currency;
+  
+  
 
   const handleDepositFiat = (e) => {
     e.preventDefault();
