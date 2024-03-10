@@ -27,19 +27,21 @@ const DepositFiatModal = ({ currency }) => {
   });
   //</show hide modal section>
 
+  let modalTitle = "deposit-modal-"+currency;
+
   return (
     <div>
       <button
         type="button"
-        data-modal-target="deposit-modal"
-        data-modal-toggle="deposit-modal"
+        data-modal-target={modalTitle}
+        data-modal-toggle={modalTitle}
         className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
       >
         Deposit {currency}
       </button>
 
       <div
-        id="deposit-modal"
+        id={modalTitle}
         tabIndex="-1"
         className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
       >
@@ -48,7 +50,7 @@ const DepositFiatModal = ({ currency }) => {
             <button
               type="button"
               className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-hide="deposit-modal"
+              data-modal-hide={modalTitle}
             >
               <svg
                 className="w-3 h-3"
@@ -81,7 +83,7 @@ const DepositFiatModal = ({ currency }) => {
               />
               <div className="mt-6 flex justify-center">
                 <button
-                  data-modal-hide="deposit-modal"
+                  data-modal-hide={modalTitle}
                   type="button"
                   className="py-2.5 px-5 me-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 >
