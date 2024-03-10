@@ -4,14 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuthException;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
+import eu.vxbank.api.endpoints.payment.dto.PaymentDepositFiatParams;
+import eu.vxbank.api.endpoints.payment.dto.PaymentDepositFiatResponse;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
-import eu.vxbank.api.helpers.PingHelper;
-import eu.vxbank.api.helpers.RandomUtil;
-import eu.vxbank.api.helpers.StripeConfigHelper;
-import eu.vxbank.api.helpers.UserHelper;
+import eu.vxbank.api.helpers.*;
 import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
 import eu.vxbank.api.testutils.BuildUtils;
 import eu.vxbank.api.testutils.SetupUtils;
@@ -162,10 +161,29 @@ public class PaymentTest {
     @Test
     void initiateDepositFiatTest() throws FirebaseAuthException, JsonProcessingException {
         LoginResponse loginResponse = setupUser("acct_1OgqHAB36QPiP0qI"); // eur + ron
+        loginResponse = UserHelper.refreshToken(restTemplate,
+                loginResponse.vxToken,
+                port,
+                200);
+
+        long amount = 100L;
+        String currency = "eur";
+        PaymentDepositFiatParams params = PaymentDepositFiatParams.builder()
+                .userId(loginResponse.id)
+                .amount(amount)
+                .currency(currency)
+                .build();
+
+        PaymentDepositFiatResponse depositFiatResponse = PaymentHelper.depositFiat(
+                restTemplate,
+                port,
+                loginResponse.vxToken,
+                params,
+                200);
+
+        Assertions.assertNotNull(depositFiatResponse);
+
     }
-
-
-
 
 
 }
