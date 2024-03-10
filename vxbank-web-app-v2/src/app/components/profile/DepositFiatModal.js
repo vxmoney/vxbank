@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
+import { paymentAPI } from "@/api/payment";
 
 const DepositFiatModal = ({ currency }) => {
   const { vxUserInfo } = UserAuth();
@@ -48,26 +49,28 @@ const DepositFiatModal = ({ currency }) => {
   });
   //</show hide modal section>
 
+  let modalTitle = "deposit-modal-" + currency;
+
   const handleDepositFiat = (e) => {
     e.preventDefault();
-    // Here, you can use formData to send the object to your endpoint or perform any other actions
-    console.log(eventJoinParams); // Assuming eventJoinParams contains the necessary parameters for joining an event
-    eventAPI
-      .join(vxUserInfo?.vxToken, eventJoinParams)
+    console.log(depositFiatParams); 
+    paymentAPI
+      .depositFiat(vxUserInfo?.vxToken, depositFiatParams)
       .then((response) => {
-        console.log("Joined event response:", response.data);
-        fetchParticipants();
-        hideModal("join-modal");
+        console.log("handleDepositFiat response:", response.data);
+        hideModal(modalTitle);
         // Handle successful response
       })
       .catch((error) => {
-        console.error("Error joining event:", error);
-        setMessageAndShowAlertForABit("Error joining event");
+        console.error("Error handleDepositFiat:", error);
+        //setMessageAndShowAlertForABit("Error handleDepositFiat");
         // Handle error
       });
   };
 
-  let modalTitle = "deposit-modal-" + currency;
+
+
+  
 
   return (
     <div>
@@ -135,6 +138,7 @@ const DepositFiatModal = ({ currency }) => {
                 <button
                   type="button"
                   className="py-2.5 px-5 ms-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500"
+                  onClick={handleDepositFiat}
                 >
                   Deposit
                 </button>

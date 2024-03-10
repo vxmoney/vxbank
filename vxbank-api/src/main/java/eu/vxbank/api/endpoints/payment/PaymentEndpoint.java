@@ -78,14 +78,22 @@ public class PaymentEndpoint {
                 new HashMap<>(),
                 ds,
                 VxStripeConfig.class);
-        Optional<VxStripeConfig> optionalConfig = configList.stream().filter(
-                        item -> item.currency.equals(params.currency))
-                .findFirst();
+
+
+        Optional<VxStripeConfig> optionalConfig = configList.stream().findFirst();
         if (optionalConfig.isEmpty()) {
             throw new IllegalStateException("User needs to configure first bank for currency=" + params.currency);
         }
 
         VxStripeConfig stripeConfig = optionalConfig.get();
+        Boolean clientCanReceivePaymentInCurrency =
+                VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
+                        stripeConfig.stripeAccountId,
+                        params.currency);
+        if (!clientCanReceivePaymentInCurrency){
+            throw new IllegalStateException("Client can not process respective currency. " + params.currency);
+        }
+
         VxUser user = VxDsService.getById(VxUser.class, ds, loginResponse.id);
 
         StripeSessionCreateResponse stripeSessionCreateResponse = createStripeSessionDepositFiatV2(
