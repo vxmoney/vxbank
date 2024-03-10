@@ -1,4 +1,32 @@
 const DepositFiatModal = ({ currency }) => {
+  //<show hide modal section>
+  // Function to show the modal
+  const showModal = (modalId) => {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  };
+
+  // Function to hide the modal
+  const hideModal = (modalId) => {
+    const modal = document.getElementById(modalId);
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  };
+
+  // Event listener for showing the modal
+  document.querySelectorAll("[data-modal-toggle]").forEach((button) => {
+    button.addEventListener("click", () =>
+      showModal(button.dataset.modalTarget)
+    );
+  });
+
+  // Event listener for hiding the modal
+  document.querySelectorAll("[data-modal-hide]").forEach((button) => {
+    button.addEventListener("click", () => hideModal(button.dataset.modalHide));
+  });
+  //</show hide modal section>
+
   return (
     <div>
       <button
@@ -32,7 +60,6 @@ const DepositFiatModal = ({ currency }) => {
                 <button
                   type="button"
                   className="py-2.5 px-5 ms-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500"
-                 
                 >
                   Ok
                 </button>
