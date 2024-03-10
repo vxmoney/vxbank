@@ -88,7 +88,7 @@ public class PaymentEndpoint {
         VxStripeConfig stripeConfig = optionalConfig.get();
         VxUser user = VxDsService.getById(VxUser.class, ds, loginResponse.id);
 
-        StripeSessionCreateResponse stripeSessionCreateResponse = createStripeSessionDepositFiat(
+        StripeSessionCreateResponse stripeSessionCreateResponse = createStripeSessionDepositFiatV2(
                 stripeKeys.stripeSecretKey,
                 user,
                 stripeConfig,
@@ -190,12 +190,12 @@ public class PaymentEndpoint {
         SessionCreateParams.PaymentIntentData.Builder paymentIntentDataBuilder = SessionCreateParams.PaymentIntentData.builder();
 
         // You can add payment intent data as needed
-        // paymentIntentDataBuilder.setApplicationFeeAmount(123L)
-        //         .setTransferData(
-        //                 SessionCreateParams.PaymentIntentData.TransferData.builder()
-        //                         .setDestination("{{CONNECTED_ACCOUNT_ID}}")
-        //                         .build()
-        //         );
+         paymentIntentDataBuilder.setApplicationFeeAmount(0L)
+                 .setTransferData(
+                         SessionCreateParams.PaymentIntentData.TransferData.builder()
+                                 .setDestination(userStripeConfig.stripeAccountId)
+                                 .build()
+                 );
 
         paramsBuilder.setPaymentIntentData(paymentIntentDataBuilder.build());
 
