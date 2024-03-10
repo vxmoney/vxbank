@@ -14,6 +14,7 @@ public class SideStripeConfigHelper {
                 .get(0);
         vxStripeConfig.state = VxStripeConfig.State.active;
         vxStripeConfig.stripeAccountId = newStripeAccountId;
+        vxStripeConfig.currency = "eur";
         VxDsService.persist(vxStripeConfig, ds, VxStripeConfig.class);
     }
 

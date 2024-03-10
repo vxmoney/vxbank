@@ -6,12 +6,14 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import eu.vxbank.api.endpoints.payment.dto.PaymentCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.PaymentDepositFiatParams;
+import eu.vxbank.api.endpoints.payment.dto.PaymentDepositFiatResponse;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +55,7 @@ public class PaymentEndpoint {
 
     @PostMapping("/payment/depositFiat")
     @ResponseBody
-    public StripeSessionCreateResponse depositFiat(
+    public PaymentDepositFiatResponse depositFiat(
             Authentication authentication,
             @RequestBody PaymentDepositFiatParams params
     ) throws StripeException {
@@ -88,7 +90,9 @@ public class PaymentEndpoint {
                 stripeConfig,
                 params);
 
-        throw new IllegalStateException("Please implement this");
+        PaymentDepositFiatResponse response = new PaymentDepositFiatResponse();
+        response.payUrl = stripeSessionCreateResponse.url;
+        return response;
     }
 
     private StripeSessionCreateResponse createStripeSessionDepositFiat(String stripeSecretKey,
@@ -99,10 +103,10 @@ public class PaymentEndpoint {
 
         Stripe.apiKey = stripeSecretKey;
 
-        Long _3procent = (3L * depositFiatParams.amount) / 100;
-        Long messageValue = depositFiatParams.amount - _3procent;
+        Double _3procent = (3.0 * Double.valueOf(depositFiatParams.amount)) / 100.0;
+        double messageValue = (Double.valueOf(depositFiatParams.amount) - _3procent) / 100.0; // 2 decimals
 
-        String message = String.format("Deposit fiat: %d %s for %s, ", messageValue, depositFiatParams.currency, user.email);
+        String message = String.format("Deposit fiat: %.2f %s for %s, ", messageValue, depositFiatParams.currency, user.email);
 
         // Line item details
         Map<String, Object> priceData = new HashMap<>();

@@ -31,6 +31,7 @@ import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxPayment;
 import vxbank.datastore.data.models.VxUser;
 
+import java.io.Console;
 import java.util.Date;
 import java.util.Optional;
 
@@ -182,7 +183,8 @@ public class PaymentTest {
                 200);
 
         Assertions.assertNotNull(depositFiatResponse);
-
+        System.out.println("Use 4000000000000077 test card");
+        System.out.println("depositFiatResponse.payUrl = " + depositFiatResponse.payUrl);
     }
 
 
