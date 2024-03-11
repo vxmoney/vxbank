@@ -15,7 +15,7 @@ API_DIR=$(pwd)
 API_KYES_DIR="${API_DIR}/../../vxbank-security"
 OAUTH_DIR=emulators
 DATA_DIR="${API_DIR}/datastore-generated"
-VSCODE_DIR="${API_DIR}/vxbank-web-app-v2"
+VSCODE_DIR="${API_DIR}/../vxbank-web-app-v2"
 
 startDatastoreEmulator() {
 
@@ -120,7 +120,6 @@ remoteDebugDev() {
   unsetVariables
   stopDevEnvironment
   cd $API_KYES_DIR
-  $(pwd)
   source load-security-commands.sh
   initSecurity
   cd $API_DIR
@@ -128,7 +127,12 @@ remoteDebugDev() {
   export GAE_APPLICATION="vxbank-eu-dev"
 
   # vscode part
+  # we do all vscode configuration from this script
+  # when remote debug you only need to start the npm run dev
+  echo "vscode part"
   cd $VSCODE_DIR
+  pwd
+  echo "that was pwd"
   cp scripts/dev-firebase.js src/app/firebase.js
   cp scripts/remote-apiConfig.js src/api/apiConfig.js
 
