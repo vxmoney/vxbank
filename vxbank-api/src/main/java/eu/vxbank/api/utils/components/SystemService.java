@@ -73,6 +73,9 @@ public class SystemService {
                 projectId = ApiConstants.APPLICATION_ID_PRODUCTION;
                 environment = Environment.PRODUCTION;
                 break;
+            case ApiConstants.APPLICATION_ID_PRODUCTION:
+                environment = Environment.PRODUCTION;
+                break;
             default:
                 throw new IllegalStateException("SystemService.initEnvironment Not supported projectId=" + projectId);
         }

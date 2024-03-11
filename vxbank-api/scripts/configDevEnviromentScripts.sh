@@ -127,3 +127,16 @@ remoteDebugDev() {
   export GAE_APPLICATION="vxbank-eu-dev"
   nohup intellij-idea-community .
 }
+
+remoteDebugProd() {
+  unsetVariables
+  stopDevEnvironment
+  cd $API_KYES_DIR
+  $(pwd)
+  source load-security-commands.sh
+  initSecurity
+  cd $API_DIR
+  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-prod-key.json"
+  export GAE_APPLICATION="vxbank-eu-prod"
+  nohup intellij-idea-community .
+}
