@@ -166,3 +166,13 @@ remoteDebugProd() {
 
   nohup intellij-idea-community .
 }
+
+deployIndexDev(){
+  gcloud config set project vxbank-eu-dev
+  gcloud app deploy src/main/appengine/index.yaml
+}
+
+deployIndexProd(){
+  gcloud config set project vxbank-eu-prod
+  gcloud app deploy src/main/appengine/index.yaml
+}
