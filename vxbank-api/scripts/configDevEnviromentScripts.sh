@@ -124,5 +124,6 @@ remoteDebugDev() {
   initSecurity
   cd $API_DIR
   export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-dev-key.json"
+  export GAE_APPLICATION="vxbank-eu-dev"
   nohup intellij-idea-community .
 }
