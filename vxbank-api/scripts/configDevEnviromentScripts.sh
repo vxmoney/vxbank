@@ -15,6 +15,7 @@ API_DIR=$(pwd)
 API_KYES_DIR="${API_DIR}/../../vxbank-security"
 OAUTH_DIR=emulators
 DATA_DIR="${API_DIR}/datastore-generated"
+VSCODE_DIR="${API_DIR}/vxbank-web-app-v2"
 
 startDatastoreEmulator() {
 
@@ -125,6 +126,13 @@ remoteDebugDev() {
   cd $API_DIR
   export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-dev-key.json"
   export GAE_APPLICATION="vxbank-eu-dev"
+
+  # vscode part
+  cd $VSCODE_DIR
+  cp scripts/dev-firebase.js src/app/firebase.js
+  cp scripts/remote-apiConfig.js src/api/apiConfig.js
+
+  cd $API_DIR
   nohup intellij-idea-community .
 }
 
@@ -138,5 +146,9 @@ remoteDebugProd() {
   cd $API_DIR
   export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-prod-key.json"
   export GAE_APPLICATION="vxbank-eu-prod"
+
+  # vscode part
+  cd $VSCODE_DIR
+
   nohup intellij-idea-community .
 }
