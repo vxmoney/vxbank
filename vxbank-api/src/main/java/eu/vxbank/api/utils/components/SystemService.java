@@ -156,7 +156,7 @@ public class SystemService {
         return vxUser;
     }
 
-    public VxUser validateAndGetUser(Authentication auth){
+    public VxUser validateAndGetUser(Authentication auth) {
         Jwt jwtToken = (Jwt) auth.getPrincipal();
         String email = jwtToken.getClaim("email");
         Long userId = Long.valueOf(auth.getName());
@@ -181,7 +181,11 @@ public class SystemService {
             case DEVELOPMENT -> {
                 return "https://vxbank-eu-dev.ew.r.appspot.com/profile";
             }
-            default -> throw new IllegalStateException("getStripeRefreshRedirectUrl Not yet available in production");
+            case PRODUCTION -> {
+                return "https://vxbank-eu-prod.ew.r.appspot.com/profile";
+            }
+            default -> throw new IllegalStateException(
+                    "getStripeRefreshRedirectUrl Not yet available in env " + environment);
 
         }
     }
@@ -194,7 +198,11 @@ public class SystemService {
             case DEVELOPMENT -> {
                 return "https://vxbank-eu-dev.ew.r.appspot.com/cancel";
             }
-            default -> throw new IllegalStateException("getStripeCancelRedirectUrl Not yet available in production");
+            case PRODUCTION -> {
+                return "https://vxbank-eu-prod.ew.r.appspot.com/cancel";
+            }
+            default -> throw new IllegalStateException(
+                    "getStripeCancelRedirectUrl Not yet available in env " + environment);
 
         }
     }
