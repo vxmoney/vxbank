@@ -113,3 +113,16 @@ deployDatastoreIndexOnDev() {
   gcloud config set project vxbank-eu-dev
   gcloud datastore indexes create ./src/main/appengine/index.yaml
 }
+
+## remote debug
+remoteDebugDev() {
+  unsetVariables
+  stopDevEnvironment
+  cd $API_KYES_DIR
+  $(pwd)
+  source load-security-commands.sh
+  initSecurity
+  cd $API_DIR
+  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-dev-key.json"
+  nohup intellij-idea-community .
+}
