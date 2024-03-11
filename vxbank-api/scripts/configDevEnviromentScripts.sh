@@ -151,28 +151,26 @@ remoteDebugProd() {
   export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/workspace/vxbank/vxbank-api/src/main/resources/vxbank-eu-prod-key.json"
   export GAE_APPLICATION="vxbank-eu-prod"
 
-    # vscode part
-    # we do all vscode configuration from this script
-    # when remote debug you only need to start the npm run dev
-    echo "vscode part"
-    cd $VSCODE_DIR
-    pwd
-    echo "that was pwd"
-    cp scripts/prod-firebase.js src/app/firebase.js
-    cp scripts/remote-apiConfig.js src/api/apiConfig.js
+  # vscode part
+  # we do all vscode configuration from this script
+  # when remote debug you only need to start the npm run dev
+  echo "vscode part"
+  cd $VSCODE_DIR
+  pwd
+  echo "that was pwd"
+  cp scripts/prod-firebase.js src/app/firebase.js
+  cp scripts/remote-apiConfig.js src/api/apiConfig.js
 
-    cd $API_DIR
-    nohup intellij-idea-community .
-
+  cd $API_DIR
   nohup intellij-idea-community .
 }
 
-deployIndexDev(){
+deployIndexDev() {
   gcloud config set project vxbank-eu-dev
   gcloud app deploy src/main/appengine/index.yaml
 }
 
-deployIndexProd(){
+deployIndexProd() {
   gcloud config set project vxbank-eu-prod
   gcloud app deploy src/main/appengine/index.yaml
 }
