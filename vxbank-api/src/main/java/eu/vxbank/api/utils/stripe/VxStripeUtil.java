@@ -140,7 +140,6 @@ public class VxStripeUtil {
 
     public static List<Funds> getFundsList(String stripeSecretKey, String stripeAccountId) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
-        Account account = Account.retrieve(stripeAccountId);
         RequestOptions requestOptions = RequestOptions.builder()
                 .setStripeAccount(stripeAccountId)
                 .build();
@@ -157,6 +156,8 @@ public class VxStripeUtil {
                 .toList();
         return availableFundsList;
     }
+
+
 
     public static List<BankAccount> getClientAcctiveBankAcctountList(String stripeSecretKey,
                                                                      String stripeAccountId) throws StripeException {
@@ -217,5 +218,9 @@ public class VxStripeUtil {
                         .equals(currency))
                 .findAny();
         return optionalBankAccount.isPresent();
+    }
+
+    public static Account getAccount(String stripeSecretKey, String stripeAccountId) {
+        throw new IllegalStateException("Please implement this");
     }
 }

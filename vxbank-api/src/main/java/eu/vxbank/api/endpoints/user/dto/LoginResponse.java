@@ -14,6 +14,7 @@ public class LoginResponse {
     public Long vxTokenExpiresAt;
     public VxStripeConfig.State stripeConfigState;
     public List<Funds> availableFundsList;
+    public Boolean payoutEnabled;
     public String stripeId;
 
 

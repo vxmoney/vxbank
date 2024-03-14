@@ -3,6 +3,7 @@ package eu.vxbank.api.endpoints.user;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
 import eu.vxbank.api.endpoints.stripe.dto.StripeCurrency;
 import eu.vxbank.api.endpoints.user.dto.*;
 import eu.vxbank.api.services.VxFirebaseAuthService;
@@ -85,6 +86,9 @@ public class UserEndpoint {
         if (!configList.isEmpty()) {
             VxStripeConfig config = configList.get(0);
             loginResponse.stripeConfigState = config.state;
+
+            Account account = VxStripeUtil.getAccount(stripeKeys.stripeSecretKey, config.stripeAccountId);
+            loginResponse.payoutEnabled = account.getPayoutsEnabled();
 
             List<Funds> immutableFunds = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, config.stripeAccountId);
             List<Funds> availableFunds = new ArrayList<>(immutableFunds);
