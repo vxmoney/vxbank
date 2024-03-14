@@ -170,6 +170,8 @@ public class StripeOnboardingIntegrationTest {
         onlyLinkSet.add("tos_acceptance.ip");
 
         Assertions.assertEquals(onlyLinkSet, currentlyDueSet);
+        Assertions.assertEquals(false, account.getPayoutsEnabled());
+
     }
 
     /**
