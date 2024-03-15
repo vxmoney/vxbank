@@ -220,7 +220,9 @@ public class VxStripeUtil {
         return optionalBankAccount.isPresent();
     }
 
-    public static Account getAccount(String stripeSecretKey, String stripeAccountId) {
-        throw new IllegalStateException("Please implement this");
+    public static Account getAccount(String stripeSecretKey, String stripeAccountId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        Account account = Account.retrieve(stripeAccountId);
+        return account;
     }
 }
