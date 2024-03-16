@@ -2,7 +2,11 @@ package eu.vxbank.api.endpoints.event;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.Price;
 import com.stripe.model.Transfer;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.PriceCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import eu.vxbank.api.endpoints.event.comands.Close1v1EventCommand;
 import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
@@ -18,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.io.Console;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,11 +120,63 @@ public class EventEndpoint {
                 VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
                 vxStripeConfig.stripeAccountId,
                 params.currency);
-        if (!clientCanReceivePaymentInCurrency){
+        if (!clientCanReceivePaymentInCurrency) {
             throw new IllegalStateException("User can not receive payment in currency " + params.currency);
         }
 
+        VxPayment vxPayment = createPaymentWithPendingStripeSession(stripeKeys.stripeSecretKey,
+                vxUser,
+                vxStripeConfig,
+                params);
+
         throw new IllegalStateException("Please implement this");
+    }
+
+    private VxPayment createPaymentWithPendingStripeSession(String stripeSecretKey,
+                                                            VxUser vxUser,
+                                                            VxStripeConfig vxStripeConfig,
+                                                            EventCreateParams params) throws StripeException {
+        double messageValue = Double.valueOf(params.entryPrice)/100.0;
+        String message = String.format("Create %s %s event. Entry price %.2f %s",
+                params.vxGame,
+                params.type,
+                messageValue,
+                params.currency);
+
+        PriceCreateParams priceParams = PriceCreateParams.builder()
+                .setCurrency(params.currency)
+                .setProductData(
+                        PriceCreateParams.ProductData.builder()
+                                .setName(message)
+                                .build()
+                )
+                .setUnitAmount(params.entryPrice)
+                .build();
+
+        Price price = Price.create(priceParams);
+        // Line item details
+        SessionCreateParams.LineItem.Builder lineItemBuilder = SessionCreateParams.LineItem.builder()
+                .setPrice(price.getId()) // Use the ID of the dynamically created price
+                .setQuantity(1L);
+
+        String successUrl = systemService.getStripeRefreshRedirectUrl();
+        String cancelUrl = systemService.getStripeCancelRedirectUrl();
+
+        // Session parameters
+        SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .addLineItem(lineItemBuilder.build())
+                .setSuccessUrl(successUrl)
+                .setCancelUrl(cancelUrl);
+
+
+        SessionCreateParams sessionCreateParams = paramsBuilder.build();
+        Session session = Session.create(sessionCreateParams);
+        System.out.println("Checkout Session URL: " + session.getUrl());
+        System.out.println("StripeSessionId = " + session.getId());
+
+        throw new IllegalStateException("Please finish implementing this");
+
     }
 
 
