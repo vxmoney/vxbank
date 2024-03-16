@@ -24,8 +24,11 @@ import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxGame;
 import vxbank.datastore.data.models.VxUser;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
@@ -83,8 +86,25 @@ public class PayEventIntegrationTest {
         return vxUser;
     }
 
+    public String loadFileAsString(String fileName) throws IOException {
+        // Get the class loader
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        // Use the class loader to load the file as a resource
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("File not found: " + fileName);
+        } else {
+            try (Scanner scanner = new Scanner(inputStream, "UTF-8")) {
+                // Use Scanner to read the content of the file into a string
+                return scanner.useDelimiter("\\A").next();
+            }
+        }
+    }
+
     @Test
-    public void payCreateTest00() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void payCreateTest00() throws StripeException, FirebaseAuthException, IOException {
         VxUser vxUser = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
         String vxToken = tokenMap.get(vxUser.id);
 
@@ -101,6 +121,8 @@ public class PayEventIntegrationTest {
 
         EventPayCreateResponse eventPayCreateResponse = EventHelper.payCreate(restTemplate, port, vxToken, params, 200);
 
+        String fileName = "payEventIntegrationTest/payCreateTest00.json";
+        String fileContent = loadFileAsString(fileName);
 
         Assertions.assertNotNull(vxUser);
     }

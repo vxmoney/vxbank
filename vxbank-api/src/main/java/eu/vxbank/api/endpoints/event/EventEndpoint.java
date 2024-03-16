@@ -110,7 +110,7 @@ public class EventEndpoint {
     }
 
     @PostMapping("/payCreate")
-    public EventCreateResponse payCreate(Authentication auth, @RequestBody EventCreateParams params) throws
+    public EventPayCreateResponse payCreate(Authentication auth, @RequestBody EventCreateParams params) throws
             StripeException {
         VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
 
@@ -137,8 +137,13 @@ public class EventEndpoint {
                 vxStripeConfig,
                 params);
 
-
-        throw new IllegalStateException("Please implement this");
+        EventPayCreateResponse response = new EventPayCreateResponse();
+        response.vxUserId = vxUser.id;
+        response.vxEventId = dto.vxEvent.id;
+        response.vxEventPaymentId = dto.vxEventPayment.id;
+        response.stripeSessionId = dto.vxEventPayment.stripeSessionId;
+        response.stripeSessionPaymentUrl = dto.vxEventPayment.stripeSessionPaymentUrl;
+        return response;
     }
 
 
