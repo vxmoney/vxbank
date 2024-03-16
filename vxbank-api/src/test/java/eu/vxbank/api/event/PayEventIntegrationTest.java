@@ -84,7 +84,7 @@ public class PayEventIntegrationTest {
     }
 
     @Test
-    public void PayCreateTest00() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void payCreateTest00() throws StripeException, FirebaseAuthException, JsonProcessingException {
         VxUser vxUser = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
         String vxToken = tokenMap.get(vxUser.id);
 
