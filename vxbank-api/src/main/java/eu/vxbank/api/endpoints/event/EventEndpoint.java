@@ -98,6 +98,24 @@ public class EventEndpoint {
         return response;
     }
 
+    @PostMapping("/payCreate")
+    public EventCreateResponse payCreate(Authentication auth, @RequestBody EventCreateParams params) throws
+            StripeException {
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        if (!Objects.equals(vxUser.id, params.vxUserId)) {
+            throw new IllegalStateException("You can not create events for someone else");
+        }
+
+        VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
+                        new HashMap<>(),
+                        systemService.getVxBankDatastore(),
+                        VxStripeConfig.class)
+                .get(0);
+        throw new IllegalStateException("Please implement this");
+    }
+
+
 
     @PostMapping("/join")
     public EventJoinResponse join(Authentication auth, @RequestBody EventJoinParams params) throws StripeException {

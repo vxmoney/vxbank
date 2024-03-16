@@ -43,6 +43,34 @@ public class EventHelper {
         return response;
     }
 
+    public static EventPayCreateResponse payCreate(TestRestTemplate restTemplate,
+                                             int port,
+                                             String vxToken,
+                                             EventCreateParams params,
+                                             int expectedStatusCode) {
+
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<EventCreateParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<EventPayCreateResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/event/payCreate", HttpMethod.POST, requestEntity, EventPayCreateResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        EventPayCreateResponse response = responseEntity.getBody();
+        return response;
+    }
+
     public static EventGetResponse get(TestRestTemplate restTemplate,
                                        int port,
                                        String vxToken,

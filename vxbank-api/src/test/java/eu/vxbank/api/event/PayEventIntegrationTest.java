@@ -1,0 +1,110 @@
+package eu.vxbank.api.event;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
+import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
+import eu.vxbank.api.endpoints.event.dto.EventPayCreateResponse;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
+import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
+import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.helpers.*;
+import eu.vxbank.api.sidehelpers.SideStripeConfigHelper;
+import eu.vxbank.api.utils.components.SystemService;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxGame;
+import vxbank.datastore.data.models.VxUser;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
+
+public class PayEventIntegrationTest {
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+
+    @Value("${stripeKey.devSecretKey}")
+    private String stripeDevSecretKey;
+
+    @Autowired
+    SystemService systemService;
+
+    Map<Long, String> tokenMap = new HashMap<>();
+
+    private VxUser setupFullUser(String stripeAccountIdUserA) throws
+            FirebaseAuthException,
+            JsonProcessingException,
+            StripeException {
+
+        // stripe id: acct_1OO0j2PVTA3jVN7Z
+
+
+        String email = RandomUtil.generateRandomEmail();
+        String vxToken = UserHelper.generateVxToken(email, restTemplate, port);
+        String vxTokenUserA = vxToken;
+
+
+        LoginResponse loginResponse = PingHelper.whoAmI(vxToken, restTemplate, port, 200);
+        Assertions.assertEquals(email, loginResponse.email);
+
+        VxUser vxUser = new VxUser();
+        vxUser.id = loginResponse.id;
+        vxUser.email = email;
+        StripeConfigInitiateConfigParams initiateConfigParams = new StripeConfigInitiateConfigParams();
+        initiateConfigParams.userId = vxUser.id;
+        StripeConfigInitiateConfigResponse initiateConfigResponse = StripeConfigHelper.initiateConfig(vxToken,
+                initiateConfigParams,
+                restTemplate,
+                port,
+                200);
+
+        Long vxUserId = vxUser.id;
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        SideStripeConfigHelper.setStripeAccountId(ds, vxUserId, stripeAccountIdUserA);
+
+        tokenMap.put(vxUserId, vxTokenUserA);
+
+        return vxUser;
+    }
+
+    @Test
+    public void test00PayCreate() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        VxUser vxUser = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
+        String vxToken = tokenMap.get(vxUser.id);
+
+        String title = "Event of " + vxUser.email;
+        EventCreateParams params = EventCreateParams.builder()
+                .vxUserId(vxUser.id)
+                .type(VxEvent.Type.payed1V1)
+                .vxIntegrationId(VxIntegrationId.vxGaming)
+                .vxGame(VxGame.leagueOfLegends)
+                .title(title)
+                .currency("eur")
+                .entryPrice(1000L)
+                .build();
+
+        EventPayCreateResponse eventPayCreateResponse = EventHelper.payCreate(restTemplate, port, vxToken, params, 200);
+
+
+        Assertions.assertNotNull(vxUser);
+    }
+
+
+}
