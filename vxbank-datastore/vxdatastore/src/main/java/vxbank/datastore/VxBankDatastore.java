@@ -87,7 +87,7 @@ public class VxBankDatastore {
 
     void registerDatastoreEntities(ObjectifyFactory factory) {
         factory.register(VxExampleModel.class);
-        factory.register(VxPayment.class);
+        factory.register(VxPayment.class); // todo see if I can delete this
         factory.register(VxUser.class);
         factory.register(VxStripeConfig.class);
         factory.register(VxEvent.class);

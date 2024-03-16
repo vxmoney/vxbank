@@ -36,6 +36,13 @@ public class VxEventPayment {
     @Index
     public Type type;
 
+    @Index
+    public String stripeSessionId;
+    public String stripeSessionPaymentUrl;
+
+    // relevant when funds are managed directly by our platform
+    public String stripeTransferId;
+
     public String currency;
 
     public Long value;
@@ -43,6 +50,5 @@ public class VxEventPayment {
     public State state;
 
     public String description;
-    public String stripeTransferId;
 
 }
