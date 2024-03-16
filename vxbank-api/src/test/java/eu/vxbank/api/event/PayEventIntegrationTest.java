@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.event.dto.EventPayCreateResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -85,7 +84,7 @@ public class PayEventIntegrationTest {
     }
 
     @Test
-    public void test00PayCreate() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void PayCreateTest00() throws StripeException, FirebaseAuthException, JsonProcessingException {
         VxUser vxUser = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
         String vxToken = tokenMap.get(vxUser.id);
 

@@ -112,9 +112,17 @@ public class EventEndpoint {
                         systemService.getVxBankDatastore(),
                         VxStripeConfig.class)
                 .get(0);
+
+        Boolean clientCanReceivePaymentInCurrency =
+                VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
+                vxStripeConfig.stripeAccountId,
+                params.currency);
+        if (!clientCanReceivePaymentInCurrency){
+            throw new IllegalStateException("User can not receive payment in currency " + params.currency);
+        }
+
         throw new IllegalStateException("Please implement this");
     }
-
 
 
     @PostMapping("/join")
@@ -132,8 +140,9 @@ public class EventEndpoint {
                 systemService.getVxBankDatastore(),
                 params.eventId);
         Optional<VxEventParticipant> userAlreadyPresent = initialList.stream()
-                .filter(p -> p.vxUserId.equals(vxUser.id)).findFirst();
-        if (userAlreadyPresent.isPresent()){
+                .filter(p -> p.vxUserId.equals(vxUser.id))
+                .findFirst();
+        if (userAlreadyPresent.isPresent()) {
             throw new IllegalStateException("You can not join multiple times");
         }
 
