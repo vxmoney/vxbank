@@ -5,7 +5,6 @@ import EventsComponent from "../components/EventsComponent";
 import PayCreateEventModal from "../components/event1v1payEvent/PayCreateEventModal";
 
 export default function EventsHome() {
-
   const [payModalOpen, setPayModalOpen] = useState(false);
   const openPayModal = () => {
     setPayModalOpen(true);
@@ -28,14 +27,27 @@ export default function EventsHome() {
             className="flex items-center"
             type="button"
           >
-            <span className="text-gray-500 dark:text-gray-400">Create event</span>
+            <span className="text-gray-500 dark:text-gray-400">
+              Create event
+            </span>
           </button>
-          <PayCreateEventModal isOpen={payModalOpen} closeModal={closePayModal} />
+          <button
+            onClick={openPayModal}
+            className="flex items-center"
+            type="button"
+          >
+            <span className="text-gray-500 dark:text-gray-400">
+              Create paid event
+            </span>
+          </button>
         </div>
       </section>
 
       <CreateEventModal />
       <EventsComponent />
+      {payModalOpen && (
+        <PayCreateEventModal isOpen={payModalOpen} closeModal={closePayModal} />
+      )}
     </div>
   );
 }
