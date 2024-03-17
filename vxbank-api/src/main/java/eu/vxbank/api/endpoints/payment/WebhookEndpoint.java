@@ -48,9 +48,17 @@ public class WebhookEndpoint {
 
             // Now you have the session ID, and you can use it as needed
             System.out.println("Session ID: " + sessionId);
+
+
         }
 
         return ResponseEntity.ok("Webhook received and processed.");
+    }
+
+    @PostMapping("/_ah/task/my-push-queue/taskHandler")
+    public String handleTask(@RequestBody String taskData) {
+        // Process the task (e.g., perform some computation, update the database, etc.)
+        return "Task processed successfully.";
     }
 
 
