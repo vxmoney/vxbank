@@ -14,7 +14,8 @@ public class QueueUtil {
 
     private static final Logger logger = Logger.getLogger(QueueUtil.class.getName());
 
-    public static void pushToHandleCheckoutSessionCompleted(SystemService systemService, String dataPayload) {
+    public static void pushToHandleCheckoutSessionCompleted(SystemService systemService, String dataPayload,
+                                                            String stripeSignature) {
 
 
         // Retrieve project ID
@@ -28,10 +29,8 @@ public class QueueUtil {
         String queueId = "handle-checkout-session";
 
         try (CloudTasksClient client = CloudTasksClient.create()) {
-            logger.info("pushToHandleCheckoutSessionCompleted");
 
             String url = systemService.getHandleCheckoutSessionCompletedQueueUrl();
-            String payload = "Hello, World!";
 
             // Construct the fully qualified queue name.
             String queuePath = QueueName.of(projectId, locationId, queueId)
@@ -40,7 +39,7 @@ public class QueueUtil {
             // Construct the task body.
             Task.Builder taskBuilder = Task.newBuilder()
                     .setHttpRequest(HttpRequest.newBuilder()
-                            .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
+                            .setBody(ByteString.copyFrom(dataPayload, Charset.defaultCharset()))
                             .setUrl(url)
                             .setHttpMethod(HttpMethod.POST)
                             .build());

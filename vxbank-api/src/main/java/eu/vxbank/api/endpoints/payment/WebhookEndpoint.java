@@ -62,7 +62,7 @@ public class WebhookEndpoint {
             System.out.println("Session ID: " + sessionId);
 
             //try(CloudTaskClient)
-            QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, "Hello, World!");
+            QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, payload, stripeSignature);
         }
 
         return ResponseEntity.ok("Webhook received and processed.");
@@ -70,9 +70,11 @@ public class WebhookEndpoint {
 
 
     @PostMapping("/handleCheckoutSessionCompleted")
-    public String handleCheckoutSessionCompleted(@RequestBody String taskData) {
+    public String handleCheckoutSessionCompleted(@RequestBody String payload,
+                                                 @RequestHeader("Stripe-Signature") String stripeSignature) {
         // Process the task (e.g., perform some computation, update the database, etc.)
-        logger.info("handleCheckoutSessionCompleted: Hello world: taskData: "+taskData);
+        logger.info("handleCheckoutSessionCompleted: payload: " + payload);
+        logger.info("handleCheckoutSessionCompleted: stripeSignature: " + stripeSignature);
         return "Task processed successfully.";
     }
 

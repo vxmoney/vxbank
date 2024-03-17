@@ -67,7 +67,7 @@ public class PingEndpoint {
         pingResponse.datastoreExampleMode = vxExampleModel;
 
         //todo: remove this when you are done with debug queue
-        QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, "Hello ping");
+        QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, "Hello data ping", "Hello data signature");
 
         return pingResponse;
     }
@@ -205,7 +205,7 @@ public class PingEndpoint {
                 VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
                 vxStripeConfig.stripeAccountId,
                 params.currency);
-        if (!clientCanReceivePaymentInCurrency){
+        if (!clientCanReceivePaymentInCurrency) {
             throw new IllegalStateException("Client can not process respective currency. " + params.currency);
         }
 
