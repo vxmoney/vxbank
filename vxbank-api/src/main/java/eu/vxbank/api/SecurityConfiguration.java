@@ -41,7 +41,7 @@ public class SecurityConfiguration {
     RSAPrivateKey priv;
 
     private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment", "/testDatastore", //
-            "/example/payment", "/stripeWebhook",
+            "/example/payment", "/stripeWebhook", "/handleCheckoutSessionCompleted",
             "/ping" + "/generateFirebaseIdToken", "/user/login", "/swagger-ui/**", "/v3/api-docs/**"};
 
     @Bean
