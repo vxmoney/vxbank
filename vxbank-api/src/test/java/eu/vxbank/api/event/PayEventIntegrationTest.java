@@ -6,6 +6,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.net.Webhook;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventPayCreateResponse;
+import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -105,7 +106,8 @@ public class PayEventIntegrationTest {
         } else {
             try (Scanner scanner = new Scanner(inputStream, "UTF-8")) {
                 // Use Scanner to read the content of the file into a string
-                return scanner.useDelimiter("\\A").next();
+                return scanner.useDelimiter("\\A")
+                        .next();
             }
         }
     }
@@ -143,16 +145,19 @@ public class PayEventIntegrationTest {
         String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
         String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
 
-        WebhookHelper.handleStripeWebhook(restTemplate,
-                port,
-                stripeSignature,
-                body,
-                200);
+        WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
 
         System.out.println("Use 4000000000000077 test card");
-        System.out.println("URL: "+ eventPayCreateResponse.stripeSessionPaymentUrl);
+        System.out.println("URL: " + eventPayCreateResponse.stripeSessionPaymentUrl);
 
-        Assertions.assertNotNull(vxUser);
+
+        HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
+        dto.payload = body;
+        dto.stripeSignature = stripeSignature;
+
+        WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
+        System.out.println("End of test");
+
     }
 
 
