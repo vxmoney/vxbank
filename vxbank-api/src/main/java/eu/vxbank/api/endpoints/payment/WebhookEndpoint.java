@@ -77,7 +77,6 @@ public class WebhookEndpoint {
     public void handleCheckoutSessionCompleted(@RequestBody HandleCheckoutSessionCompletedDto dto) throws
             SignatureVerificationException {
         // Process the task (e.g., perform some computation, update the database, etc.)
-        logger.info("WebhookEndpoint.handleCheckoutSessionCompleted dto.payload: " + dto.payload);
         Event event = Webhook.constructEvent(dto.payload,
                 dto.stripeSignature,
                 vxStripeKeys.webhookSigningSecret,
