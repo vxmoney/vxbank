@@ -2,8 +2,19 @@
 import { useState } from "react";
 import CreateEventModal from "../components/CreateEventModal";
 import EventsComponent from "../components/EventsComponent";
+import PayCreateEventModal from "../components/event1v1payEvent/PayCreateEventModal";
 
 export default function EventsHome() {
+
+  const [payModalOpen, setPayModalOpen] = useState(false);
+  const openPayModal = () => {
+    setPayModalOpen(true);
+  };
+
+  const closePayModal = () => {
+    setPayModalOpen(false);
+  };
+
   return (
     <div>
       <section className="bg-white dark:bg-gray-900">
@@ -19,6 +30,7 @@ export default function EventsHome() {
           >
             <span className="text-gray-500 dark:text-gray-400">Create event</span>
           </button>
+          <PayCreateEventModal isOpen={payModalOpen} closeModal={closePayModal} />
         </div>
       </section>
 
