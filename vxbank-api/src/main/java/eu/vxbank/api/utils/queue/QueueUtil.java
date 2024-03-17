@@ -10,6 +10,7 @@ import eu.vxbank.api.utils.components.SystemService;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 public class QueueUtil {
@@ -40,13 +41,16 @@ public class QueueUtil {
 
             ObjectMapper objectMapper = new ObjectMapper();
             String dataPayload = objectMapper.writeValueAsString(handleCheckoutSessionCompletedDto);
+            byte[] payloadBytes = dataPayload.getBytes(StandardCharsets.UTF_8);
 
             // Construct the task body.
             Task.Builder taskBuilder = Task.newBuilder()
                     .setHttpRequest(HttpRequest.newBuilder()
-                            .setBody(ByteString.copyFrom(dataPayload, Charset.defaultCharset()))
+                            //.setBody(ByteString.copyFrom(dataPayload, Charset.defaultCharset()))
+                            .setBody(ByteString.copyFrom(payloadBytes))
                             .setUrl(url)
                             .setHttpMethod(HttpMethod.POST)
+                            .putHeaders("Content-Type", "application/json")
                             .build());
 
             // Send create task request.
