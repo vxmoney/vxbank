@@ -1,5 +1,9 @@
 package eu.vxbank.api.endpoints.payment;
 
+import com.google.cloud.tasks.v2.CloudTasksClient;
+import com.google.cloud.tasks.v2.LocationName;
+import com.google.cloud.tasks.v2.Queue;
+import com.google.cloud.tasks.v2.QueueName;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
@@ -13,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.cloud.tasks.v2.CloudTasksClient;
+import java.io.IOException;
 
 
 @RestController
@@ -53,15 +57,44 @@ public class WebhookEndpoint {
             System.out.println("Session ID: " + sessionId);
 
             //try(CloudTaskClient)
-
+            pushToHandleCheckoutSessionCompleted(sessionId);
         }
 
         return ResponseEntity.ok("Webhook received and processed.");
     }
 
-    @PostMapping("/_ah/task/my-push-queue/taskHandler")
+    private void pushToHandleCheckoutSessionCompleted(String sessionId) {
+        try (CloudTasksClient client = CloudTasksClient.create()) {
+
+            String projectId = "projectId";
+            String locationId = "locationId";
+            String queueId = "handle-checkout-session";
+
+            // Construct the fully qualified location.
+            String parent = LocationName.of(projectId, locationId)
+                    .toString();
+
+            // Construct the fully qualified queue path.
+            String queuePath = QueueName.of(projectId, locationId, queueId)
+                    .toString();
+
+            // Send create queue request.
+            Queue queue = client.createQueue(parent,
+                    Queue.newBuilder()
+                            .setName(queuePath)
+                            .build());
+
+            System.out.println("Queue created: " + queue.getName());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @PostMapping("/handleCheckoutSessionCompleted")
     public String handleTask(@RequestBody String taskData) {
         // Process the task (e.g., perform some computation, update the database, etc.)
+        System.out.println("Log handleCheckoutSessionCompleted");
         return "Task processed successfully.";
     }
 
