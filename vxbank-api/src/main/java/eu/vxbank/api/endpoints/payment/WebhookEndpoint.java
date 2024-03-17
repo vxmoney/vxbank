@@ -74,11 +74,9 @@ public class WebhookEndpoint {
 
 
     @PostMapping("/handleCheckoutSessionCompleted")
-    public String handleCheckoutSessionCompleted(@RequestBody String payload,
-                                                 @RequestHeader("Stripe-Signature") String stripeSignature) {
+    public String handleCheckoutSessionCompleted(@RequestBody String payload) {
         // Process the task (e.g., perform some computation, update the database, etc.)
-        logger.info("handleCheckoutSessionCompleted: payload: " + payload);
-        logger.info("handleCheckoutSessionCompleted: stripeSignature: " + stripeSignature);
+        logger.info("WebhookEndpoint.handleCheckoutSessionCompleted: payload: " + payload);
         return "Task processed successfully.";
     }
 
