@@ -9,6 +9,7 @@ import com.google.firebase.auth.UserRecord;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
+import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.ping.dto.*;
 import eu.vxbank.api.endpoints.user.dto.Funds;
@@ -67,7 +68,11 @@ public class PingEndpoint {
         pingResponse.datastoreExampleMode = vxExampleModel;
 
         //todo: remove this when you are done with debug queue
-        QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, "Hello data ping", "Hello data signature");
+        HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
+        dto.payload = "Hello payload";
+        dto.stripeSignature = "Hello signature";
+
+        QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, dto);
 
         return pingResponse;
     }

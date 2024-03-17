@@ -1,8 +1,10 @@
 package eu.vxbank.api.utils.queue;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.tasks.v2.*;
 import com.google.protobuf.ByteString;
 import eu.vxbank.api.endpoints.payment.WebhookEndpoint;
+import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.components.SystemService;
 
@@ -14,13 +16,13 @@ public class QueueUtil {
 
     private static final Logger logger = Logger.getLogger(QueueUtil.class.getName());
 
-    public static void pushToHandleCheckoutSessionCompleted(SystemService systemService, String dataPayload,
-                                                            String stripeSignature) {
+    public static void pushToHandleCheckoutSessionCompleted(SystemService systemService,
+                                                            HandleCheckoutSessionCompletedDto handleCheckoutSessionCompletedDto) {
 
 
         // Retrieve project ID
         String projectId = systemService.getProjectId();
-        if (projectId.equals(ApiConstants.APPLICATION_ID_LOCALHOST)){
+        if (projectId.equals(ApiConstants.APPLICATION_ID_LOCALHOST)) {
             // do nothing just return
             return;
         }
@@ -35,6 +37,9 @@ public class QueueUtil {
             // Construct the fully qualified queue name.
             String queuePath = QueueName.of(projectId, locationId, queueId)
                     .toString();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String dataPayload = objectMapper.writeValueAsString(handleCheckoutSessionCompletedDto);
 
             // Construct the task body.
             Task.Builder taskBuilder = Task.newBuilder()

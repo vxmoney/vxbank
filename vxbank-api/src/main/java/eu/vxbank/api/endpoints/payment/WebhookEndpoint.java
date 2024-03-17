@@ -7,6 +7,7 @@ import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -62,7 +63,10 @@ public class WebhookEndpoint {
             System.out.println("Session ID: " + sessionId);
 
             //try(CloudTaskClient)
-            QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, payload, stripeSignature);
+            HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
+            dto.payload = payload;
+            dto.stripeSignature = stripeSignature;
+            QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, dto);
         }
 
         return ResponseEntity.ok("Webhook received and processed.");
