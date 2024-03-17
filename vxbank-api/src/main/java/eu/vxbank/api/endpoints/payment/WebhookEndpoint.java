@@ -120,9 +120,11 @@ public class WebhookEndpoint {
         //double feeInDollars = stripeFee / 100.0;
 
         // Now 'feeInDollars' contains the deducted Stripe fees
-        System.out.println("stripeFee: " + stripeFee);
+        logger.info("stripeSessionId: "+ stripeSessionId);
+        logger.info("paymentIntentId: "+ paymentIntentId);
+        logger.info("stripeFee: "+ stripeFee);
 
-        logger.info("Time to process sessionId: " + stripeSessionId);
+        logger.info("Time to finish implementing this DEBUG");
 
     }
 
