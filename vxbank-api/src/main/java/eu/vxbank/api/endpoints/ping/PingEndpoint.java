@@ -17,6 +17,7 @@ import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.enums.Environment;
+import eu.vxbank.api.utils.queue.QueueUtil;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,9 @@ public class PingEndpoint {
         VxDsService.persist(vxExampleModel, systemService.getVxBankDatastore(), VxExampleModel.class);
 
         pingResponse.datastoreExampleMode = vxExampleModel;
+
+        //todo: remove this when you are done with debug queue
+        QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, "Hello ping");
 
         return pingResponse;
     }
