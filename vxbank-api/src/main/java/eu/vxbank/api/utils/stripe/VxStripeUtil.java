@@ -228,6 +228,7 @@ public class VxStripeUtil {
 
     public static PaymentIntent getPaymentIntentByPaymentId (String stripeSecretKey, String stripePaymentId) throws
             StripeException {
+        Stripe.apiKey = stripeSecretKey;
         PaymentIntent paymentIntent = PaymentIntent.retrieve(stripePaymentId);
         return paymentIntent;
     }

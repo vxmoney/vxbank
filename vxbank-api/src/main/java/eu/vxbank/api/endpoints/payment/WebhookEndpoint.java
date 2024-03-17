@@ -5,6 +5,7 @@ import com.google.cloud.tasks.v2.*;
 import com.google.protobuf.ByteString;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
@@ -44,12 +45,15 @@ public class WebhookEndpoint {
     @PostMapping("/stripeWebhook")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
                                                       @RequestHeader("Stripe-Signature") String stripeSignature) throws
-            SignatureVerificationException {
+            StripeException {
         // Verify the Stripe webhook signature
         Event event = Webhook.constructEvent(payload,
                 stripeSignature,
                 vxStripeKeys.webhookSigningSecret,
                 vxStripeKeys.tolerance);
+
+
+
 
 
         // Process the Stripe event based on the payload
@@ -64,6 +68,11 @@ public class WebhookEndpoint {
                     .getObject()
                     .get();
             String sessionId = session.getId();
+
+            String paymentIntentId = session.getPaymentIntent();
+            PaymentIntent paymentIntent = VxStripeUtil.getPaymentIntentByPaymentId(vxStripeKeys.stripeSecretKey,
+                    paymentIntentId);
+            //Charge  paymentIntent.getLatestCharge();
 
             // Now you have the session ID, and you can use it as needed
             System.out.println("Session ID: " + sessionId);
