@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import { eventAPI } from "@/api/event";
 
-const PayCreateEventModal = () => {
+const PayCreateEventModal = ({ isOpen, closeModal }) => { // Receive isOpen and closeModal props
   const { vxUserInfo } = UserAuth();
 
   const [eventCreateParams, setEventCreateParams] = useState({
@@ -15,8 +15,6 @@ const PayCreateEventModal = () => {
     entryPrice: "500",
   });
 
-  const [modalOpen, setModalOpen] = useState(false);
-
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setEventCreateParams((prevData) => ({
@@ -25,17 +23,13 @@ const PayCreateEventModal = () => {
     }));
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     eventAPI
       .create(vxUserInfo?.vxToken, eventCreateParams)
       .then((response) => {
         console.log("Event created:", response.data);
-        closeModal();
+        closeModal(); // Call closeModal function passed from parent
       })
       .catch((error) => {
         console.error("Error creating event:", error);
@@ -44,15 +38,7 @@ const PayCreateEventModal = () => {
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => setModalOpen(true)}
-        className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-      >
-        Create Paid Event
-      </button>
-
-      {modalOpen && (
+      {isOpen && ( // Render modal only if isOpen is true
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md dark:bg-gray-800">
             <div className="flex justify-between items-center mb-4">
