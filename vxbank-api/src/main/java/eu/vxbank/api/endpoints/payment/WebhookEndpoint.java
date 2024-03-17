@@ -7,8 +7,10 @@ import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
+import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.queue.QueueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,44 +62,10 @@ public class WebhookEndpoint {
             System.out.println("Session ID: " + sessionId);
 
             //try(CloudTaskClient)
-            pushToHandleCheckoutSessionCompleted(sessionId);
+            QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, "Hello, World!");
         }
 
         return ResponseEntity.ok("Webhook received and processed.");
-    }
-
-    private void pushToHandleCheckoutSessionCompleted(String dataPayload) {
-
-        // Retrieve project ID
-        String projectId = systemService.getProjectId();
-        // location id: gcloud app describe --format="value(locationId)"
-        String locationId = "europe-west";
-        String queueId = "handle-checkout-session";
-
-        try (CloudTasksClient client = CloudTasksClient.create()) {
-            logger.info("pushToHandleCheckoutSessionCompleted");
-
-            String url = systemService.getHandleCheckoutSessionCompletedQueueUrl();
-            String payload = "Hello, World!";
-
-            // Construct the fully qualified queue name.
-            String queuePath = QueueName.of(projectId, locationId, queueId)
-                    .toString();
-
-            // Construct the task body.
-            Task.Builder taskBuilder = Task.newBuilder()
-                    .setHttpRequest(HttpRequest.newBuilder()
-                            .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
-                            .setUrl(url)
-                            .setHttpMethod(HttpMethod.POST)
-                            .build());
-
-            // Send create task request.
-            Task task = client.createTask(queuePath, taskBuilder.build());
-            System.out.println("Task created: " + task.getName());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
