@@ -92,7 +92,7 @@ public class WebhookEndpoint {
 
 
     @PostMapping("/handleCheckoutSessionCompleted")
-    public String handleTask(@RequestBody String taskData) {
+    public String handleCheckoutSessionCompleted(@RequestBody String taskData) {
         // Process the task (e.g., perform some computation, update the database, etc.)
         System.out.println("Log handleCheckoutSessionCompleted");
         return "Task processed successfully.";
