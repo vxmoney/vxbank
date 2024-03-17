@@ -74,10 +74,30 @@ public class WebhookEndpoint {
 
 
     @PostMapping("/handleCheckoutSessionCompleted")
-    public String handleCheckoutSessionCompleted(@RequestBody HandleCheckoutSessionCompletedDto dto) {
+    public void handleCheckoutSessionCompleted(@RequestBody HandleCheckoutSessionCompletedDto dto) throws
+            SignatureVerificationException {
         // Process the task (e.g., perform some computation, update the database, etc.)
         logger.info("WebhookEndpoint.handleCheckoutSessionCompleted dto.payload: " + dto.payload);
-        return "Task processed successfully.";
+        Event event = Webhook.constructEvent(dto.payload,
+                dto.stripeSignature,
+                vxStripeKeys.webhookSigningSecret,
+                vxStripeKeys.tolerance);
+
+        if (!"checkout.session.completed".equals(event.getType())) {
+            throw new IllegalStateException("Not checkout.session.completed event");
+        }
+
+
+        // Access the session ID from the event data
+        Session session = (Session) event.getDataObjectDeserializer()
+                .getObject()
+                .get();
+        String sessionId = session.getId();
+
+        // Now you have the session ID, and you can use it as needed
+
+        logger.info("Time to process sessionId: " + sessionId);
+
     }
 
 
