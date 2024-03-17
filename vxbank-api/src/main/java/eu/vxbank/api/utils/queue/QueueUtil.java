@@ -29,7 +29,7 @@ public class QueueUtil {
         }
         // location id: gcloud app describe --format="value(locationId)"
         String locationId = "europe-west1";
-        String queueId = "handle-checkout";
+        String queueId = "handle-checkout-session";
 
         try (CloudTasksClient client = CloudTasksClient.create()) {
 
