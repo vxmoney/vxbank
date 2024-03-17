@@ -12,7 +12,7 @@ const PayCreateEventModal = ({ isOpen, closeModal }) => { // Receive isOpen and 
     vxGame: "leagueOfLegends",
     title: "Example 001",
     currency: "eur",
-    entryPrice: "500",
+    entryPrice: "50",
   });
 
   const handleInputChange = (e) => {
@@ -26,10 +26,11 @@ const PayCreateEventModal = ({ isOpen, closeModal }) => { // Receive isOpen and 
   const handleSubmit = (e) => {
     e.preventDefault();
     eventAPI
-      .create(vxUserInfo?.vxToken, eventCreateParams)
+      .payCreate(vxUserInfo?.vxToken, eventCreateParams)
       .then((response) => {
-        console.log("Event created:", response.data);
+        console.log("PayEvent created:", response.data);
         closeModal(); // Call closeModal function passed from parent
+        window.open(response.data.stripeSessionPaymentUrl, "_blank")
       })
       .catch((error) => {
         console.error("Error creating event:", error);

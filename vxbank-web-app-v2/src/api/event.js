@@ -59,4 +59,10 @@ export const eventAPI = {
     };
     return instance.post(`/closeEvent`, closeEventParams, { headers });
   },
+  payCreate: (vxToken, eventData) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post("payCreate", eventData, { headers });
+  },
 };
