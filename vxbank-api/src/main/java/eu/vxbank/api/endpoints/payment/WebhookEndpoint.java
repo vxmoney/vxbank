@@ -3,6 +3,7 @@ package eu.vxbank.api.endpoints.payment;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.tasks.v2.*;
 import com.google.protobuf.ByteString;
+import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
@@ -70,9 +71,28 @@ public class WebhookEndpoint {
             String sessionId = session.getId();
 
             String paymentIntentId = session.getPaymentIntent();
+            Stripe.apiKey = vxStripeKeys.stripeSecretKey;
             PaymentIntent paymentIntent = VxStripeUtil.getPaymentIntentByPaymentId(vxStripeKeys.stripeSecretKey,
                     paymentIntentId);
+            PaymentIntent refreshedIntent = PaymentIntent.retrieve(paymentIntentId);
             //Charge  paymentIntent.getLatestCharge();
+            Long refreshAmountReceived = refreshedIntent.getAmountReceived();
+            Long refreshPaymentAmount = refreshedIntent.getAmount();
+            logger.info("refreshAmountReceived: " + refreshAmountReceived);
+            logger.info("refreshPaymentAmount: " + refreshPaymentAmount);
+
+
+            Charge charge = paymentIntent.getLatestChargeObject();
+            if (charge != null){
+                Long chargeFee = charge.getApplicationFeeAmount();
+                logger.info("chargeFee "+ chargeFee);
+            }
+            Charge refreshCharge = paymentIntent.getLatestChargeObject();
+            if (refreshCharge != null){
+                Long refreshFee = refreshCharge.getApplicationFeeAmount();
+                logger.info("chargeFee "+ refreshFee);
+            }
+
 
             // Now you have the session ID, and you can use it as needed
             System.out.println("Session ID: " + sessionId);
