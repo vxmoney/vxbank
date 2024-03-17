@@ -174,3 +174,13 @@ deployIndexProd() {
   gcloud config set project vxbank-eu-prod
   gcloud app deploy src/main/appengine/index.yaml
 }
+
+deployQueueDev() {
+  gcloud config set project vxbank-eu-dev
+  gcloud app deploy src/main/appengine/queue.yaml
+}
+
+deployQueueProd() {
+  gcloud config set project vxbank-eu-prod
+  gcloud app deploy src/main/appengine/queue.yaml
+}
