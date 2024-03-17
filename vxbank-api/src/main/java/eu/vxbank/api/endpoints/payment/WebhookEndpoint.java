@@ -153,6 +153,11 @@ public class WebhookEndpoint {
         logger.info("paymentIntentId: "+ paymentIntentId);
         logger.info("stripeFee: "+ stripeFee);
 
+        Long amount = paymentIntent.getAmount();
+        Long amountReceived = paymentIntent.getAmountReceived();
+        logger.info("handleCheckoutSessionCompleted.amount: " + amount);
+        logger.info("handleCheckoutSessionCompleted.amountReceived: " + amountReceived);
+
         logger.info("Time to finish implementing this DEBUG");
 
     }
