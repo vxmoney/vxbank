@@ -225,4 +225,10 @@ public class VxStripeUtil {
         Account account = Account.retrieve(stripeAccountId);
         return account;
     }
+
+    public static PaymentIntent getPaymentIntentByPaymentId (String stripeSecretKey, String stripePaymentId) throws
+            StripeException {
+        PaymentIntent paymentIntent = PaymentIntent.retrieve(stripePaymentId);
+        return paymentIntent;
+    }
 }

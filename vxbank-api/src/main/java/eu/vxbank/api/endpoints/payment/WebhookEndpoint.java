@@ -4,7 +4,9 @@ import com.google.cloud.ServiceOptions;
 import com.google.cloud.tasks.v2.*;
 import com.google.protobuf.ByteString;
 import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
@@ -12,6 +14,7 @@ import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.queue.QueueUtil;
+import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,7 +81,7 @@ public class WebhookEndpoint {
 
     @PostMapping("/handleCheckoutSessionCompleted")
     public void handleCheckoutSessionCompleted(@RequestBody HandleCheckoutSessionCompletedDto dto) throws
-            SignatureVerificationException {
+            StripeException {
 
         // Process the task (e.g., perform some computation, update the database, etc.)
         Event event = Webhook.constructEvent(dto.payload,
@@ -104,6 +107,20 @@ public class WebhookEndpoint {
         }
 
         // Now you have the session ID, and you can use it as needed
+        String paymentIntentId = session.getPaymentIntent();
+        PaymentIntent paymentIntent = VxStripeUtil.getPaymentIntentByPaymentId(vxStripeKeys.stripeSecretKey,
+                paymentIntentId);
+
+        if (!"succeeded".equals(paymentIntent.getStatus())) {
+            throw new IllegalStateException("Payment not yet completed");
+        }
+        // Payment is successful, you can now access the fees deducted by Stripe
+        Long stripeFee = paymentIntent.getApplicationFeeAmount(); // This returns the amount in cents
+        // Convert to a readable amount if needed
+        //double feeInDollars = stripeFee / 100.0;
+
+        // Now 'feeInDollars' contains the deducted Stripe fees
+        System.out.println("stripeFee: " + stripeFee);
 
         logger.info("Time to process sessionId: " + stripeSessionId);
 

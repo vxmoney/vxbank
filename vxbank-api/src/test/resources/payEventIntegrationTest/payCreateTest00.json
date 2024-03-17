@@ -5,7 +5,7 @@
   "created": 1710631181,
   "data": {
     "object": {
-      "id": "cs_test_a1eNiGqC9JIV3xpYD3ysiNhj1RAlKbaZIWKALFT8jCGh8ofWBVW0hHG61n",
+      "id": "#tagStripeSessionId",
       "object": "checkout.session",
       "after_expiration": null,
       "allow_promotion_codes": null,
