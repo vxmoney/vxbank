@@ -143,11 +143,14 @@ public class PayEventIntegrationTest {
         String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
         String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
 
-        String webhookResponse = WebhookHelper.handleStripeWebhook(restTemplate,
+        WebhookHelper.handleStripeWebhook(restTemplate,
                 port,
                 stripeSignature,
                 body,
                 200);
+
+        System.out.println("Use 4000000000000077 test card");
+        System.out.println("URL: "+ eventPayCreateResponse.stripeSessionPaymentUrl);
 
         Assertions.assertNotNull(vxUser);
     }

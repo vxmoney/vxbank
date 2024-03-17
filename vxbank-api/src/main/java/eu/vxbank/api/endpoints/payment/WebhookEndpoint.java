@@ -74,9 +74,9 @@ public class WebhookEndpoint {
 
 
     @PostMapping("/handleCheckoutSessionCompleted")
-    public String handleCheckoutSessionCompleted(@RequestBody String payload) {
+    public String handleCheckoutSessionCompleted(@RequestBody HandleCheckoutSessionCompletedDto dto) {
         // Process the task (e.g., perform some computation, update the database, etc.)
-        logger.info("WebhookEndpoint.handleCheckoutSessionCompleted: payload: " + payload);
+        logger.info("WebhookEndpoint.handleCheckoutSessionCompleted dto.payload: " + dto.payload);
         return "Task processed successfully.";
     }
 
