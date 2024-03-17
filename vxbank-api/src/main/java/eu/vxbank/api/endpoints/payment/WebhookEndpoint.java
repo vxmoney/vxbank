@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 
 @RestController
 public class WebhookEndpoint {
+    private static final Logger logger = Logger.getLogger(WebhookEndpoint.class.getName());
+
 
     @Autowired
     SystemService systemService;
@@ -64,7 +67,9 @@ public class WebhookEndpoint {
     }
 
     private void pushToHandleCheckoutSessionCompleted(String sessionId) {
+
         try (CloudTasksClient client = CloudTasksClient.create()) {
+            logger.info("pushToHandleCheckoutSessionCompleted");
 
             String projectId = "projectId";
             String locationId = "locationId";
@@ -95,6 +100,7 @@ public class WebhookEndpoint {
     public String handleCheckoutSessionCompleted(@RequestBody String taskData) {
         // Process the task (e.g., perform some computation, update the database, etc.)
         System.out.println("Log handleCheckoutSessionCompleted");
+        logger.info("handleCheckoutSessionCompleted");
         return "Task processed successfully.";
     }
 
