@@ -190,6 +190,23 @@ public class SystemService {
         }
     }
 
+    public String getHandleCheckoutSessionCompletedQueueUrl(){
+        switch (environment) {
+            case LOCALHOST -> {
+                return "http://localhost:3000/handleCheckoutSessionCompleted";
+            }
+            case DEVELOPMENT -> {
+                return "https://vxbank-eu-dev.ew.r.appspot.com/handleCheckoutSessionCompleted";
+            }
+            case PRODUCTION -> {
+                return "https://vxbank-eu-prod.ew.r.appspot.com/handleCheckoutSessionCompleted";
+            }
+            default -> throw new IllegalStateException(
+                    "getStripeRefreshRedirectUrl Not yet available in env " + environment);
+
+        }
+    }
+
     public String getStripeCancelRedirectUrl() {
         switch (environment) {
             case LOCALHOST -> {

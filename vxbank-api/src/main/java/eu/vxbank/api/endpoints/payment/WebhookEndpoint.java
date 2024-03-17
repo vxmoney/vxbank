@@ -1,9 +1,8 @@
 package eu.vxbank.api.endpoints.payment;
 
-import com.google.cloud.tasks.v2.CloudTasksClient;
-import com.google.cloud.tasks.v2.LocationName;
-import com.google.cloud.tasks.v2.Queue;
-import com.google.cloud.tasks.v2.QueueName;
+import com.google.cloud.ServiceOptions;
+import com.google.cloud.tasks.v2.*;
+import com.google.protobuf.ByteString;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 
@@ -66,30 +66,35 @@ public class WebhookEndpoint {
         return ResponseEntity.ok("Webhook received and processed.");
     }
 
-    private void pushToHandleCheckoutSessionCompleted(String sessionId) {
+    private void pushToHandleCheckoutSessionCompleted(String dataPayload) {
+
+        // Retrieve project ID
+        String projectId = systemService.getProjectId();
+        // location id: gcloud app describe --format="value(locationId)"
+        String locationId = "europe-west";
+        String queueId = "handle-checkout-session";
 
         try (CloudTasksClient client = CloudTasksClient.create()) {
             logger.info("pushToHandleCheckoutSessionCompleted");
 
-            String projectId = "projectId";
-            String locationId = "locationId";
-            String queueId = "handle-checkout-session";
+            String url = systemService.getHandleCheckoutSessionCompletedQueueUrl();
+            String payload = "Hello, World!";
 
-            // Construct the fully qualified location.
-            String parent = LocationName.of(projectId, locationId)
-                    .toString();
-
-            // Construct the fully qualified queue path.
+            // Construct the fully qualified queue name.
             String queuePath = QueueName.of(projectId, locationId, queueId)
                     .toString();
 
-            // Send create queue request.
-            Queue queue = client.createQueue(parent,
-                    Queue.newBuilder()
-                            .setName(queuePath)
+            // Construct the task body.
+            Task.Builder taskBuilder = Task.newBuilder()
+                    .setHttpRequest(HttpRequest.newBuilder()
+                            .setBody(ByteString.copyFrom(payload, Charset.defaultCharset()))
+                            .setUrl(url)
+                            .setHttpMethod(HttpMethod.POST)
                             .build());
 
-            System.out.println("Queue created: " + queue.getName());
+            // Send create task request.
+            Task task = client.createTask(queuePath, taskBuilder.build());
+            System.out.println("Task created: " + task.getName());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
