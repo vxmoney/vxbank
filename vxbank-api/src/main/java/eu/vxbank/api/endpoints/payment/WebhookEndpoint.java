@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import vxbank.datastore.data.models.VxEventPayment;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -76,6 +79,7 @@ public class WebhookEndpoint {
     @PostMapping("/handleCheckoutSessionCompleted")
     public void handleCheckoutSessionCompleted(@RequestBody HandleCheckoutSessionCompletedDto dto) throws
             SignatureVerificationException {
+
         // Process the task (e.g., perform some computation, update the database, etc.)
         Event event = Webhook.constructEvent(dto.payload,
                 dto.stripeSignature,
@@ -91,11 +95,17 @@ public class WebhookEndpoint {
         Session session = (Session) event.getDataObjectDeserializer()
                 .getObject()
                 .get();
-        String sessionId = session.getId();
+        String stripeSessionId = session.getId();
+        List<VxEventPayment> eventPayments = VxDsService.getByStripeSessionId(VxEventPayment.class,
+                systemService.getVxBankDatastore(),
+                stripeSessionId);
+        if (eventPayments.size() != 1) {
+            throw new IllegalStateException("Better call Bogdan. This should never be the case");
+        }
 
         // Now you have the session ID, and you can use it as needed
 
-        logger.info("Time to process sessionId: " + sessionId);
+        logger.info("Time to process sessionId: " + stripeSessionId);
 
     }
 

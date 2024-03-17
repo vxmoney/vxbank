@@ -221,4 +221,16 @@ public class VxDsService {
        }
        return result.values().stream().toList();
     }
+
+    public static <T> List<T> getByStripeSessionId(Class<T> vxClass, VxBankDatastore ds, String  stripeSessionId) {
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("stripeSessionId", stripeSessionId);
+
+        query = query.chunkAll();
+        List<T> list = query.list();
+
+
+        return list;
+    }
 }
