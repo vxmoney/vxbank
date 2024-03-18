@@ -69,6 +69,9 @@ export default function Event1v1DetailComponent() {
     }
   }, []);
 
+  // payJoin section
+  
+
   return (
     <div>
       {eventData && (
