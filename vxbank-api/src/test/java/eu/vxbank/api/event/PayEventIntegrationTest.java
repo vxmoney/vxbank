@@ -146,27 +146,27 @@ public class PayEventIntegrationTest {
         String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
         String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
 
+        // check participates before.
+        EventParticipantGetByEventIdResponse participants =
+                EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+        Assertions.assertEquals(0, participants.participantList.size());
+
         WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
+
+        // check participates after.
+        participants = EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+        Assertions.assertEquals(1, participants.participantList.size());
+
+        HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
+        dto.payload = body;
+        dto.stripeSignature = stripeSignature;
+        // WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
 
         System.out.println("Use 4000000000000077 test card");
         System.out.println("URL: " + eventPayCreateResponse.stripeSessionPaymentUrl);
         System.out.println("StripeSessionId: " + eventPayCreateResponse.stripeSessionId);
 
 
-        HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
-        dto.payload = body;
-        dto.stripeSignature = stripeSignature;
-
-        // check participates before.
-        EventParticipantGetByEventIdResponse participants =
-                EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
-        Assertions.assertEquals(0, participants.participantList.size());
-
-        WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
-
-        // check participates after
-        participants = EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
-        Assertions.assertEquals(1, participants.participantList.size());
     }
 
 

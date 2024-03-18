@@ -16,6 +16,7 @@ import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.enums.Environment;
 import eu.vxbank.api.utils.queue.QueueUtil;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,13 @@ public class WebhookEndpoint {
             HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
             dto.payload = payload;
             dto.stripeSignature = stripeSignature;
+
             QueueUtil.pushToHandleCheckoutSessionCompleted(systemService, dto);
+
+            if (Environment.LOCALHOST == systemService.getEnvironment()){
+                // call directly the handler since. this is way simpler then using the emulator.
+                handleCheckoutSessionCompleted(dto);
+            }
         }
 
         return ResponseEntity.ok("Webhook received and processed.");
