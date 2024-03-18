@@ -229,7 +229,12 @@ public class VxStripeUtil {
     public static PaymentIntent getPaymentIntentByPaymentId (String stripeSecretKey, String stripePaymentId) throws
             StripeException {
         Stripe.apiKey = stripeSecretKey;
-        PaymentIntent paymentIntent = PaymentIntent.retrieve(stripePaymentId);
+        PaymentIntentRetrieveParams params =
+                PaymentIntentRetrieveParams.builder()
+                        .addExpand("latest_charge.balance_transaction")
+                        .build();
+
+        PaymentIntent paymentIntent = PaymentIntent.retrieve(stripePaymentId,params,RequestOptions.getDefault());
         return paymentIntent;
     }
 }
