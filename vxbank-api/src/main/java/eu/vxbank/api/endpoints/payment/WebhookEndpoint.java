@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxEventParticipant;
 import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -115,7 +117,7 @@ public class WebhookEndpoint {
                 systemService.getVxBankDatastore(),
                 stripeSessionId);
         if (eventPayments.size() != 1) {
-            throw new IllegalStateException("Better call Bogdan. This should never be the case");
+            throw new IllegalStateException("Better call Bogdan code 001. This should never be the case");
         }
 
         // Now you have the session ID, and you can use it as needed
@@ -131,10 +133,29 @@ public class WebhookEndpoint {
         BalanceTransaction balanceTransaction = paymentIntent.getLatestChargeObject()
                 .getBalanceTransactionObject();
         Long net = balanceTransaction.getNet();
-        logger.info("DEBUG handleCheckoutSessionCompleted NET = " + net);
 
-        logger.info("Time to finish implementing this DEBUG");
+        // update net value
+        VxEventPayment vxEventPayment = eventPayments.get(0);
+        vxEventPayment.netValue = net;
+        vxEventPayment.state = VxEventPayment.State.complete;
+        VxDsService.persist(VxEventPayment.class, systemService.getVxBankDatastore(), vxEventPayment);
 
+        VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), vxEventPayment.vxEventId);
+        if (vxEvent.type != VxEvent.Type.payed1V1 ){
+            throw new IllegalStateException("Better call Bogdan code 002. Not supported event type");
+        }
+
+        // create participant
+        Long userId = vxEventPayment.vxUserId;
+        Long eventId = vxEvent.getId();
+        VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
+                .vxUserId(userId)
+                .vxEventId(eventId)
+                .state(VxEventParticipant.State.active)
+                .build();
+        VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(), VxEventParticipant.class);
+
+        logger.info("Finished processing vxEventPayment id="+vxEventPayment.id);
     }
 
 

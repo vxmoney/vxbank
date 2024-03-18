@@ -6,6 +6,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.net.Webhook;
 import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventPayCreateResponse;
+import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
 import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -149,16 +150,23 @@ public class PayEventIntegrationTest {
 
         System.out.println("Use 4000000000000077 test card");
         System.out.println("URL: " + eventPayCreateResponse.stripeSessionPaymentUrl);
-        System.out.println("StripeSessionId: "+ eventPayCreateResponse.stripeSessionId);
+        System.out.println("StripeSessionId: " + eventPayCreateResponse.stripeSessionId);
 
 
         HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
         dto.payload = body;
         dto.stripeSignature = stripeSignature;
 
-        WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
-        System.out.println("End of test");
+        // check participates before.
+        EventParticipantGetByEventIdResponse participants =
+                EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+        Assertions.assertEquals(0, participants.participantList.size());
 
+        WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
+
+        // check participates after
+        participants = EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+        Assertions.assertEquals(1, participants.participantList.size());
     }
 
 

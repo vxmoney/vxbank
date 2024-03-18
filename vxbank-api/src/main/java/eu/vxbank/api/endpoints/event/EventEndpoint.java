@@ -188,9 +188,6 @@ public class EventEndpoint {
 
         SessionCreateParams sessionCreateParams = paramsBuilder.build();
         Session session = Session.create(sessionCreateParams);
-//        System.out.println("Checkout Session URL: " + session.getUrl());
-//        System.out.println("StripeSessionId = " + session.getId());
-        //</stripe section>
 
         //<datastore section>
         Long createTimeStamp = new Date().getTime();
