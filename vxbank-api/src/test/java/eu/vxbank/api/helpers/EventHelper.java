@@ -44,10 +44,10 @@ public class EventHelper {
     }
 
     public static EventPayCreateResponse payCreate(TestRestTemplate restTemplate,
-                                             int port,
-                                             String vxToken,
-                                             EventCreateParams params,
-                                             int expectedStatusCode) {
+                                                   int port,
+                                                   String vxToken,
+                                                   EventCreateParams params,
+                                                   int expectedStatusCode) {
 
 
         // Set up the HTTP headers
@@ -198,6 +198,32 @@ public class EventHelper {
 
         // Extract the response
         EventCloseResponse response = responseEntity.getBody();
+        return response;
+    }
+
+    public static EventPayJoinResponse payJoin(TestRestTemplate restTemplate,
+                                            int port,
+                                            String vxToken,
+                                            EventJoinParams params,
+                                            int expectedStatusCode) {
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<EventJoinParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<EventPayJoinResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/event/payJoin", HttpMethod.POST, requestEntity, EventPayJoinResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        EventPayJoinResponse response = responseEntity.getBody();
         return response;
     }
 }

@@ -146,6 +146,11 @@ public class EventEndpoint {
         return response;
     }
 
+    @PostMapping("/payJoin")
+    public EventPayJoinResponse payJoin(Authentication auth, @RequestBody EventJoinParams params) throws StripeException {
+        throw new IllegalStateException("Please implement this");
+    }
+
 
     private CreatePaymentWithPendingStripeSessionDto createPaymentWithPendingStripeSession(String stripeSecretKey,
                                                                                            VxUser vxUser,

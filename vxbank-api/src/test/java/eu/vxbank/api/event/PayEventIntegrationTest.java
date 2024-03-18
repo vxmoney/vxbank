@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import com.stripe.net.Webhook;
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventPayCreateResponse;
+import eu.vxbank.api.endpoints.event.dto.*;
 import eu.vxbank.api.endpoints.eventparticipant.dto.EventParticipantGetByEventIdResponse;
 import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
@@ -28,16 +27,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxGame;
+import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxDsService;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
@@ -162,11 +161,20 @@ public class PayEventIntegrationTest {
         dto.stripeSignature = stripeSignature;
         // WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
 
+
+        // second user
+        VxUser secondUser = setupFullUser("acct_1OvkKmBXn9qfb3R3");
+        String secondVxToken = tokenMap.get(secondUser.id);
+        EventJoinParams eventJoinParams = EventJoinParams.builder()
+                .eventId(eventPayCreateResponse.vxEventId)
+                .vxUserId(secondUser.id)
+                .build();
+        EventPayJoinResponse joinResponse = EventHelper.payJoin(restTemplate, port, secondVxToken, eventJoinParams, 200);
+
+
         System.out.println("Use 4000000000000077 test card");
         System.out.println("URL: " + eventPayCreateResponse.stripeSessionPaymentUrl);
         System.out.println("StripeSessionId: " + eventPayCreateResponse.stripeSessionId);
-
-
     }
 
 
