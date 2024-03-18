@@ -119,9 +119,8 @@ const Join1v1EventModal = ({ fetchParticipants }) => {
       .payJoin(vxUserInfo?.vxToken, eventJoinParams)
       .then((response) => {
         console.log("Joined event response:", response.data);
-        fetchParticipants();
         hideModal("join-modal");
-        // Handle successful response
+        window.open(response.data.stripeSessionPaymentUrl, "_blank")
       })
       .catch((error) => {
         console.error("Error joining event:", error);
