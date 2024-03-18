@@ -46,6 +46,7 @@ public class VxEventPayment {
     public String currency;
 
     public Long value;
+    public Long netValue;
 
     public State state;
 
