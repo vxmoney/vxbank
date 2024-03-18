@@ -165,7 +165,6 @@ public class EventEndpoint {
 
         VxEvent vxEvent = VxDsService.getById(params.eventId, systemService.getVxBankDatastore(), VxEvent.class);
 
-
         VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
                         new HashMap<>(),
                         systemService.getVxBankDatastore(),
@@ -180,7 +179,72 @@ public class EventEndpoint {
             throw new IllegalStateException("User can not receive payment in currency " + vxEvent.currency);
         }
 
-        throw new IllegalStateException("Please implement this");
+        VxEventPayment vxEventPayment = createPaymentWithPendingStripeSessionForVxEvent(vxUser, vxEvent);
+
+        EventPayJoinResponse response = new EventPayJoinResponse();
+        response.vxUserId = vxUser.id;
+        response.vxEventId = vxEvent.id;
+        response.vxEventPaymentId = vxEventPayment.id;
+        response.stripeSessionId = vxEventPayment.stripeSessionId;
+        response.stripeSessionPaymentUrl = vxEventPayment.stripeSessionPaymentUrl;
+        return response;
+    }
+
+    private VxEventPayment createPaymentWithPendingStripeSessionForVxEvent(
+            VxUser vxUser,
+            VxEvent vxEvent) throws StripeException {
+        double messageValue = Double.valueOf(vxEvent.entryPrice) / 100.0;
+        String message = String.format("Create %s %s event. Entry price %.2f %s",
+                vxEvent.vxGame,
+                vxEvent.type,
+                messageValue,
+                vxEvent.currency);
+
+        PriceCreateParams priceParams = PriceCreateParams.builder()
+                .setCurrency(vxEvent.currency)
+                .setProductData(PriceCreateParams.ProductData.builder()
+                        .setName(message)
+                        .build())
+                .setUnitAmount(vxEvent.entryPrice)
+                .build();
+
+        Price price = Price.create(priceParams);
+
+        // Line item details
+        SessionCreateParams.LineItem.Builder lineItemBuilder = SessionCreateParams.LineItem.builder()
+                .setPrice(price.getId()) // Use the ID of the dynamically created price
+                .setQuantity(1L);
+
+        String successUrl = systemService.getStripeRefreshRedirectUrl();
+        String cancelUrl = systemService.getStripeCancelRedirectUrl();
+
+        // Session parameters
+        SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .addLineItem(lineItemBuilder.build())
+                .setSuccessUrl(successUrl)
+                .setCancelUrl(cancelUrl);
+
+
+        SessionCreateParams sessionCreateParams = paramsBuilder.build();
+        Session session = Session.create(sessionCreateParams);
+
+        //<datastore section>
+        Long createTimeStamp = new Date().getTime();
+
+        // create event payment
+        VxEventPayment vxEventPayment = VxEventPayment.builder()
+                .vxEventId(vxEvent.id)
+                .vxUserId(vxUser.id)
+                .stripeSessionId(session.getId())
+                .stripeSessionPaymentUrl(session.getUrl())
+                .type(VxEventPayment.Type.debit)
+                .state(VxEventPayment.State.pending)
+                .description("Join tournament by event creator: stripeSessionId" + session.getId())
+                .value(vxEvent.entryPrice)
+                .build();
+        VxDsService.persist(vxEventPayment, systemService.getVxBankDatastore(), VxEventPayment.class);
+        return vxEventPayment;
     }
 
 

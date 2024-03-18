@@ -135,31 +135,33 @@ public class PayEventIntegrationTest {
 
         EventPayCreateResponse eventPayCreateResponse = EventHelper.payCreate(restTemplate, port, vxToken, params, 200);
 
-        String fileName = "payEventIntegrationTest/payCreateTest00.json";
-        String fileContent = loadFileAsString(fileName);
+        {
+            String fileName = "payEventIntegrationTest/payCreateTest00.json";
+            String fileContent = loadFileAsString(fileName);
 
-        String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
-        String body = fileContent.replace("#tagStripeSessionId", eventPayCreateResponse.stripeSessionId);
-        long timeStamp = (new Date()).getTime();
-        String payload = timeStamp + "." + body;
-        String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
-        String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
+            String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
+            String body = fileContent.replace("#tagStripeSessionId", eventPayCreateResponse.stripeSessionId);
+            long timeStamp = (new Date()).getTime();
+            String payload = timeStamp + "." + body;
+            String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
+            String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
 
-        // check participates before.
-        EventParticipantGetByEventIdResponse participants =
-                EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
-        Assertions.assertEquals(0, participants.participantList.size());
+            // check participates before.
+            EventParticipantGetByEventIdResponse participants =
+                    EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+            Assertions.assertEquals(0, participants.participantList.size());
 
-        WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
+            WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
 
-        // check participates after.
-        participants = EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
-        Assertions.assertEquals(1, participants.participantList.size());
+            // check participates after.
+            participants = EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+            Assertions.assertEquals(1, participants.participantList.size());
 
-        HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
-        dto.payload = body;
-        dto.stripeSignature = stripeSignature;
-        // WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
+            HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
+            dto.payload = body;
+            dto.stripeSignature = stripeSignature;
+            // WebhookHelper.handleCheckoutSessionCompleted(restTemplate, port, dto, 200);
+        }
 
 
         // second user
@@ -171,6 +173,28 @@ public class PayEventIntegrationTest {
                 .build();
         EventPayJoinResponse joinResponse = EventHelper.payJoin(restTemplate, port, secondVxToken, eventJoinParams, 200);
 
+        {
+            String fileName = "payEventIntegrationTest/payCreateTest00.json";
+            String fileContent = loadFileAsString(fileName);
+
+            String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
+            String body = fileContent.replace("#tagStripeSessionId", joinResponse.stripeSessionId);
+            long timeStamp = (new Date()).getTime();
+            String payload = timeStamp + "." + body;
+            String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
+            String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
+
+            // check participates before.
+            EventParticipantGetByEventIdResponse participants =
+                    EventParticipantHelper.getByEventId(restTemplate, port, vxToken, joinResponse.vxEventId, 200);
+            Assertions.assertEquals(1, participants.participantList.size());
+
+            WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
+
+            // check participates after.
+            participants = EventParticipantHelper.getByEventId(restTemplate, port, vxToken, eventPayCreateResponse.vxEventId, 200);
+            Assertions.assertEquals(2, participants.participantList.size());
+        }
 
         System.out.println("Use 4000000000000077 test card");
         System.out.println("URL: " + eventPayCreateResponse.stripeSessionPaymentUrl);
