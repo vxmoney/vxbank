@@ -53,6 +53,12 @@ export const eventAPI = {
     };
     return instance.post("/join", eventData, { headers });
   },
+  payJoin: (vxToken, eventData) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post("/payJoin", eventData, { headers });
+  },
   closeEvent: (vxToken, closeEventParams) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,

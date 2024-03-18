@@ -110,6 +110,26 @@ const Join1v1EventModal = ({ fetchParticipants }) => {
       });
   };
 
+
+  const handlePayJoinSubmit = (e) => {
+    e.preventDefault();
+    // Here, you can use formData to send the object to your endpoint or perform any other actions
+    console.log(eventJoinParams); // Assuming eventJoinParams contains the necessary parameters for joining an event
+    eventAPI
+      .payJoin(vxUserInfo?.vxToken, eventJoinParams)
+      .then((response) => {
+        console.log("Joined event response:", response.data);
+        fetchParticipants();
+        hideModal("join-modal");
+        // Handle successful response
+      })
+      .catch((error) => {
+        console.error("Error joining event:", error);
+        setMessageAndShowAlertForABit("Error joining event");
+        // Handle error
+      });
+  };
+
   
 
   const myToast = showAlert && (
@@ -273,7 +293,7 @@ const Join1v1EventModal = ({ fetchParticipants }) => {
                 type="button"
                 data-modal-hide="pay-join-modal"
                 className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                onClick={handleJoinSubmit}
+                onClick={handlePayJoinSubmit}
               >
                 Yes, I&apos;m sure
               </button>
