@@ -126,8 +126,8 @@ public class EventEndpoint {
 
         Boolean clientCanReceivePaymentInCurrency =
                 VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
-                vxStripeConfig.stripeAccountId,
-                params.currency);
+                        vxStripeConfig.stripeAccountId,
+                        params.currency);
         if (!clientCanReceivePaymentInCurrency) {
             throw new IllegalStateException("User can not receive payment in currency " + params.currency);
         }
@@ -148,6 +148,38 @@ public class EventEndpoint {
 
     @PostMapping("/payJoin")
     public EventPayJoinResponse payJoin(Authentication auth, @RequestBody EventJoinParams params) throws StripeException {
+
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        if (!Objects.equals(vxUser.id, params.vxUserId)) {
+            throw new IllegalStateException("You can not create events for someone else");
+        }
+
+        List<VxEventParticipant> participants = VxDsService.getListByEventId(VxEventParticipant.class,
+                systemService.getVxBankDatastore(), params.eventId);
+        Optional<VxEventParticipant> optionalParticipant = participants.stream()
+                .filter(p -> p.vxUserId.equals(vxUser.id)).findFirst();
+        if (optionalParticipant.isPresent()) {
+            throw new IllegalStateException("User is already a participant ");
+        }
+
+        VxEvent vxEvent = VxDsService.getById(params.eventId, systemService.getVxBankDatastore(), VxEvent.class);
+
+
+        VxStripeConfig vxStripeConfig = VxDsService.getByUserId(vxUser.id,
+                        new HashMap<>(),
+                        systemService.getVxBankDatastore(),
+                        VxStripeConfig.class)
+                .get(0);
+
+        Boolean clientCanReceivePaymentInCurrency =
+                VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
+                        vxStripeConfig.stripeAccountId,
+                        vxEvent.currency);
+        if (!clientCanReceivePaymentInCurrency) {
+            throw new IllegalStateException("User can not receive payment in currency " + vxEvent.currency);
+        }
+
         throw new IllegalStateException("Please implement this");
     }
 
@@ -293,7 +325,7 @@ public class EventEndpoint {
 
         List<VxEventParticipant> participantList =
                 VxDsService.getParticipantsByEventId(systemService.getVxBankDatastore(),
-                vxEvent.id);
+                        vxEvent.id);
         participantList = participantList.stream()
                 .filter(p -> p.state == VxEventParticipant.State.active)
                 .toList();
