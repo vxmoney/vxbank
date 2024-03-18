@@ -6,6 +6,7 @@ import com.google.protobuf.ByteString;
 import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.BalanceTransaction;
 import com.stripe.model.Charge;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
@@ -54,9 +55,6 @@ public class WebhookEndpoint {
                 vxStripeKeys.tolerance);
 
 
-
-
-
         // Process the Stripe event based on the payload
         // Update your system based on the event
         String id = event.getId();
@@ -72,30 +70,15 @@ public class WebhookEndpoint {
 
             String paymentIntentId = session.getPaymentIntent();
             Stripe.apiKey = vxStripeKeys.stripeSecretKey;
+
+            //decode net value
             PaymentIntent paymentIntent = VxStripeUtil.getPaymentIntentByPaymentId(vxStripeKeys.stripeSecretKey,
                     paymentIntentId);
-            PaymentIntent refreshedIntent = PaymentIntent.retrieve(paymentIntentId);
-            //Charge  paymentIntent.getLatestCharge();
-            Long refreshAmountReceived = refreshedIntent.getAmountReceived();
-            Long refreshPaymentAmount = refreshedIntent.getAmount();
-            logger.info("refreshAmountReceived: " + refreshAmountReceived);
-            logger.info("refreshPaymentAmount: " + refreshPaymentAmount);
-
-
             Charge charge = paymentIntent.getLatestChargeObject();
-            if (charge != null){
-                Long chargeFee = charge.getApplicationFeeAmount();
-                logger.info("chargeFee "+ chargeFee);
-            }
-            Charge refreshCharge = paymentIntent.getLatestChargeObject();
-            if (refreshCharge != null){
-                Long refreshFee = refreshCharge.getApplicationFeeAmount();
-                logger.info("chargeFee "+ refreshFee);
-            }
+            BalanceTransaction balanceTransaction = paymentIntent.getLatestChargeObject()
+                    .getBalanceTransactionObject();
+            Long net = balanceTransaction.getNet();
 
-
-            // Now you have the session ID, and you can use it as needed
-            System.out.println("Session ID: " + sessionId);
 
             //try(CloudTaskClient)
             HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
@@ -143,20 +126,12 @@ public class WebhookEndpoint {
         if (!"succeeded".equals(paymentIntent.getStatus())) {
             throw new IllegalStateException("Payment not yet completed");
         }
-        // Payment is successful, you can now access the fees deducted by Stripe
-        Long stripeFee = paymentIntent.getApplicationFeeAmount(); // This returns the amount in cents
-        // Convert to a readable amount if needed
-        //double feeInDollars = stripeFee / 100.0;
 
-        // Now 'feeInDollars' contains the deducted Stripe fees
-        logger.info("stripeSessionId: "+ stripeSessionId);
-        logger.info("paymentIntentId: "+ paymentIntentId);
-        logger.info("stripeFee: "+ stripeFee);
-
-        Long amount = paymentIntent.getAmount();
-        Long amountReceived = paymentIntent.getAmountReceived();
-        logger.info("handleCheckoutSessionCompleted.amount: " + amount);
-        logger.info("handleCheckoutSessionCompleted.amountReceived: " + amountReceived);
+        //decode net value
+        BalanceTransaction balanceTransaction = paymentIntent.getLatestChargeObject()
+                .getBalanceTransactionObject();
+        Long net = balanceTransaction.getNet();
+        logger.info("DEBUG handleCheckoutSessionCompleted NET = " + net);
 
         logger.info("Time to finish implementing this DEBUG");
 

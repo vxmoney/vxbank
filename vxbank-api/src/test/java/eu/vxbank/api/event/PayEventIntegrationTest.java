@@ -149,6 +149,7 @@ public class PayEventIntegrationTest {
 
         System.out.println("Use 4000000000000077 test card");
         System.out.println("URL: " + eventPayCreateResponse.stripeSessionPaymentUrl);
+        System.out.println("StripeSessionId: "+ eventPayCreateResponse.stripeSessionId);
 
 
         HandleCheckoutSessionCompletedDto dto = new HandleCheckoutSessionCompletedDto();
