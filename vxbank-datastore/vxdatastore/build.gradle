@@ -17,7 +17,7 @@ publishing {
         maven(MavenPublication) {
             groupId = 'eu.vxbank'
             artifactId = 'datastore'
-            version = '0.0.001'
+            version = '0.0.002'
             from components.java
         }
     }

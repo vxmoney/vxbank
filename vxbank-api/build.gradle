@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
 
-	implementation 'eu.vxbank:datastore:0.0.001'
+	implementation 'eu.vxbank:datastore:0.0.002'
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'

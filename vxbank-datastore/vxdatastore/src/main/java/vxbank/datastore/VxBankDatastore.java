@@ -7,6 +7,7 @@ import com.google.cloud.datastore.DatastoreOptions;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import vxbank.datastore.data.models.*;
+import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.exceptions.VxBankDatastoreException;
 
 import java.io.IOException;
@@ -94,6 +95,7 @@ public class VxBankDatastore {
         factory.register(VxEventPayment.class);
         factory.register(VxEventParticipant.class);
         factory.register(VxEventResult.class);
+        factory.register(VxPublicEvent.class);
     }
 
     public Boolean getInitialized() {
