@@ -6,12 +6,15 @@ import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResp
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.publicevent.VxPublicEvent;
+import vxbank.datastore.data.service.VxDsService;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/publicEvent")
@@ -29,6 +32,36 @@ public class PublicEventEndpoint {
     @PostMapping
     public PublicEventCreateResponse create(Authentication auth, @RequestBody PublicEventCreateParams params) throws
             StripeException {
-        throw new IllegalStateException("Please implement this");
+
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        if (!Objects.equals(vxUser.id, params.vxUserId)) {
+            throw new IllegalStateException("You can not create events for someone else");
+        }
+
+        VxPublicEvent publicEvent = VxPublicEvent.builder()
+                .vxUserId(vxUser.id)
+                .vxIntegrationId(params.vxIntegrationId.toString())
+                .title(params.title)
+                .currency(params.currency)
+                .build();
+        VxDsService.persist(VxPublicEvent.class, systemService.getVxBankDatastore(), publicEvent);
+
+        ModelMapper mm = new ModelMapper();
+        PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
+        return response;
     }
+
+    @GetMapping("/{eventId}")
+    @ResponseBody
+    public PublicEventCreateResponse get(Authentication auth, @PathVariable Long eventId) {
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        VxPublicEvent publicEvent = VxDsService.getById(VxPublicEvent.class, systemService.getVxBankDatastore(), eventId);
+
+        ModelMapper mm = new ModelMapper();
+        PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
+        return response;
+    }
+
 }
