@@ -75,7 +75,7 @@ public class PublicEventHelper {
     public static PublicEventSearchResponse search(TestRestTemplate restTemplate,
                                                   int port,
                                                   String vxToken,
-                                                  Long userId,
+                                                  Long vxUserId,
                                                   int expectedStatusCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
@@ -86,7 +86,7 @@ public class PublicEventHelper {
 
         // Build the URL with query parameters
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/publicEvent")
-                .queryParam("userId", userId);
+                .queryParam("vxUserId", vxUserId);
 
         // Make the GET request to /ping/whoAmI
         ResponseEntity<PublicEventSearchResponse> responseEntity = restTemplate.exchange(builder.toUriString(),
