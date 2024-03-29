@@ -3,6 +3,7 @@ package vxbank.datastore.data.service;
 import com.googlecode.objectify.cmd.Query;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.*;
+import vxbank.datastore.data.publicevent.VxPublicEvent;
 
 import javax.swing.plaf.PanelUI;
 import java.util.*;
@@ -176,6 +177,16 @@ public class VxDsService {
 
         query = query.chunkAll();
         List<VxEvent> eventList = query.list();
+        return eventList;
+    }
+
+    public static List<VxPublicEvent> searchPublicEvent(VxBankDatastore ds, Long vxUserId){
+        Query<VxPublicEvent> query = ds.ofy.load().type(VxPublicEvent.class);
+        query = query.filter("vxUserId", vxUserId);
+        // order by createTimeStamp
+        query = query.order("-createTimeStamp");
+        query = query.chunkAll();
+        List<VxPublicEvent> eventList = query.list();
         return eventList;
     }
 

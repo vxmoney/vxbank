@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.service.VxDsService;
@@ -76,9 +77,19 @@ public class PublicEventEndpoint {
 
     @GetMapping
     @ResponseBody
-    public PublicEventSearchResponse search(@RequestParam(name = "vxUserId")  String vxUserId) {
+    public PublicEventSearchResponse search(Authentication auth, @RequestParam(name = "vxUserId") Long vxUserId) {
 
-        throw new IllegalStateException("Please implement this");
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+
+        if (!Objects.equals(vxUser.id, vxUserId)) {
+            throw new IllegalStateException("You can not create events for someone else");
+        }
+
+        List<VxPublicEvent> vxPublicEventList = VxDsService.searchPublicEvent(systemService.getVxBankDatastore(),
+                vxUserId);
+        PublicEventSearchResponse response = new PublicEventSearchResponse();
+        response.eventList = vxPublicEventList;
+        return response;
     }
 
 }
