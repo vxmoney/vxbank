@@ -1,6 +1,6 @@
 env: standard
 runtime: nodejs20
-# service: web-app
+service: vxEvents
 handlers:
   - url: /.*
     secure: always
