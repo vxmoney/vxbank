@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
+import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/publicEvent")
@@ -46,11 +45,16 @@ public class PublicEventEndpoint {
         VxPublicEvent publicEvent = VxPublicEvent.builder()
                 .vxUserId(vxUser.id)
                 .vxIntegrationId(params.vxIntegrationId.toString())
-                .managerIdList(Collections.singletonList(vxUser.id))
                 .title(params.title)
                 .currency(params.currency)
                 .build();
         VxDsService.persist(VxPublicEvent.class, systemService.getVxBankDatastore(), publicEvent);
+
+        VxPublicEventManager publicEventManager = VxPublicEventManager.builder()
+                .userId(vxUser.id)
+                .publicEventId(publicEvent.id)
+                .build();
+        VxDsService.persist(VxPublicEventManager.class, systemService.getVxBankDatastore(), publicEventManager);
 
         ModelMapper mm = new ModelMapper();
         PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
@@ -62,17 +66,30 @@ public class PublicEventEndpoint {
     public PublicEventCreateResponse get(Authentication auth, @PathVariable Long eventId) {
         VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
 
+
+
+        if (!userIsPublicEventManger(vxUser.id, eventId)) {
+            throw new IllegalStateException("You are not VxPublicEvent manager");
+        }
+
         VxPublicEvent publicEvent = VxDsService.getById(VxPublicEvent.class,
                 systemService.getVxBankDatastore(),
                 eventId);
-        List<Long> managerIdList = publicEvent.managerIdList;
-        if (managerIdList == null || !managerIdList.contains(vxUser.id)) {
-            throw new IllegalStateException("You are not allowed to read full VxPublicEvent response");
-        }
 
         ModelMapper mm = new ModelMapper();
         PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
+
         return response;
+    }
+
+    private boolean userIsPublicEventManger(Long id, Long eventId) {
+        List<VxPublicEventManager> eventList = VxDsService.getByUserId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(),
+                id);
+        Optional<VxPublicEventManager> optionalVxPublicEventManager = eventList.stream()
+                .filter(pe -> pe.publicEventId.equals(eventId))
+                .findFirst();
+        return optionalVxPublicEventManager.isPresent();
     }
 
     @GetMapping

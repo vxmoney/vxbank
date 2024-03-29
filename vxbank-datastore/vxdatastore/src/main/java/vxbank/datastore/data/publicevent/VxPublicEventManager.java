@@ -13,19 +13,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VxPublicEvent {
-
+public class VxPublicEventManager {
     @Id
     public Long id;
     @Index
-    public Long vxUserId;
+    public Long userId;
     @Index
-    public String vxIntegrationId;
-
-    public String title;
-
-    public String currency;
-
-    @Index
-    public Long createTimeStamp;
+    public Long publicEventId;
 }
