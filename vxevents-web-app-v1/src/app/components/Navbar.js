@@ -35,15 +35,18 @@ export default function Navbar() {
         <li className="p-2 cursor-pointer">
           <Link href="/">Home</Link>
         </li>
-        <li className="p-2 cursor-pointer">
-          <Link href="/about">About</Link>
-        </li>
-        <li className="p-2 cursor-pointer">
-          <Link href="/profile">Profile</Link>
-        </li>
-        <li className="p-2 cursor-pointer">
-          <Link href="/events">Events</Link>
-        </li>
+        {vxUserInfo && (
+          <>
+            <li className="p-2 cursor-pointer">
+              <Link href="/profile">Profile</Link>
+            </li>
+
+            <li className="p-2 cursor-pointer">
+              <Link href="/manageEvents">Events</Link>
+            </li>
+          </>
+        )}
+
         <li className="p-2 cursor-pointer">
           <Link href="/usageExamples">TestingCorner</Link>
         </li>
@@ -62,9 +65,8 @@ export default function Navbar() {
               </li>
             </>
           ))}
-          <ThemeSwitch/>
+        <ThemeSwitch />
       </ul>
-      
     </div>
   );
 }
