@@ -91,7 +91,10 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000", "https://vxbank-eu-dev.ew.r.appspot.com", "https://vxbank-eu-prod.ew.r.appspot.com")
+                        .allowedOrigins("http://localhost:3000",
+                                "https://vxbank-eu-dev.ew.r.appspot.com",
+                                "https://vxbank-eu-prod.ew.r.appspot.com",
+                                "https://vxevents-dot-vxbank-eu-dev.ew.r.appspot.com")
                         .allowedMethods("*")
                         .allowedHeaders("*");
             }
