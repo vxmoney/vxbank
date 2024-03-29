@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Builder(toBuilder = true)
 @Data
@@ -17,9 +19,9 @@ public class VxPublicEvent {
 
     @Id
     public Long id;
-
     @Index
     public Long vxUserId;
+    public List<Long> managerIdList;
     @Index
     public String vxIntegrationId;
 
