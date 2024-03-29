@@ -77,6 +77,14 @@ openVsCode() {
   exit
 }
 
+openVxEventsCode() {
+  # nvm alias default 20
+  unsetVariables
+  cd ../vxevents-web-app-v1
+  nohup code .
+  exit
+}
+
 gcloudLogin() {
   firebase logout
   firebase login
