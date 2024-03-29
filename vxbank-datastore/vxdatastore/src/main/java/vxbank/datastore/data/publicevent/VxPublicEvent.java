@@ -20,8 +20,12 @@ public class VxPublicEvent {
 
     @Index
     public Long vxUserId;
+    @Index
+    public String vxIntegrationId;
 
     public String title;
+
+    public String currency;
 
     @Index
     public Long createTimeStamp;
