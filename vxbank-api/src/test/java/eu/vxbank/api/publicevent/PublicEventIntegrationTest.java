@@ -7,6 +7,7 @@ import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventGetResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxGame;
 
 import java.util.Date;
 
@@ -139,6 +141,34 @@ public class PublicEventIntegrationTest {
         PublicEventGetResponse getResponse = PublicEventHelper.get(restTemplate, port,
                 setup.vxToken, publicEventCreateResponse.id, 200);
         Assertions.assertEquals(publicEventCreateResponse.id, getResponse.id);
+    }
+
+    @Test
+    public void testSearch() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup setup = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
+        Long timeStamp = new Date().getTime();
+        String title = "Event - " + timeStamp;
+
+        PublicEventCreateParams params = PublicEventCreateParams.builder()
+                .vxUserId(setup.userId)
+                .vxIntegrationId(VxIntegrationId.vxEvents)
+                .title(title)
+                .currency("eur")
+                .build();
+
+        PublicEventHelper.create(restTemplate,
+                port,
+                setup.vxToken,
+                params,
+                200);
+
+        PublicEventSearchResponse publicEventSearchResponse =
+                PublicEventHelper.search(
+                        restTemplate,
+                        port,
+                        setup.vxToken,
+                        setup.userId,
+                        200  );
     }
 
 }

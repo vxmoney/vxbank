@@ -3,6 +3,7 @@ package eu.vxbank.api.endpoints.publicevent.publicevent;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
@@ -71,6 +72,13 @@ public class PublicEventEndpoint {
         ModelMapper mm = new ModelMapper();
         PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
         return response;
+    }
+
+    @GetMapping
+    @ResponseBody
+    public PublicEventSearchResponse search(@RequestParam(name = "vxUserId")  String vxUserId) {
+
+        throw new IllegalStateException("Please implement this");
     }
 
 }
