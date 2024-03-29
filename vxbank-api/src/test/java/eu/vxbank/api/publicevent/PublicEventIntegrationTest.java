@@ -136,11 +136,11 @@ public class PublicEventIntegrationTest {
         Assertions.assertNotNull(publicEventCreateResponse.id);
         Assertions.assertEquals(setup.userId, publicEventCreateResponse.vxUserId);
         Assertions.assertNotNull(publicEventCreateResponse.managerIdList);
-        Assertions.assertTrue(publicEventCreateResponse.managerIdList.contains(setup.userId));
 
         PublicEventGetResponse getResponse = PublicEventHelper.get(restTemplate, port,
                 setup.vxToken, publicEventCreateResponse.id, 200);
         Assertions.assertEquals(publicEventCreateResponse.id, getResponse.id);
+        Assertions.assertTrue(getResponse.managerIdList.contains(setup.userId));
     }
 
     @Test

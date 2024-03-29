@@ -18,6 +18,7 @@ import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/publicEvent")
@@ -58,6 +59,7 @@ public class PublicEventEndpoint {
 
         ModelMapper mm = new ModelMapper();
         PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
+        response.managerIdList = Collections.singletonList(vxUser.id);
         return response;
     }
 
@@ -67,17 +69,25 @@ public class PublicEventEndpoint {
         VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
 
 
-
         if (!userIsPublicEventManger(vxUser.id, eventId)) {
             throw new IllegalStateException("You are not VxPublicEvent manager");
         }
 
+        // get event
         VxPublicEvent publicEvent = VxDsService.getById(VxPublicEvent.class,
                 systemService.getVxBankDatastore(),
                 eventId);
-
         ModelMapper mm = new ModelMapper();
         PublicEventCreateResponse response = mm.map(publicEvent, PublicEventCreateResponse.class);
+
+        // get managers
+        List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(),
+                eventId);
+        List<Long> managerIdList = managerList.stream()
+                .map(VxPublicEventManager::getUserId)
+                .toList();
+        response.managerIdList = managerIdList;
 
         return response;
     }
