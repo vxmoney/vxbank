@@ -82,7 +82,7 @@ public class PublicEventEndpoint {
         VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
 
         if (!Objects.equals(vxUser.id, vxUserId)) {
-            throw new IllegalStateException("You can not create events for someone else");
+            throw new IllegalStateException("You can not search events for someone else");
         }
 
         List<VxPublicEvent> vxPublicEventList = VxDsService.searchPublicEvent(systemService.getVxBankDatastore(),
