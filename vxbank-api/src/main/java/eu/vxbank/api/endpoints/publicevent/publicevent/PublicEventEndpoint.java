@@ -1,8 +1,7 @@
 package eu.vxbank.api.endpoints.publicevent.publicevent;
 
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
-import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -28,7 +27,7 @@ public class PublicEventEndpoint {
     private VxIntegrationConfig vxIntegrationConfig;
 
     @PostMapping
-    public PublicEventCreateResponse create(Authentication auth, @RequestBody EventCreateParams params) throws
+    public PublicEventCreateResponse create(Authentication auth, @RequestBody PublicEventCreateParams params) throws
             StripeException {
         throw new IllegalStateException("Please implement this");
     }
