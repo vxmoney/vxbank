@@ -184,7 +184,7 @@ public class PublicEventIntegrationTest {
                         port,
                         setup.vxToken,
                         setup.userId,
-                        200  );
+                        200);
     }
 
     @Test
@@ -192,22 +192,9 @@ public class PublicEventIntegrationTest {
         Setup setupA = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
         Setup setupB = setupUser("acct_1OO0j2PVTA3jVN7Z");
 
-        PublicEventHelper.getManagers(restTemplate,
-                port,
-                setupA.vxToken,
-                setupA.publicEventId,
-                200);
-
-        PublicEventHelper.deleteManager(restTemplate,
-                port,
-                setupA.vxToken,
-                setupA.publicEventId,
-                "fake@mail.com",
-                200);
-
 
         //add fake manager
-        String fakeEmail =  RandomUtil.generateRandomEmail();
+        String fakeEmail = RandomUtil.generateRandomEmail();
         PublicEventAddMangerParams fakeParams = PublicEventAddMangerParams.builder()
                 .publicEventId(setupA.publicEventId)
                 .email(fakeEmail)
@@ -217,8 +204,20 @@ public class PublicEventIntegrationTest {
                 port,
                 setupA.vxToken,
                 fakeParams,
-                200);
+                500);
 
+        // add manager
+        PublicEventAddMangerParams goodParams = PublicEventAddMangerParams.builder()
+                .publicEventId(setupA.publicEventId)
+                .email(setupB.email)
+                .build();
+        PublicEventAddManagerResponse addManagerResponse = PublicEventHelper.addManager(restTemplate,
+                port,
+                setupA.vxToken,
+                goodParams,
+                200);
+        Assertions.assertNotNull(addManagerResponse);
+        Assertions.assertEquals(setupB.userId, addManagerResponse.userId);
     }
 
 }

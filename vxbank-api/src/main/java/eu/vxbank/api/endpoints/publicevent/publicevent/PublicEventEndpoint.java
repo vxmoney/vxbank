@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
@@ -121,13 +122,42 @@ public class PublicEventEndpoint {
                                                         @PathVariable Long eventId,
                                                         @RequestBody PublicEventAddMangerParams params) throws
             StripeException {
+        VxUser currentUser = systemService.validateAndGetUser(auth);
+        VxPublicEvent vxPublicEvent = getVxEvent(params.publicEventId);
+        checkUserIsOwnerOfEvent(currentUser,vxPublicEvent);
+        VxUser vxUser = checkGetUserByEmail(params.email);
+        checkUserIsNotMangerForEvent(vxUser,vxPublicEvent);
+
         throw new IllegalStateException("Please implement this");
+    }
+
+    private void checkUserIsNotMangerForEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
+        List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(),
+                vxPublicEvent.id);
+        Set<Long> managersSet = managerList.stream().map(m -> m.userId).collect(Collectors.toSet());
+        if (managersSet.contains(vxUser.id)) {
+            throw new IllegalStateException("User is already a manager for this event");
+        }
+    }
+
+    private VxUser checkGetUserByEmail(String email) {
+        Optional<VxUser> user = VxDsService.getUserByEmail(email, systemService.getVxBankDatastore());
+        if (user.isEmpty()){
+            throw new IllegalStateException("No user by email " + email);
+        }
+        return user.get();
+    }
+
+    private VxPublicEvent getVxEvent(Long publicEventId) {
+        VxPublicEvent vxPublicEvent = VxDsService.getById(VxPublicEvent.class, systemService.getVxBankDatastore(), publicEventId);
+        return vxPublicEvent;
     }
 
     @DeleteMapping("/{eventId}/managers/{email}")
     public String managersDeleteManager(Authentication auth,
-                                                        @PathVariable Long eventId,
-                                                        @PathVariable String email) throws
+                                        @PathVariable Long eventId,
+                                        @PathVariable String email) throws
             StripeException {
         throw new IllegalStateException("Please implement this delete");
     }
@@ -142,25 +172,25 @@ public class PublicEventEndpoint {
                 systemService.getVxBankDatastore(), eventId);
 
         Set<Long> managersSet = managerList.stream().map(m -> m.userId).collect(Collectors.toSet());
-        if (!managersSet.contains(vxUser.id)){
+        if (!managersSet.contains(vxUser.id)) {
             throw new IllegalStateException("You are not a manger for this event");
         }
 
         List<Long> mangersIdList = managerList.stream().map(m -> m.userId).toList();
-        List<VxUser> managersList = VxDsService.getByIdList(systemService.getVxBankDatastore(),VxUser.class,mangersIdList);
+        List<VxUser> managersList = VxDsService.getByIdList(systemService.getVxBankDatastore(), VxUser.class, mangersIdList);
         PublicEventGetManagerListResponse response = new PublicEventGetManagerListResponse();
         response.managerList = managersList;
 
         return response;
     }
 
-    public void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent){
-        if (vxPublicEvent.vxUserId != vxUser.id){
+    public void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
+        if (vxPublicEvent.vxUserId != vxUser.id) {
             throw new IllegalStateException("User is now Owner of event");
         }
     }
 
-    public void checkUserIsManagerOfEvent(VxUser vxUser, Long vxPublicEventId){
+    public void checkUserIsManagerOfEvent(VxUser vxUser, Long vxPublicEventId) {
         throw new IllegalStateException("Please implement this");
     }
 }
