@@ -11,14 +11,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/publicEvent")
