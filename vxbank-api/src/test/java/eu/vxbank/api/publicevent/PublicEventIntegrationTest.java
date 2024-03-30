@@ -198,6 +198,13 @@ public class PublicEventIntegrationTest {
                 setupA.publicEventId,
                 200);
 
+        PublicEventHelper.deleteManager(restTemplate,
+                port,
+                setupA.vxToken,
+                setupA.publicEventId,
+                "fake@mail.com",
+                200);
+
 
         //add fake manager
         String fakeEmail =  RandomUtil.generateRandomEmail();

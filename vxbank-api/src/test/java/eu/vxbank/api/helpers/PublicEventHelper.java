@@ -70,10 +70,10 @@ public class PublicEventHelper {
     }
 
     public static PublicEventSearchResponse search(TestRestTemplate restTemplate,
-                                                  int port,
-                                                  String vxToken,
-                                                  Long vxUserId,
-                                                  int expectedStatusCode) {
+                                                   int port,
+                                                   String vxToken,
+                                                   Long vxUserId,
+                                                   int expectedStatusCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
 
@@ -99,10 +99,10 @@ public class PublicEventHelper {
     }
 
     public static PublicEventAddManagerResponse addManager(TestRestTemplate restTemplate,
-                                  int port,
-                                  String vxToken,
-                                  PublicEventAddMangerParams params,
-                                  int expectedStatusCode) {
+                                                           int port,
+                                                           String vxToken,
+                                                           PublicEventAddMangerParams params,
+                                                           int expectedStatusCode) {
         // Set up the HTTP headers
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
@@ -126,10 +126,10 @@ public class PublicEventHelper {
     }
 
     public static PublicEventGetManagerListResponse getManagers(TestRestTemplate restTemplate,
-                                   int port,
-                                   String vxToken,
-                                   Long publicEventId,
-                                   int expectedStatusCode) {
+                                                                int port,
+                                                                String vxToken,
+                                                                Long publicEventId,
+                                                                int expectedStatusCode) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
@@ -150,5 +150,31 @@ public class PublicEventHelper {
         PublicEventGetManagerListResponse response = responseEntity.getBody();
         return response;
 
+    }
+
+    public static String deleteManager(TestRestTemplate restTemplate,
+                                     int port,
+                                     String vxToken,
+                                     Long publicEventId,
+                                     String mail,
+                                     int expectedStatusCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEvent/" + publicEventId + "/managers/" + mail,
+                HttpMethod.DELETE,
+                requestEntity,
+                String.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        String response = responseEntity.getBody();
+        return response;
     }
 }

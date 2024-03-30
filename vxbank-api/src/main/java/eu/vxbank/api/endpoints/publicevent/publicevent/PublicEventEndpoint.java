@@ -124,6 +124,14 @@ public class PublicEventEndpoint {
         throw new IllegalStateException("Please implement this");
     }
 
+    @DeleteMapping("/{eventId}/managers/{email}")
+    public String managersDeleteManager(Authentication auth,
+                                                        @PathVariable Long eventId,
+                                                        @PathVariable String email) throws
+            StripeException {
+        throw new IllegalStateException("Please implement this delete");
+    }
+
     @GetMapping("/{eventId}/managers")
     @ResponseBody
     public PublicEventGetManagerListResponse managersGetManagers(Authentication auth, @PathVariable Long eventId) {
