@@ -192,6 +192,12 @@ public class PublicEventIntegrationTest {
         Setup setupA = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
         Setup setupB = setupUser("acct_1OO0j2PVTA3jVN7Z");
 
+        PublicEventHelper.getManagers(restTemplate,
+                port,
+                setupA.vxToken,
+                setupA.publicEventId,
+                200);
+
 
         //add fake manager
         String fakeEmail =  RandomUtil.generateRandomEmail();
@@ -205,6 +211,7 @@ public class PublicEventIntegrationTest {
                 setupA.vxToken,
                 fakeParams,
                 200);
+
     }
 
 }

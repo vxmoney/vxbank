@@ -233,10 +233,10 @@ public class VxDsService {
 
     public static <T> List<T> getByIdList(VxBankDatastore ds,
                                             Class<T> vxClass,
-                                            List<Long> vxEventIdList) {
+                                            List<Long> idList) {
        Map<Long, T> result = ds.ofy.load()
                 .type(vxClass)
-                .ids(vxEventIdList);
+                .ids(idList);
        if (result.isEmpty()){
            return Collections.emptyList();
        }

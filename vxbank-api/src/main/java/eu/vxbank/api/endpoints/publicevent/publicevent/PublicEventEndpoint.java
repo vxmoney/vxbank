@@ -1,10 +1,7 @@
 package eu.vxbank.api.endpoints.publicevent.publicevent;
 
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventAddMangerParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
@@ -17,10 +14,8 @@ import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/publicEvent")
@@ -121,12 +116,33 @@ public class PublicEventEndpoint {
         return response;
     }
 
-    @PostMapping("managersAddManager")
-    public PublicEventCreateResponse managersAddManager(Authentication auth, @RequestBody PublicEventAddMangerParams params) throws
+    @PostMapping("/managersAddManager")
+    public PublicEventCreateResponse managersAddManager(Authentication auth,
+                                                        @PathVariable Long eventId,
+                                                        @RequestBody PublicEventAddMangerParams params) throws
             StripeException {
         throw new IllegalStateException("Please implement this");
     }
 
+    @GetMapping("/{eventId}/managersGetManagers")
+    @ResponseBody
+    public PublicEventGetManagerListResponse managersGetManagers(Authentication auth, @PathVariable Long eventId) {
 
+        VxUser vxUser = systemService.validateAndGetUser(auth);
 
+        List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(), eventId);
+
+        Set<Long> managersSet = managerList.stream().map(m -> m.userId).collect(Collectors.toSet());
+        if (!managersSet.contains(vxUser.id)){
+            throw new IllegalStateException("You are not a manger for this event");
+        }
+
+        List<Long> mangersIdList = managerList.stream().map(m -> m.userId).toList();
+        List<VxUser> managersList = VxDsService.getByIdList(systemService.getVxBankDatastore(),VxUser.class,mangersIdList);
+        PublicEventGetManagerListResponse response = new PublicEventGetManagerListResponse();
+        response.managerList = managersList;
+
+        return response;
+    }
 }
