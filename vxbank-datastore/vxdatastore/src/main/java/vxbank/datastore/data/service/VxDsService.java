@@ -254,4 +254,10 @@ public class VxDsService {
 
         return list;
     }
+
+    public static <T> void delete(VxBankDatastore ds, T vxModel) {
+        ds.ofy.delete()
+                .entity(vxModel)
+                .now();
+    }
 }

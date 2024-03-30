@@ -227,6 +227,37 @@ public class PublicEventIntegrationTest {
                 200);
         Assertions.assertNotNull(addManagerResponse);
         Assertions.assertEquals(setupB.userId, addManagerResponse.userId);
+
+        // add manager again
+        PublicEventHelper.addManager(restTemplate,
+                port,
+                setupA.vxToken,
+                goodParams,
+                500);
+
+        // get mangers and check is in the list
+        PublicEventGetManagerListResponse managerListResponse = PublicEventHelper.getManagers(restTemplate,
+                port,
+                setupA.vxToken,
+                setupA.publicEventId,
+                200);
+        Assertions.assertTrue(managerListResponse.managerList.stream().anyMatch(m -> m.id.equals(setupB.userId)));
+
+        // delete manger
+        String deleteManagerResponse = PublicEventHelper.deleteManager(restTemplate,
+                port,
+                setupA.vxToken,
+                setupA.publicEventId,
+                setupB.email,
+                200);
+
+        // check manager is not in the list
+        managerListResponse = PublicEventHelper.getManagers(restTemplate,
+                port,
+                setupA.vxToken,
+                setupA.publicEventId,
+                200);
+        Assertions.assertFalse(managerListResponse.managerList.stream().anyMatch(m -> m.id.equals(setupB.userId)));
     }
 
 }

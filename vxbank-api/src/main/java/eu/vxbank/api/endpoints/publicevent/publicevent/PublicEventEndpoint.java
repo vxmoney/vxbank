@@ -176,7 +176,21 @@ public class PublicEventEndpoint {
                                         @PathVariable Long eventId,
                                         @PathVariable String email) throws
             StripeException {
-        throw new IllegalStateException("Please implement this delete");
+
+        VxUser currentUser = systemService.validateAndGetUser(auth);
+        VxPublicEvent vxPublicEvent = getVxEvent(eventId);
+        checkUserIsOwnerOfEvent(currentUser,vxPublicEvent);
+        VxUser vxUser = checkGetUserByEmail(email);
+        checkUserIsManagerOfEvent(vxUser,eventId);
+
+        List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(),
+                eventId);
+        VxPublicEventManager vxPublicEventManager = managerList.stream()
+                .filter(m -> m.userId.equals(vxUser.id))
+                .findFirst().get();
+        VxDsService.delete(systemService.getVxBankDatastore(), vxPublicEventManager);
+        return "OK";
     }
 
     @GetMapping("/{eventId}/managers")
@@ -203,11 +217,17 @@ public class PublicEventEndpoint {
 
     public void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
         if (vxPublicEvent.vxUserId != vxUser.id) {
-            throw new IllegalStateException("User is now Owner of event");
+            throw new IllegalStateException("User is not Owner of event");
         }
     }
 
     public void checkUserIsManagerOfEvent(VxUser vxUser, Long vxPublicEventId) {
-        throw new IllegalStateException("Please implement this");
+        List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(),
+                vxPublicEventId);
+        Set<Long> managersSet = managerList.stream().map(m -> m.userId).collect(Collectors.toSet());
+        if (!managersSet.contains(vxUser.id)) {
+            throw new IllegalStateException("User is not a manager for this event");
+        }
     }
 }
