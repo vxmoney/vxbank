@@ -153,4 +153,14 @@ public class PublicEventEndpoint {
 
         return response;
     }
+
+    public void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent){
+        if (vxPublicEvent.vxUserId != vxUser.id){
+            throw new IllegalStateException("User is now Owner of event");
+        }
+    }
+
+    public void checkUserIsManagerOfEvent(VxUser vxUser, Long vxPublicEventId){
+        throw new IllegalStateException("Please implement this");
+    }
 }
