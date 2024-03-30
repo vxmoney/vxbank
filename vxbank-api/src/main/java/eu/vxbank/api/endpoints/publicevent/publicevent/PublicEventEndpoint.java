@@ -118,17 +118,34 @@ public class PublicEventEndpoint {
     }
 
     @PostMapping("/{eventId}/managers")
-    public PublicEventCreateResponse managersAddManager(Authentication auth,
+    public PublicEventAddManagerResponse managersAddManager(Authentication auth,
                                                         @PathVariable Long eventId,
                                                         @RequestBody PublicEventAddMangerParams params) throws
             StripeException {
+
+        // check stuff
         VxUser currentUser = systemService.validateAndGetUser(auth);
         VxPublicEvent vxPublicEvent = getVxEvent(params.publicEventId);
         checkUserIsOwnerOfEvent(currentUser,vxPublicEvent);
         VxUser vxUser = checkGetUserByEmail(params.email);
         checkUserIsNotMangerForEvent(vxUser,vxPublicEvent);
 
-        throw new IllegalStateException("Please implement this");
+        // add manager
+        VxPublicEventManager publicEventManager = VxPublicEventManager.builder()
+                .userId(vxUser.id)
+                .publicEventId(vxPublicEvent.id)
+                .build();
+        VxDsService.persist(VxPublicEventManager.class, systemService.getVxBankDatastore(), publicEventManager);
+
+        PublicEventAddManagerResponse response = PublicEventAddManagerResponse.builder()
+                .id(publicEventManager.id)
+                .userId(vxUser.id)
+                .email(vxUser.email)
+                .publicEventId(vxPublicEvent.id)
+                .timeStamp(publicEventManager.timeStamp)
+                .build();
+
+        return response;
     }
 
     private void checkUserIsNotMangerForEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {

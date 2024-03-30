@@ -19,8 +19,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
+import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
+import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PublicEventIntegrationTest {
@@ -76,6 +79,9 @@ public class PublicEventIntegrationTest {
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
         SideStripeConfigHelper.setStripeAccountId(ds, setup.userId, setup.stripeAccountId);
+
+        Optional<VxUser> vxUser = VxDsService.getUserByEmail(setup.email, ds);
+        Assertions.assertTrue(vxUser.isPresent());
 
         return setup;
     }
@@ -205,6 +211,9 @@ public class PublicEventIntegrationTest {
                 setupA.vxToken,
                 fakeParams,
                 500);
+
+        Optional<VxUser> optionalUserB = VxDsService.getUserByEmail(setupB.email, systemService.getVxBankDatastore());
+        Assertions.assertTrue(optionalUserB.isPresent());
 
         // add manager
         PublicEventAddMangerParams goodParams = PublicEventAddMangerParams.builder()
