@@ -116,7 +116,7 @@ public class PublicEventEndpoint {
         return response;
     }
 
-    @PostMapping("/managersAddManager")
+    @PostMapping("/{eventId}/managers")
     public PublicEventCreateResponse managersAddManager(Authentication auth,
                                                         @PathVariable Long eventId,
                                                         @RequestBody PublicEventAddMangerParams params) throws
@@ -124,7 +124,7 @@ public class PublicEventEndpoint {
         throw new IllegalStateException("Please implement this");
     }
 
-    @GetMapping("/{eventId}/managersGetManagers")
+    @GetMapping("/{eventId}/managers")
     @ResponseBody
     public PublicEventGetManagerListResponse managersGetManagers(Authentication auth, @PathVariable Long eventId) {
 

@@ -113,7 +113,7 @@ public class PublicEventHelper {
 
         // Make the POST request
         ResponseEntity<PublicEventAddManagerResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/publicEvent/managersAddManager",
+                "http://localhost:" + port + "/publicEvent/" + params.publicEventId + "/managers",
                 HttpMethod.POST, requestEntity, PublicEventAddManagerResponse.class);
 
         // check status code
@@ -139,7 +139,7 @@ public class PublicEventHelper {
 
         // Make the GET request to /ping/whoAmI
         ResponseEntity<PublicEventGetManagerListResponse> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/publicEvent/" + publicEventId + "/managersGetManagers",
+                "http://localhost:" + port + "/publicEvent/" + publicEventId + "/managers",
                 HttpMethod.GET,
                 requestEntity,
                 PublicEventGetManagerListResponse.class);
