@@ -20,4 +20,5 @@ public class VxPublicEventManager {
     public Long userId;
     @Index
     public Long publicEventId;
+    public Long timeStamp;
 }

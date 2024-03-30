@@ -1,6 +1,7 @@
 package eu.vxbank.api.endpoints.publicevent.publicevent;
 
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventAddMangerParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
@@ -119,5 +120,13 @@ public class PublicEventEndpoint {
         response.eventList = vxPublicEventList;
         return response;
     }
+
+    @PostMapping("managersAddManager")
+    public PublicEventCreateResponse managersAddManager(Authentication auth, @RequestBody PublicEventAddMangerParams params) throws
+            StripeException {
+        throw new IllegalStateException("Please implement this");
+    }
+
+
 
 }

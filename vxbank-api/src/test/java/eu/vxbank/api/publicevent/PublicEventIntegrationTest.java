@@ -3,11 +3,7 @@ package eu.vxbank.api.publicevent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventGetResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -23,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
-import vxbank.datastore.data.models.VxGame;
 
 import java.util.Date;
 
@@ -35,6 +30,7 @@ public class PublicEventIntegrationTest {
         String vxToken;
         String stripeAccountId;
         String email;
+        Long publicEventId;
 
     }
 
@@ -51,7 +47,7 @@ public class PublicEventIntegrationTest {
     @Autowired
     SystemService systemService;
 
-    private Setup setupFullUser(String stripeAccountId) throws
+    private Setup setupUser(String stripeAccountId) throws
             FirebaseAuthException,
             JsonProcessingException,
             StripeException {
@@ -117,7 +113,7 @@ public class PublicEventIntegrationTest {
 
     @Test
     public void createGetTest001() throws StripeException, FirebaseAuthException, JsonProcessingException {
-        Setup setup = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
+        Setup setup = setupUser("acct_1OO0j2PVTA3jVN7Z");
         Long timeStamp = new Date().getTime();
         String title = "Event - " + timeStamp;
         PublicEventCreateParams params = PublicEventCreateParams.builder()
@@ -143,9 +139,29 @@ public class PublicEventIntegrationTest {
         Assertions.assertTrue(getResponse.managerIdList.contains(setup.userId));
     }
 
+    public Setup setupUserAndEvent(String stripeAccountId) throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup setup = setupUser(stripeAccountId);
+        Long timeStamp = new Date().getTime();
+        String title = "Event - " + timeStamp;
+        PublicEventCreateParams params = PublicEventCreateParams.builder()
+                .vxUserId(setup.userId)
+                .vxIntegrationId(VxIntegrationId.vxEvents)
+                .title(title)
+                .currency("eur")
+                .build();
+
+        PublicEventCreateResponse publicEventCreateResponse = PublicEventHelper.create(restTemplate,
+                port,
+                setup.vxToken,
+                params,
+                200);
+        setup.publicEventId = publicEventCreateResponse.id;
+        return setup;
+    }
+
     @Test
     public void testSearch() throws StripeException, FirebaseAuthException, JsonProcessingException {
-        Setup setup = setupFullUser("acct_1OO0j2PVTA3jVN7Z");
+        Setup setup = setupUser("acct_1OO0j2PVTA3jVN7Z");
         Long timeStamp = new Date().getTime();
         String title = "Event - " + timeStamp;
 
@@ -169,6 +185,26 @@ public class PublicEventIntegrationTest {
                         setup.vxToken,
                         setup.userId,
                         200  );
+    }
+
+    @Test
+    public void testAddManager() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup setupA = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
+        Setup setupB = setupUser("acct_1OO0j2PVTA3jVN7Z");
+
+
+        //add fake manager
+        String fakeEmail =  RandomUtil.generateRandomEmail();
+        PublicEventAddMangerParams fakeParams = PublicEventAddMangerParams.builder()
+                .publicEventId(setupA.publicEventId)
+                .email(fakeEmail)
+                .build();
+
+        PublicEventHelper.addManager(restTemplate,
+                port,
+                setupA.vxToken,
+                fakeParams,
+                200);
     }
 
 }

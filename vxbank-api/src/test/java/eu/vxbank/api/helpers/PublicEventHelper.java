@@ -4,10 +4,7 @@ import eu.vxbank.api.endpoints.event.dto.EventCreateParams;
 import eu.vxbank.api.endpoints.event.dto.EventCreateResponse;
 import eu.vxbank.api.endpoints.event.dto.EventGetResponse;
 import eu.vxbank.api.endpoints.event.dto.EventSearchResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventGetResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -98,6 +95,33 @@ public class PublicEventHelper {
         Assertions.assertEquals(expectedStatusCode, statusCode);
 
         PublicEventSearchResponse response = responseEntity.getBody();
+        return response;
+    }
+
+    public static PublicEventAddManagerResponse addManager(TestRestTemplate restTemplate,
+                                  int port,
+                                  String vxToken,
+                                  PublicEventAddMangerParams params,
+                                  int expectedStatusCode) {
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<PublicEventAddMangerParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<PublicEventAddManagerResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEvent/managersAddManager",
+                HttpMethod.POST, requestEntity, PublicEventAddManagerResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        PublicEventAddManagerResponse response = responseEntity.getBody();
         return response;
     }
 }
