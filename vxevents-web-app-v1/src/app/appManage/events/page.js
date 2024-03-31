@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import CreateEventModal from "./CreateEventModal";
-import EventsComponent from "../../components/EventsComponent";
+import PublicEventListComponent from "./PublicEventListComponent";
 import PayCreateEventModal from "../../components/event1v1payEvent/PayCreateEventModal";
 
 export default function EventsManagePage() {
@@ -35,7 +35,7 @@ export default function EventsManagePage() {
       </section>
 
       <CreateEventModal />
-      <EventsComponent />
+      <PublicEventListComponent />
       {payModalOpen && (
         <PayCreateEventModal isOpen={payModalOpen} closeModal={closePayModal} />
       )}

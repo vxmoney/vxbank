@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { UserAuth } from "../context/AuthContext";
-import { useVxContext } from "../context/VxContext";
+import { UserAuth } from "../../context/AuthContext";
+import { useVxContext } from "../../context/VxContext";
 import Link from "next/link";
 
-export default function EventsComponent() {
+export default function PublicEventListComponent() {
   const { events, fetchEvents } = useVxContext();
 
   const { vxUserInfo } = UserAuth();
