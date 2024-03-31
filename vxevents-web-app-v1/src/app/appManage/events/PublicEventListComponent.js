@@ -11,7 +11,7 @@ export default function PublicEventListComponent() {
   useEffect(() => {
     // Check if vxToken is available before calling fetchEvents
     if (vxUserInfo && vxUserInfo?.vxToken) {
-      fetchEvents(vxUserInfo?.vxToken);
+      fetchEvents(vxUserInfo?.vxToken, vxUserInfo?.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

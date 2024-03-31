@@ -18,8 +18,9 @@ export const VxProvider = ({ children }) => {
       return;
     }
 
-    eventAPI.search(vxToken)
+    publicEventAPI.search(vxToken,vxUserId)
       .then(response => {
+        console.log('fetchEvents response:', response.data);
         setEvents(response.data.eventList);
       })
       .catch(error => {

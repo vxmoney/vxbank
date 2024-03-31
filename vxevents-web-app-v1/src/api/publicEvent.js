@@ -27,9 +27,7 @@ export const publicEventAPI = {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
-    const params = {
-      vxUserId
-    };
-    return instance.get("", { headers, params });
+    
+    return instance.get("", { headers, params: { vxUserId } });
   },
 };
