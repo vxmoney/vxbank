@@ -15,7 +15,6 @@ const ProfileComponent = ({ id, email, name, stripeConfigState, stripeId }) => {
         const refreshResponse = await userAPI.refreshVxToken(
           vxUserInfo.vxToken
         );
-        console.log("refreshResponse", refreshResponse.data);
         setRefreshedVxUserInfo(refreshResponse.data);
       } catch (error) {
         console.error("refreshVxToken error: ", error);

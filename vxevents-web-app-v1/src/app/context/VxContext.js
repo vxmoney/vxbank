@@ -20,7 +20,6 @@ export const VxProvider = ({ children }) => {
 
     publicEventAPI.search(vxToken,vxUserId)
       .then(response => {
-        console.log('fetchEvents response:', response.data);
         setEvents(response.data.eventList);
       })
       .catch(error => {

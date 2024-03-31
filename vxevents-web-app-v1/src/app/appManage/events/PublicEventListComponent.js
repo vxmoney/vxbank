@@ -45,7 +45,7 @@ export default function PublicEventListComponent() {
                 {event.id}
               </td>
               <td className="px-6 py-4">
-                <Link href={`/events/leagueOfLegends/${event.id}`}>
+                <Link href={`/appManage/events/${event.id}`}>
                   {event.title}
                 </Link>
               </td>
