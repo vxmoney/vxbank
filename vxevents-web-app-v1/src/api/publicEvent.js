@@ -20,5 +20,16 @@ export const publicEventAPI = {
     };
     return instance.post("", eventData, { headers });
   },
-  
+  search: (
+    vxToken,
+    vxUserId
+  ) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    const params = {
+      vxUserId
+    };
+    return instance.get("", { headers, params });
+  },
 };

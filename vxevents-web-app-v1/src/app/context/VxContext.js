@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import { eventAPI } from '@/api/event';
+import { publicEventAPI } from '@/api/publicEvent';
 
 
 const VxContext = createContext();
@@ -11,7 +12,7 @@ export const useVxContext = () => {
 export const VxProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
 
-  const fetchEvents = (vxToken) => {
+  const fetchEvents = (vxToken,vxUserId) => {
     if (!vxToken) {
       console.error('VxToken is required for fetching events.');
       return;
