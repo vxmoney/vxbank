@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { UserAuth } from "../../context/AuthContext";
-import { eventAPI } from "@/api/event";
+import { publicEventAPI } from "@/api/publicEvent";
 import { useVxContext } from "../../context/VxContext";
 
 const CreateEventModal = () => {
@@ -11,11 +11,9 @@ const CreateEventModal = () => {
   const [eventCreateParams, setEventCreateParams] = useState({
     vxUserId: vxUserInfo?.id,
     type: "payed1V1",
-    vxIntegrationId: "vxGaming",
-    vxGame: "leagueOfLegends",
+    vxIntegrationId: "vxEvents",
     title: "Example 001",
     currency: "eur",
-    entryPrice: "500",
   });
 
   const handleInputChange = (e) => {
@@ -36,10 +34,10 @@ const CreateEventModal = () => {
     e.preventDefault();
     // Here, you can use formData to send the object to your endpoint or perform any other actions
     console.log(eventCreateParams);
-    eventAPI
+    publicEventAPI
       .create(vxUserInfo?.vxToken, eventCreateParams)
       .then((response) => {
-        console.log("Event created:", response.data);
+        console.log("PublicEvent created:", response.data);
         fetchEvents(vxUserInfo?.vxToken)
         closeModal();
         // Handle successful response
@@ -152,24 +150,7 @@ const CreateEventModal = () => {
                 />
               </div>
 
-              {/* Entry Price Section */}
-              <div>
-                <label
-                  htmlFor="entryPrice"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Entry Price (in cents)
-                </label>
-                <input
-                  type="number"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Enter price in cents"
-                  required
-                  id="entryPrice"
-                  value={eventCreateParams.entryPrice}
-                  onChange={handleInputChange}
-                />
-              </div>
+              
             </div>
           </form>
 
