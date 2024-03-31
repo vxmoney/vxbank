@@ -191,6 +191,8 @@ public class PublicEventIntegrationTest {
                         setup.vxToken,
                         setup.userId,
                         200);
+        Assertions.assertEquals(1, publicEventSearchResponse.eventList.size());
+        Assertions.assertTrue(publicEventSearchResponse.eventList.stream().anyMatch(e -> e.title.equals(title)));
     }
 
     @Test

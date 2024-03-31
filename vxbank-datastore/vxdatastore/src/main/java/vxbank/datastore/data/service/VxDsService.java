@@ -200,6 +200,8 @@ public class VxDsService {
         return eventList;
     }
 
+
+
     public static List<VxEventParticipant> getParticipantsByEventId(VxBankDatastore ds, Long vxEventId) {
         Query<VxEventParticipant> query = ds.ofy.load()
                 .type(VxEventParticipant.class);

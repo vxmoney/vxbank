@@ -110,8 +110,19 @@ public class PublicEventEndpoint {
             throw new IllegalStateException("You can not search events for someone else");
         }
 
-        List<VxPublicEvent> vxPublicEventList = VxDsService.searchPublicEvent(systemService.getVxBankDatastore(),
+        List<VxPublicEventManager> managerList = VxDsService.getByUserId(VxPublicEventManager.class,
+                systemService.getVxBankDatastore(),
                 vxUserId);
+        //order list descending by timeStamp
+        managerList.sort(Comparator.comparing(VxPublicEventManager::getTimeStamp).reversed());
+
+        List<Long> publicEventIdSet = managerList.stream()
+                .map(VxPublicEventManager::getPublicEventId).toList();
+
+
+        List<VxPublicEvent> vxPublicEventList = VxDsService.getByIdList(systemService.getVxBankDatastore(),
+                VxPublicEvent.class, publicEventIdSet);
+
         PublicEventSearchResponse response = new PublicEventSearchResponse();
         response.eventList = vxPublicEventList;
         return response;
@@ -119,16 +130,16 @@ public class PublicEventEndpoint {
 
     @PostMapping("/{eventId}/managers")
     public PublicEventAddManagerResponse managersAddManager(Authentication auth,
-                                                        @PathVariable Long eventId,
-                                                        @RequestBody PublicEventAddMangerParams params) throws
+                                                            @PathVariable Long eventId,
+                                                            @RequestBody PublicEventAddMangerParams params) throws
             StripeException {
 
         // check stuff
         VxUser currentUser = systemService.validateAndGetUser(auth);
         VxPublicEvent vxPublicEvent = getVxEvent(params.publicEventId);
-        checkUserIsOwnerOfEvent(currentUser,vxPublicEvent);
+        checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
         VxUser vxUser = checkGetUserByEmail(params.email);
-        checkUserIsNotMangerForEvent(vxUser,vxPublicEvent);
+        checkUserIsNotMangerForEvent(vxUser, vxPublicEvent);
 
         // add manager
         VxPublicEventManager publicEventManager = VxPublicEventManager.builder()
@@ -160,7 +171,7 @@ public class PublicEventEndpoint {
 
     private VxUser checkGetUserByEmail(String email) {
         Optional<VxUser> user = VxDsService.getUserByEmail(email, systemService.getVxBankDatastore());
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             throw new IllegalStateException("No user by email " + email);
         }
         return user.get();
@@ -179,9 +190,9 @@ public class PublicEventEndpoint {
 
         VxUser currentUser = systemService.validateAndGetUser(auth);
         VxPublicEvent vxPublicEvent = getVxEvent(eventId);
-        checkUserIsOwnerOfEvent(currentUser,vxPublicEvent);
+        checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
         VxUser vxUser = checkGetUserByEmail(email);
-        checkUserIsManagerOfEvent(vxUser,eventId);
+        checkUserIsManagerOfEvent(vxUser, eventId);
 
         List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
                 systemService.getVxBankDatastore(),
