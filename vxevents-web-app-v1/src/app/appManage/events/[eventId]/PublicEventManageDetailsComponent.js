@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import { publicEventAPI } from "@/api/publicEvent";
+import Link from "next/link";
 
 export default function PublicEventManageDetailsComponent() {
   const { vxUserInfo } = UserAuth();
@@ -54,16 +55,34 @@ export default function PublicEventManageDetailsComponent() {
                   </th>
                   <td className="px-6 py-4">{eventData.currency}</td>
                 </tr>
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Client app
+                  </th>
+                  <td className="px-6 py-4">
+                    <Link href={`/appClient/publicEvent/${eventId}`}>
+                      <button
+                        type="button"
+                        class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      >
+                        View client app
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
               </tbody>
             </table>
             <h6 className="pt-8 mb-2 text-1xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Other this to be implemented
+              Other thing to be implemented
             </h6>
             <p class="font-normal text-gray-700 dark:text-gray-400">
-              How QR code for clients to login
+              How QR code for clients can register to this event
             </p>
             <p class="font-normal text-gray-700 dark:text-gray-400">
               Show QR code for clients to self pay
+            </p>
+            <p class="font-normal text-gray-700 dark:text-gray-400">
+              Many other this
             </p>
           </div>
         </div>
