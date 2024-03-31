@@ -183,6 +183,12 @@ public class PublicEventIntegrationTest {
                 setup.vxToken,
                 params,
                 200);
+        PublicEventHelper.create(restTemplate,
+                port,
+                setup.vxToken,
+                params,
+                200);
+
 
         PublicEventSearchResponse publicEventSearchResponse =
                 PublicEventHelper.search(
@@ -191,7 +197,7 @@ public class PublicEventIntegrationTest {
                         setup.vxToken,
                         setup.userId,
                         200);
-        Assertions.assertEquals(1, publicEventSearchResponse.eventList.size());
+        Assertions.assertEquals(2, publicEventSearchResponse.eventList.size());
         Assertions.assertTrue(publicEventSearchResponse.eventList.stream().anyMatch(e -> e.title.equals(title)));
     }
 

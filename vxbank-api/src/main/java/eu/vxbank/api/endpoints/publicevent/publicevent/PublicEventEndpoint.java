@@ -41,17 +41,21 @@ public class PublicEventEndpoint {
             throw new IllegalStateException("You can not create events for someone else");
         }
 
+        Long timeStamp = System.currentTimeMillis();
+
         VxPublicEvent publicEvent = VxPublicEvent.builder()
                 .vxUserId(vxUser.id)
                 .vxIntegrationId(params.vxIntegrationId.toString())
                 .title(params.title)
                 .currency(params.currency)
+                .createTimeStamp(timeStamp)
                 .build();
         VxDsService.persist(VxPublicEvent.class, systemService.getVxBankDatastore(), publicEvent);
 
         VxPublicEventManager publicEventManager = VxPublicEventManager.builder()
                 .userId(vxUser.id)
                 .publicEventId(publicEvent.id)
+                .timeStamp(timeStamp)
                 .build();
         VxDsService.persist(VxPublicEventManager.class, systemService.getVxBankDatastore(), publicEventManager);
 
