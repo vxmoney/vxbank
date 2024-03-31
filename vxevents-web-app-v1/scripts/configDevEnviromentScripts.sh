@@ -16,6 +16,12 @@ initEnvLocalhost() {
     echo "Curent env = localhost"
 }
 
+initEnvBogdanHome(){
+    cp scripts/dev-firebase.js src/app/firebase.js
+    cp scripts/bogdanHome-apiConfig.js src/api/apiConfig.js
+    echo "Curent env = BogdanHome"
+}
+
 deployOnDev() {
     initEnvDevelopment
     gcloud config set project vxbank-eu-dev
