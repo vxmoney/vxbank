@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { UserAuth } from "../context/AuthContext";
+import { UserAuth } from "../../context/AuthContext";
 import { eventAPI } from "@/api/event";
-import { useVxContext } from "../context/VxContext";
+import { useVxContext } from "../../context/VxContext";
 
 const CreateEventModal = () => {
   const { vxUserInfo } = UserAuth();

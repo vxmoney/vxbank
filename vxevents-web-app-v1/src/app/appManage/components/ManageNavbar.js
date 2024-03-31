@@ -43,7 +43,7 @@ export default function ManageNavbar() {
             </li>
 
             <li className="p-2 cursor-pointer">
-              <Link href="/appManage/publicEvents">Events</Link>
+              <Link href="/appManage/events">Events</Link>
             </li>
           </>
         )}
