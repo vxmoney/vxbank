@@ -4,7 +4,7 @@ import CreateEventModal from "./CreateEventModal";
 import PublicEventListComponent from "./PublicEventListComponent";
 import PayCreateEventModal from "../../components/event1v1payEvent/PayCreateEventModal";
 
-export default function EventsManagePage() {
+export default function EventsListPage() {
   const [payModalOpen, setPayModalOpen] = useState(false);
   const openPayModal = () => {
     setPayModalOpen(true);
