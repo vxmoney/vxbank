@@ -108,7 +108,7 @@ public class PublicEventEndpoint {
     @ResponseBody
     public PublicEventSearchResponse search(Authentication auth, @RequestParam(name = "vxUserId") Long vxUserId) {
 
-        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+        VxUser vxUser = systemService.validateAndGetUser(auth);
 
         if (!Objects.equals(vxUser.id, vxUserId)) {
             throw new IllegalStateException("You can not search events for someone else");
