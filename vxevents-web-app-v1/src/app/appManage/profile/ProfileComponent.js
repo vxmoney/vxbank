@@ -2,6 +2,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { userAPI } from "@/api/user";
 import { useEffect, useState } from "react";
 //import DepositFiatModal from "./profile/DepositFiatModal";
+import DepositFiatModal from "./DepositFiatModal";
 
 const ProfileComponent = ({ id, email, name, stripeConfigState, stripeId }) => {
   const { vxUserInfo } = UserAuth();
