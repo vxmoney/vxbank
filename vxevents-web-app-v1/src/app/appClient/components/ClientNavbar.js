@@ -38,7 +38,7 @@ export default function ClientNavbar() {
         {vxUserInfo && (
           <>
             <li className="p-2 cursor-pointer">
-              <Link href="/profile">Profile</Link>
+              <Link href="#">Profile</Link>
             </li>
 
             <li className="p-2 cursor-pointer">
