@@ -2,9 +2,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import ThemeSwitch from "@/app/components/ThemeSwitch";
+import { useParams } from "next/navigation";
 
 export default function ClientNavbar() {
   const { googleSignIn, logOut, vxUserInfo } = UserAuth();
+  let { eventId } = useParams();
 
   const [isClient, setIsClient] = useState(false);
 
@@ -33,22 +35,12 @@ export default function ClientNavbar() {
     <div className="h-20 w-full border-b-2 flex items-center justify-between p-2 bg-light dark:bg-gray-800">
       <ul className="flex">
         <li className="p-2 cursor-pointer">
-          <Link href="/">ClientHome</Link>
+          <Link href={`/appClient/publicEvent/${eventId}`}>Home</Link>
         </li>
-        {vxUserInfo && (
-          <>
-            <li className="p-2 cursor-pointer">
-              <Link href="#">Profile</Link>
-            </li>
-
-            <li className="p-2 cursor-pointer">
-              <Link href="/manageEvents">Events</Link>
-            </li>
-          </>
-        )}
+        
 
         <li className="p-2 cursor-pointer">
-          <Link href="/usageExamples">TestingCorner</Link>
+          <Link href={`/appClient/publicEvent/${eventId}/hello`}>Hello</Link>
         </li>
       </ul>
       <ul className="flex">
