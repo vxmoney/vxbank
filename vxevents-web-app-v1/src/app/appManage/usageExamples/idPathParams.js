@@ -25,7 +25,7 @@ export default function IdPathParams() {
         Check how evrything works in this example fetchPingWhoAmIError
       </p>
       <p>
-        <Link href="/usageExamples/example">
+        <Link href="/appManage/usageExamples/example">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Go to path and query examples
           </button>

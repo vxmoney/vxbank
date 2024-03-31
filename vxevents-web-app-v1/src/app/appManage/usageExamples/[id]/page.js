@@ -37,7 +37,7 @@ export default function UsageExampleId() {
       <ul className="p-2 text-gray-500 dark:text-gray-400">
         <li className="flex items-center">
           <p className="m-0"> - Set path val to 123 </p>
-          <Link href="/usageExamples/123">
+          <Link href="/appManage/usageExamples/123">
             <button className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               path id=123
             </button>
@@ -45,7 +45,7 @@ export default function UsageExampleId() {
         </li>
         <li className="flex items-center py-2">
           <p className="m-0"> - Set path val to 123 </p>
-          <Link href="/usageExamples/very_long_text_to_see_what_happens">
+          <Link href="/appManage/usageExamples/very_long_text_to_see_what_happens">
             <button className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               path id=very_long_text_to_see_what_happens
             </button>
@@ -59,7 +59,7 @@ export default function UsageExampleId() {
       <ul className="p-2 text-gray-500 dark:text-gray-400">
         <li className="flex items-center">
           <p className="m-0"> - Set query qid to 999 </p>
-          <Link href={`/usageExamples/${id}?qid=999`}>
+          <Link href={`/appManage/usageExamples/${id}?qid=999`}>
             <button className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               qid=999
             </button>
@@ -67,7 +67,7 @@ export default function UsageExampleId() {
         </li>
         <li className="flex items-center py-2">
           <p className="m-0"> - Set query qid to some_text_qid_value </p>
-          <Link href={`/usageExamples/${id}?qid=some_text_qid_value`}>
+          <Link href={`/appManage/usageExamples/${id}?qid=some_text_qid_value`}>
             <button className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               qid=some_text_qid_value
             </button>
