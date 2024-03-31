@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import ThemeSwitch from "@/app/components/ThemeSwitch";
+import TestingCornerNavItem from "./TestingCornerNavItem";
 
 export default function ManageNavbar() {
   const { googleSignIn, logOut, vxUserInfo } = UserAuth();
@@ -47,9 +48,8 @@ export default function ManageNavbar() {
           </>
         )}
 
-        <li className="p-2 cursor-pointer">
-          <Link href="/appManage/usageExamples">TestingCorner</Link>
-        </li>
+        
+        <TestingCornerNavItem/>
       </ul>
       <ul className="flex">
         {isClient &&

@@ -1,8 +1,11 @@
 "use client";
 
 import { UserAuth } from "@/app/context/AuthContext";
+import ProfileComponent from "./ProfileComponent";
+import StripeActivateComponent from "./StripeActivateComponent";
+import StripeActivateDifferentCurrenciesComponent from "./StripeActivateDifferentCurrenciesComponent";
 
-export default function ManageProfile() {
+export default function ProfilePage() {
   const { vxUserInfo } = UserAuth();
 
   if (!vxUserInfo) {
@@ -11,8 +14,13 @@ export default function ManageProfile() {
 
   return (
     <div>
-      Hello profile page
-      
+      <ProfileComponent {...vxUserInfo} />
+      {vxUserInfo.stripeConfigState !== "active" && (
+        <StripeActivateComponent {...vxUserInfo} />
+      )}
+      {vxUserInfo.stripeConfigState === "active" && (
+        <StripeActivateDifferentCurrenciesComponent {...vxUserInfo} />
+      )}
     </div>
   );
 }
