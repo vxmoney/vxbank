@@ -245,4 +245,11 @@ public class PublicEventEndpoint {
             throw new IllegalStateException("User is not a manager for this event");
         }
     }
+
+    @GetMapping("/{eventId}/checkRegisterClient")
+    @ResponseBody
+    public PublicEventCheckRegisterClientResponse checkRegisterClient(Authentication auth, @PathVariable Long eventId) {
+
+        throw new IllegalStateException("Please implement this");
+    }
 }
