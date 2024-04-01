@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Price;
+import com.stripe.model.checkout.Session;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
@@ -19,6 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
@@ -351,18 +353,36 @@ public class PublicEventEndpoint {
                 vxStripeConfig,
                 vxPublicEventId,
                 vxPublicEventTitle,
-                vxPublicEventClientId,
                 currency,
                 params.value);
 
-        throw new IllegalStateException("Please implement this");
+        // create vxEventPayment
+        Long timeStamp = System.currentTimeMillis();
+        VxEventPayment vxEventPayment = VxEventPayment.builder()
+                .vxIntegrationId(VxIntegrationId.vxEvents.toString())
+                .vxPublicEventId(vxPublicEventId)
+                .vxPublicEventClientId(vxPublicEventClientId)
+                .stripeSessionId(stripeSessionCreateResponse.stripeSessionId) // very important. Stripe session id
+                .stripeSessionPaymentUrl(stripeSessionCreateResponse.url)
+                .type(VxEventPayment.Type.debit)
+                .state(VxEventPayment.State.pending)
+                .currency(currency)
+                .value(params.value)
+                .build();
+        VxDsService.persist(VxEventPayment.class, systemService.getVxBankDatastore(), vxEventPayment);
+
+        PublicEventClientDepositFundsResponse response = new PublicEventClientDepositFundsResponse();
+        response.vxPublicEventClientId = vxPublicEventClientId;
+        response.vxPublicEventId = vxPublicEventId;
+        response.vxEventPaymentId = vxEventPayment.id;
+        response.stripeSessionPaymentUrl = stripeSessionCreateResponse.url;
+        return response;
     }
 
     private StripeSessionCreateResponse createStripeSessionClientDepositFunds(String stripeSecretKey,
                                                                               VxStripeConfig vxStripeConfig,
                                                                               Long vxPublicEventId,
                                                                               String vxPublicEventTitle,
-                                                                              Long vxPublicEventClientId,
                                                                               String currency,
                                                                               Long value) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
@@ -389,13 +409,36 @@ public class PublicEventEndpoint {
         String successUrl = getStripeRefreshRedirectUrlForVxEvents(vxPublicEventId, systemService.getEnvironment());
         String cancelUrl = getStripeCancelUrlForVxEvents(vxPublicEventId, systemService.getEnvironment());
 
+        // Session parameters
+        SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .addLineItem(lineItemBuilder.build())
+                .setSuccessUrl(successUrl)
+                .setCancelUrl(cancelUrl);
 
-//        VxIntegration eventsIntegration = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxEvents);
-//        Long percentage = eventsIntegration.getIntegrationPercentage();
-//        Long applicationFee = value * percentage / 100;
+        SessionCreateParams.PaymentIntentData.Builder paymentIntentDataBuilder = SessionCreateParams.PaymentIntentData.builder();
 
 
-        throw new IllegalStateException("Please implement this");
+        VxIntegration eventsIntegration = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxEvents);
+        Long percentage = eventsIntegration.getIntegrationPercentage();
+        Long applicationFee = value * percentage / 100;
+        paymentIntentDataBuilder.setApplicationFeeAmount(applicationFee)
+                .setTransferData(
+                        SessionCreateParams.PaymentIntentData.TransferData.builder()
+                                .setDestination(vxStripeConfig.stripeAccountId)
+                                .build()
+                );
+
+        paramsBuilder.setPaymentIntentData(paymentIntentDataBuilder.build());
+
+        SessionCreateParams params = paramsBuilder.build();
+
+        Session session = Session.create(params);
+
+        StripeSessionCreateResponse stripeSessionResponse = new StripeSessionCreateResponse();
+        stripeSessionResponse.url = session.getUrl();
+        stripeSessionResponse.stripeSessionId = session.getId();
+        return stripeSessionResponse;
     }
 
     private String getStripeRefreshRedirectUrlForVxEvents(Long vxEventId, Environment environment) {

@@ -330,6 +330,7 @@ public class PublicEventIntegrationTest {
         client.vxPublicEventClientId = checkRegisterClientResponse.id;
         return client;
     }
+
     @Test
     public void testClientDepositFunds() throws StripeException, FirebaseAuthException, JsonProcessingException {
         Setup setup = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
@@ -347,6 +348,14 @@ public class PublicEventIntegrationTest {
                 depositFundsParams,
                 200);
         Assertions.assertNotNull(depositFundsResponse);
+        Assertions.assertEquals(client.vxPublicEventClientId, depositFundsResponse.vxPublicEventClientId);
+        Assertions.assertEquals(setup.publicEventId, depositFundsResponse.vxPublicEventId);
+        Assertions.assertNotNull(depositFundsResponse.vxEventPaymentId);
+        Assertions.assertNotNull(depositFundsResponse.stripeSessionPaymentUrl);
+
+        System.out.println("Payment url = " + depositFundsResponse.stripeSessionPaymentUrl);
+        System.out.println("User card 4000000000000077");
+
     }
 
 

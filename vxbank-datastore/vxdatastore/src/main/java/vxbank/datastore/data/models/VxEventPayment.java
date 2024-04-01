@@ -27,6 +27,15 @@ public class VxEventPayment {
     @Id
     public Long id;
 
+    // <publicEvent section>
+    @Index
+    public String vxIntegrationId; //values: vxGaming vxBank vxEvents
+    @Index
+    public Long vxPublicEventId;
+    @Index
+    public Long vxPublicEventClientId;
+    // </publicEvent section>
+
     @Index
     public Long vxEventId;
 
