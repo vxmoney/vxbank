@@ -262,4 +262,16 @@ public class VxDsService {
                 .entity(vxModel)
                 .now();
     }
+
+    public static <T> List<T> vxPublicEventClientId(Class<T> vxClass, VxBankDatastore ds, Long  vxPublicEventClientId) {
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("vxPublicEventClientId", vxPublicEventClientId);
+
+        query = query.chunkAll();
+        List<T> list = query.list();
+
+
+        return list;
+    }
 }
