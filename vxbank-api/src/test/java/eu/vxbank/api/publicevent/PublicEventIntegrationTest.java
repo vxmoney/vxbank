@@ -356,6 +356,9 @@ public class PublicEventIntegrationTest {
         System.out.println("Payment url = " + depositFundsResponse.stripeSessionPaymentUrl);
         System.out.println("User card 4000000000000077");
 
+        // simulate stripeWebhook
+
+
     }
 
 
