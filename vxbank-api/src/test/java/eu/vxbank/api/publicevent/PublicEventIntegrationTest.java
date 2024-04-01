@@ -387,8 +387,22 @@ public class PublicEventIntegrationTest {
         System.out.println("Payment url = " + depositFundsResponse.stripeSessionPaymentUrl);
         System.out.println("User card 4000000000000077");
 
-        // simulate stripeWebhook
         {
+            // check report before webhook hits
+            PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
+                    port,
+                    client.vxToken,
+                    client.publicEventId,
+                    client.vxPublicEventClientId,
+                    200);
+            Assertions.assertNotNull(clientReport);
+            Assertions.assertEquals(0L, clientReport.availableBalance);
+            Assertions.assertEquals(0, clientReport.clinetPaymentList.size());
+        }
+
+
+        {
+            // simulate stripeWebhook
             String fileName = "publicEventIntegrationTest/clientDepositFunds-00.json";
             String fileContent = loadFileAsString(fileName);
             String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
@@ -402,13 +416,20 @@ public class PublicEventIntegrationTest {
             WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
         }
 
-        PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
-                port,
-                client.vxToken,
-                client.publicEventId,
-                client.vxPublicEventClientId,
-                200);
-        Assertions.assertNotNull(clientReport);
+        {
+            // check report after webhook hits
+            PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
+                    port,
+                    client.vxToken,
+                    client.publicEventId,
+                    client.vxPublicEventClientId,
+                    200);
+            Assertions.assertNotNull(clientReport);
+            Assertions.assertEquals(value, clientReport.availableBalance);
+            Assertions.assertEquals(1, clientReport.clinetPaymentList.size());
+        }
+
+
 
     }
 
