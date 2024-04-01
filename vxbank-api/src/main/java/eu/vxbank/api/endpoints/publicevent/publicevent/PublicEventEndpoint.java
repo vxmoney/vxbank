@@ -1,5 +1,6 @@
 package eu.vxbank.api.endpoints.publicevent.publicevent;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
+import vxbank.datastore.data.publicevent.VxPublicEventClient;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -250,6 +252,38 @@ public class PublicEventEndpoint {
     @ResponseBody
     public PublicEventCheckRegisterClientResponse checkRegisterClient(Authentication auth, @PathVariable Long eventId) {
 
-        throw new IllegalStateException("Please implement this");
+        VxUser vxUser = systemService.validateAndGetUser(auth);
+        checkPublicEventExists(eventId);
+        List<VxPublicEventClient> clientList = VxDsService.getByPublicEventId(VxPublicEventClient.class,
+                systemService.getVxBankDatastore(),
+                eventId);
+        // check if user is already in clientList
+        Optional<VxPublicEventClient> optionalVxPublicEventClient = clientList.stream()
+                .filter(c -> c.userId.equals(vxUser.id))
+                .findFirst();
+        if (optionalVxPublicEventClient.isEmpty()) {
+            // user is not in clientList so we add him
+            Long timeStamp = System.currentTimeMillis();
+            VxPublicEventClient newEventClient = VxPublicEventClient.builder()
+                    .userId(vxUser.id)
+                    .publicEventId(eventId)
+                    .timeStamp(timeStamp)
+                    .build();
+            VxDsService.persist(VxPublicEventClient.class, systemService.getVxBankDatastore(), newEventClient);
+            optionalVxPublicEventClient = Optional.of(newEventClient);
+        }
+        VxPublicEventClient client = optionalVxPublicEventClient.get();
+
+        //map to response using objectMapper
+        ObjectMapper objectMapper = new ObjectMapper();
+        PublicEventCheckRegisterClientResponse response = objectMapper.convertValue(client, PublicEventCheckRegisterClientResponse.class);
+        return response;
+    }
+
+    private void checkPublicEventExists(Long eventId) {
+        VxPublicEvent vxPublicEvent = VxDsService.getById(VxPublicEvent.class, systemService.getVxBankDatastore(), eventId);
+        if (vxPublicEvent == null) {
+            throw new IllegalStateException("Public event does not exist");
+        }
     }
 }
