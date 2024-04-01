@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vxbank.datastore.data.publicevent.VxPublicEventClientPayment;
 
 @Entity
 @Builder(toBuilder = true)
@@ -34,6 +35,8 @@ public class VxEventPayment {
     public Long vxPublicEventId;
     @Index
     public Long vxPublicEventClientId;
+    @Index
+    public VxPublicEventClientPayment.Method vxPublicEventClientPaymentMethod;
     // </publicEvent section>
 
     @Index

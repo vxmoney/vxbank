@@ -9,6 +9,7 @@ import com.googlecode.objectify.ObjectifyFactory;
 import vxbank.datastore.data.models.*;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventClient;
+import vxbank.datastore.data.publicevent.VxPublicEventClientPayment;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.exceptions.VxBankDatastoreException;
 
@@ -100,6 +101,7 @@ public class VxBankDatastore {
         factory.register(VxPublicEvent.class);
         factory.register(VxPublicEventManager.class);
         factory.register(VxPublicEventClient.class);
+        factory.register(VxPublicEventClientPayment.class);
     }
 
     public Boolean getInitialized() {

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxEventParticipant;
 import vxbank.datastore.data.models.VxEventPayment;
+import vxbank.datastore.data.publicevent.VxPublicEventClientPayment;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.io.IOException;
@@ -149,7 +150,30 @@ public class WebhookEndpoint {
         VxDsService.persist(VxEventPayment.class, systemService.getVxBankDatastore(), vxEventPayment);
 
         if (vxEventPayment.vxIntegrationId!= null && vxEventPayment.vxIntegrationId.equals(VxIntegrationId.vxEvents.toString())){
-            throw new IllegalStateException("Better call Bogdan code 003. Not supported integration id");
+            // vxEvents payments
+            if (vxEventPayment.vxPublicEventClientPaymentMethod == VxPublicEventClientPayment.Method.clientDepositFiat){
+                // create VxPublicEventClientPayment
+                VxPublicEventClientPayment vxPublicEventClientPayment = VxPublicEventClientPayment.builder()
+                        .vxIntegrationId(VxIntegrationId.vxEvents.toString())
+                        .vxPublicEventId(vxEventPayment.vxPublicEventId)
+                        .vxPublicEventClientId(vxEventPayment.vxPublicEventClientId)
+                        .vxEventPaymentId(vxEventPayment.id)
+                        .stripeSessionId(stripeSessionId)
+                        .type(VxPublicEventClientPayment.Type.debit)
+                        .state(VxPublicEventClientPayment.State.complete)
+                        .method(VxPublicEventClientPayment.Method.clientDepositFiat)
+                        .value(vxEventPayment.value)
+                        .currency(paymentIntent.getCurrency())
+                        .timeStamp(System.currentTimeMillis())
+                        .updatedTimeStamp(System.currentTimeMillis())
+                        .build();
+                VxDsService.persist(vxPublicEventClientPayment, systemService.getVxBankDatastore(), VxPublicEventClientPayment.class);
+
+
+                logger.info("Finished processing clientDepositFiat vxEventPayment id="+vxEventPayment.id);
+                return;
+            }
+            throw new IllegalStateException("Better call Bogdan code 003. Not supported vxEventPayment.vxPublicEventClientPaymentMethod");
         }
 
         // vxGaming events

@@ -25,6 +25,7 @@ import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventClient;
+import vxbank.datastore.data.publicevent.VxPublicEventClientPayment;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -360,6 +361,7 @@ public class PublicEventEndpoint {
         Long timeStamp = System.currentTimeMillis();
         VxEventPayment vxEventPayment = VxEventPayment.builder()
                 .vxIntegrationId(VxIntegrationId.vxEvents.toString())
+                .vxPublicEventClientPaymentMethod(VxPublicEventClientPayment.Method.clientDepositFiat)
                 .vxPublicEventId(vxPublicEventId)
                 .vxPublicEventClientId(vxPublicEventClientId)
                 .stripeSessionId(stripeSessionCreateResponse.stripeSessionId) // very important. Stripe session id
