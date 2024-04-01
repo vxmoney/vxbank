@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import com.stripe.net.Webhook;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.PublicEventClientPaymentReportResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -396,6 +397,13 @@ public class PublicEventIntegrationTest {
             WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
         }
 
+        PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
+                port,
+                client.vxToken,
+                setup.publicEventId,
+                setup.userId,
+                200);
+        Assertions.assertNotNull(clientReport);
 
     }
 
