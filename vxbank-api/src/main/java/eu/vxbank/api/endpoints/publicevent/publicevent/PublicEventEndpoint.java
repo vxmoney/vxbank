@@ -2,16 +2,18 @@ package eu.vxbank.api.endpoints.publicevent.publicevent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegration;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
@@ -289,14 +291,17 @@ public class PublicEventEndpoint {
         }
     }
 
-    private void checkUserIsClientForEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
+    private VxPublicEventClient checkGetUserIsClientForEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
         List<VxPublicEventClient> clientList = VxDsService.getByPublicEventId(VxPublicEventClient.class,
                 systemService.getVxBankDatastore(),
                 vxPublicEvent.id);
-        Set<Long> clientSet = clientList.stream().map(c -> c.userId).collect(Collectors.toSet());
-        if (!clientSet.contains(vxUser.id)) {
+        Optional<VxPublicEventClient> optionalVxPublicEventClient = clientList.stream()
+                .filter(c -> c.userId.equals(vxUser.id))
+                .findFirst();
+        if (optionalVxPublicEventClient.isEmpty()) {
             throw new IllegalStateException("User is not a client for this event");
         }
+        return optionalVxPublicEventClient.get();
     }
 
     private VxStripeConfig checkGetStripeConfigForEventOwner(Long vxUserId, String currency) throws StripeException {
@@ -317,6 +322,7 @@ public class PublicEventEndpoint {
         }
         return stripeConfig;
     }
+
     // implement clientDepositFunds endpoint
     @PostMapping("/{eventId}/clientDepositFunds")
     public PublicEventClientDepositFundsResponse clientDepositFunds(Authentication auth,
@@ -327,16 +333,37 @@ public class PublicEventEndpoint {
         VxUser vxUser = systemService.validateAndGetUser(auth);
         checkPublicEventExists(eventId);
         VxPublicEvent vxPublicEvent = getVxEvent(eventId);
-        checkUserIsClientForEvent(vxUser, vxPublicEvent);
+        VxPublicEventClient vxPublicEventClient = checkGetUserIsClientForEvent(vxUser, vxPublicEvent);
 
-       VxStripeConfig stripeConfig = checkGetStripeConfigForEventOwner(vxPublicEvent.vxUserId, vxPublicEvent.currency);
+        VxStripeConfig vxStripeConfig = checkGetStripeConfigForEventOwner(vxPublicEvent.vxUserId, vxPublicEvent.currency);
 
 
-        // create
-       throw new IllegalStateException("Please implement this");
+        Long vxPublicEventId = vxPublicEvent.id;
+        String vxPublicEventTitle = vxPublicEvent.title;
+        Long vxPublicEventClientId = vxPublicEventClient.id;
+        String currency = vxPublicEvent.currency;
+        StripeSessionCreateResponse stripeSessionCreateResponse = createStripeSessionClientDepositFunds(stripeKeys.stripeSecretKey,
+                vxStripeConfig,
+                vxPublicEventId,
+                vxPublicEventTitle,
+                vxPublicEventClientId,
+                currency,
+                params.value);
+
+        throw new IllegalStateException("Please implement this");
     }
 
-
+    private StripeSessionCreateResponse createStripeSessionClientDepositFunds(String stripeSecretKey,
+                                                                              VxStripeConfig vxStripeConfig,
+                                                                              Long vxPublicEventId,
+                                                                              String vxPublicEventTitle,
+                                                                              Long vxPublicEventClientId,
+                                                                              String currency,
+                                                                              Long value) {
+        VxIntegration eventsIntegration = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxEvents);
+        Long percentage = eventsIntegration.getIntegrationPercentage();
+        throw new IllegalStateException("Please implement this");
+    }
 
 
 }
