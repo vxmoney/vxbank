@@ -202,4 +202,31 @@ public class PublicEventHelper {
         PublicEventCheckRegisterClientResponse response = responseEntity.getBody();
         return response;
     }
+
+    public static PublicEventClientDepositFundsResponse clientDepositFunds(TestRestTemplate restTemplate,
+                                                                           int port,
+                                                                           String vxToken,
+                                                                           Long publicEventId,
+                                                                           PublicEventClientDepositFundsParams depositFundsParams,
+                                                                           int expectedStatusCode) {
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<PublicEventClientDepositFundsParams> requestEntity = new HttpEntity<>(depositFundsParams, headers);
+
+        // Make the POST request
+        ResponseEntity<PublicEventClientDepositFundsResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEvent/" + publicEventId + "/clientDepositFunds",
+                HttpMethod.POST, requestEntity, PublicEventClientDepositFundsResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        PublicEventClientDepositFundsResponse response = responseEntity.getBody();
+        return response;
+    }
 }

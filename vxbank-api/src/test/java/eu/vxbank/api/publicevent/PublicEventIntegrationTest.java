@@ -34,6 +34,7 @@ public class PublicEventIntegrationTest {
         String stripeAccountId;
         String email;
         Long publicEventId;
+        Long vxPublicEventClientId;
 
     }
 
@@ -103,9 +104,6 @@ public class PublicEventIntegrationTest {
 
 
         setup.userId = loginResponse.id;
-
-
-
 
 
         VxBankDatastore ds = systemService.getVxBankDatastore();
@@ -318,5 +316,38 @@ public class PublicEventIntegrationTest {
                 setup.publicEventId,
                 200);
         Assertions.assertEquals(checkRegisterClientResponse.id, secondRegistration.id);
+
+
     }
+
+    private Setup setupClientAndJoinEvent(Long publicEventId) throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup client = setupClient();
+        PublicEventCheckRegisterClientResponse checkRegisterClientResponse = PublicEventHelper.checkRegisterClient(restTemplate,
+                port,
+                client.vxToken,
+                publicEventId,
+                200);
+        client.vxPublicEventClientId = checkRegisterClientResponse.id;
+        return client;
+    }
+    @Test
+    public void testClientDepositFunds() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup setup = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
+        Setup client = setupClientAndJoinEvent(setup.publicEventId);
+
+        // client deposit funds
+        Long value = 1000L;
+        PublicEventClientDepositFundsParams depositFundsParams = PublicEventClientDepositFundsParams.builder()
+                .value(value)
+                .build();
+        PublicEventClientDepositFundsResponse depositFundsResponse = PublicEventHelper.clientDepositFunds(restTemplate,
+                port,
+                client.vxToken,
+                setup.publicEventId,
+                depositFundsParams,
+                200);
+        Assertions.assertNotNull(depositFundsResponse);
+    }
+
+
 }

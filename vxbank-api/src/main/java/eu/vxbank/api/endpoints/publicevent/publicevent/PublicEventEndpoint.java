@@ -286,4 +286,32 @@ public class PublicEventEndpoint {
             throw new IllegalStateException("Public event does not exist");
         }
     }
+
+    private void checkUserIsClientForEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
+        List<VxPublicEventClient> clientList = VxDsService.getByPublicEventId(VxPublicEventClient.class,
+                systemService.getVxBankDatastore(),
+                vxPublicEvent.id);
+        Set<Long> clientSet = clientList.stream().map(c -> c.userId).collect(Collectors.toSet());
+        if (!clientSet.contains(vxUser.id)) {
+            throw new IllegalStateException("User is not a client for this event");
+        }
+    }
+
+    // implement clientDepositFunds endpoint
+    @PostMapping("/{eventId}/clientDepositFunds")
+    public PublicEventClientDepositFundsResponse clientDepositFunds(Authentication auth,
+                                                                    @PathVariable Long eventId,
+                                                                    @RequestBody PublicEventClientDepositFundsParams params) throws
+            StripeException {
+
+        VxUser vxUser = systemService.validateAndGetUser(auth);
+        checkPublicEventExists(eventId);
+        VxPublicEvent vxPublicEvent = getVxEvent(eventId);
+        checkUserIsClientForEvent(vxUser, vxPublicEvent);
+
+        // create
+       throw new IllegalStateException("Please implement this");
+    }
+
+
 }
