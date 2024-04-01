@@ -311,5 +311,12 @@ public class PublicEventIntegrationTest {
         Assertions.assertNotNull(checkRegisterClientResponse);
         Assertions.assertEquals(client.userId, checkRegisterClientResponse.userId);
         Assertions.assertEquals(setup.publicEventId, checkRegisterClientResponse.publicEventId);
+
+        PublicEventCheckRegisterClientResponse secondRegistration = PublicEventHelper.checkRegisterClient(restTemplate,
+                port,
+                client.vxToken,
+                setup.publicEventId,
+                200);
+        Assertions.assertEquals(checkRegisterClientResponse.id, secondRegistration.id);
     }
 }
