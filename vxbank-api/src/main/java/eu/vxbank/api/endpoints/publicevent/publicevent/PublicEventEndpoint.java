@@ -1,7 +1,11 @@
 package eu.vxbank.api.endpoints.publicevent.publicevent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Price;
+import com.stripe.param.PriceCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
@@ -9,6 +13,7 @@ import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegration;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
+import eu.vxbank.api.utils.enums.Environment;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -359,11 +364,76 @@ public class PublicEventEndpoint {
                                                                               String vxPublicEventTitle,
                                                                               Long vxPublicEventClientId,
                                                                               String currency,
-                                                                              Long value) {
-        VxIntegration eventsIntegration = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxEvents);
-        Long percentage = eventsIntegration.getIntegrationPercentage();
+                                                                              Long value) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+
+        double messageValue = (Double.valueOf(value) / 100.0); // 2 decimals
+        String message = String.format("Deposit %.2f %s for %s", messageValue, currency, vxPublicEventTitle);
+
+        PriceCreateParams priceParams = PriceCreateParams.builder()
+                .setCurrency(currency)
+                .setProductData(
+                        PriceCreateParams.ProductData.builder()
+                                .setName(message)
+                                .build()
+                )
+                .setUnitAmount(value)
+                .build();
+        Price price = Price.create(priceParams);
+
+        // Line item details
+        SessionCreateParams.LineItem.Builder lineItemBuilder = SessionCreateParams.LineItem.builder()
+                .setPrice(price.getId()) // Use the ID of the dynamically created price
+                .setQuantity(1L);
+
+        String successUrl = getStripeRefreshRedirectUrlForVxEvents(vxPublicEventId, systemService.getEnvironment());
+        String cancelUrl = getStripeCancelUrlForVxEvents(vxPublicEventId, systemService.getEnvironment());
+
+
+//        VxIntegration eventsIntegration = vxIntegrationConfig.getIntegrationById(VxIntegrationId.vxEvents);
+//        Long percentage = eventsIntegration.getIntegrationPercentage();
+//        Long applicationFee = value * percentage / 100;
+
+
         throw new IllegalStateException("Please implement this");
     }
 
+    private String getStripeRefreshRedirectUrlForVxEvents(Long vxEventId, Environment environment) {
+        ///home/bogdan/workspace/vxbank/vxevents-web-app-v1/src/app/appClient/publicEvent/[eventId]/hello/page.js
+        String endUrl = String.format("appClient/publicEvent/%s", vxEventId);
+        switch (environment) {
+            case LOCALHOST -> {
+                return "http://localhost:3000/" + endUrl;
+            }
+            case DEVELOPMENT -> {
+                return "https://vxevents-dot-vxbank-eu-dev.ew.r.appspot.com/" + endUrl;
+            }
+            case PRODUCTION -> {
+                return "https://vxevents-dot-vxbank-eu-prod.ew.r.appspot.com/" + endUrl;
+            }
+            default -> throw new IllegalStateException(
+                    "getStripeRefreshRedirectUrl Not yet available in env " + environment);
+
+        }
+    }
+
+    private String getStripeCancelUrlForVxEvents(Long vxEventId, Environment environment) {
+        ///home/bogdan/workspace/vxbank/vxevents-web-app-v1/src/app/appClient/publicEvent/[eventId]/hello/page.js
+        String endUrl = String.format("appClient/publicEvent/%s/cancel", vxEventId);
+        switch (environment) {
+            case LOCALHOST -> {
+                return "http://localhost:3000/" + endUrl;
+            }
+            case DEVELOPMENT -> {
+                return "https://vxevents-dot-vxbank-eu-dev.ew.r.appspot.com/" + endUrl;
+            }
+            case PRODUCTION -> {
+                return "https://vxevents-dot-vxbank-eu-prod.ew.r.appspot.com/" + endUrl;
+            }
+            default -> throw new IllegalStateException(
+                    "getStripeRefreshRedirectUrl Not yet available in env " + environment);
+
+        }
+    }
 
 }
