@@ -335,6 +335,7 @@ public class PublicEventIntegrationTest {
                 publicEventId,
                 200);
         client.vxPublicEventClientId = checkRegisterClientResponse.id;
+        client.publicEventId = publicEventId;
         return client;
     }
 
@@ -360,6 +361,10 @@ public class PublicEventIntegrationTest {
     public void testClientDepositFunds() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         Setup setup = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
         Setup client = setupClientAndJoinEvent(setup.publicEventId);
+
+        Assertions.assertEquals(setup.publicEventId, client.publicEventId);
+        Assertions.assertNotNull(client.vxPublicEventClientId);
+        Assertions.assertNotEquals(client.vxPublicEventClientId, client.userId);
 
         // client deposit funds
         Long value = 1000L;
@@ -400,8 +405,8 @@ public class PublicEventIntegrationTest {
         PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
                 port,
                 client.vxToken,
-                setup.publicEventId,
-                setup.userId,
+                client.publicEventId,
+                client.vxPublicEventClientId,
                 200);
         Assertions.assertNotNull(clientReport);
 
