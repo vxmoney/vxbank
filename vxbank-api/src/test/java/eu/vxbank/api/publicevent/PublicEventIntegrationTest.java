@@ -86,6 +86,36 @@ public class PublicEventIntegrationTest {
         return setup;
     }
 
+    private Setup setupClient() throws
+            FirebaseAuthException,
+            JsonProcessingException,
+            StripeException {
+
+
+        Setup setup = new Setup();
+
+        setup.email = RandomUtil.generateRandomEmail();
+        setup.vxToken = UserHelper.generateVxToken(setup.email, restTemplate, port);
+
+
+        LoginResponse loginResponse = PingHelper.whoAmI(setup.vxToken, restTemplate, port, 200);
+        Assertions.assertEquals(setup.email, loginResponse.email);
+
+
+        setup.userId = loginResponse.id;
+
+
+
+
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+
+        Optional<VxUser> vxUser = VxDsService.getUserByEmail(setup.email, ds);
+        Assertions.assertTrue(vxUser.isPresent());
+
+        return setup;
+    }
+
     private Setup setupNotConfiguredStripeUser() throws FirebaseAuthException, JsonProcessingException {
         Setup setup = new Setup();
 
@@ -268,4 +298,18 @@ public class PublicEventIntegrationTest {
         Assertions.assertFalse(managerListResponse.managerList.stream().anyMatch(m -> m.id.equals(setupB.userId)));
     }
 
+    @Test
+    public void testCheckRegisterClient() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup setup = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
+        Setup client = setupClient();
+
+        PublicEventCheckRegisterClientResponse checkRegisterClientResponse = PublicEventHelper.checkRegisterClient(restTemplate,
+                port,
+                client.vxToken,
+                setup.publicEventId,
+                200);
+        Assertions.assertNotNull(checkRegisterClientResponse);
+        Assertions.assertEquals(client.userId, checkRegisterClientResponse.userId);
+        Assertions.assertEquals(setup.publicEventId, checkRegisterClientResponse.publicEventId);
+    }
 }

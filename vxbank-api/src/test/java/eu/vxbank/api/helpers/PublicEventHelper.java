@@ -177,4 +177,29 @@ public class PublicEventHelper {
         String response = responseEntity.getBody();
         return response;
     }
+
+    public static PublicEventCheckRegisterClientResponse checkRegisterClient(TestRestTemplate restTemplate,
+                                                                             int port,
+                                                                             String vxToken,
+                                                                             Long publicEventId,
+                                                                             int expectedStatusCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<PublicEventCheckRegisterClientResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEvent/" + publicEventId + "/checkRegisterClient",
+                HttpMethod.GET,
+                requestEntity,
+                PublicEventCheckRegisterClientResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        PublicEventCheckRegisterClientResponse response = responseEntity.getBody();
+        return response;
+    }
 }
