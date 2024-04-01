@@ -5,4 +5,5 @@ public class PublicEventClientDepositFundsResponse {
     public Long vxPublicEventId;
     public Long vxEventPaymentId;
     public String stripeSessionPaymentUrl;
+    public String stripeSessionId;
 }

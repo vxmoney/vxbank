@@ -16,6 +16,7 @@ import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.utils.ApiConstants;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import eu.vxbank.api.utils.enums.Environment;
 import eu.vxbank.api.utils.queue.QueueUtil;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
@@ -147,20 +148,29 @@ public class WebhookEndpoint {
         vxEventPayment.state = VxEventPayment.State.complete;
         VxDsService.persist(VxEventPayment.class, systemService.getVxBankDatastore(), vxEventPayment);
 
-        VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), vxEventPayment.vxEventId);
-        if (vxEvent.type != VxEvent.Type.payed1V1 ){
-            throw new IllegalStateException("Better call Bogdan code 002. Not supported event type");
+        if (vxEventPayment.vxIntegrationId!= null && vxEventPayment.vxIntegrationId.equals(VxIntegrationId.vxEvents.toString())){
+            throw new IllegalStateException("Better call Bogdan code 003. Not supported integration id");
         }
 
-        // create participant
-        Long userId = vxEventPayment.vxUserId;
-        Long eventId = vxEvent.getId();
-        VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
-                .vxUserId(userId)
-                .vxEventId(eventId)
-                .state(VxEventParticipant.State.active)
-                .build();
-        VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(), VxEventParticipant.class);
+        // vxGaming events
+        if (vxEventPayment.vxEventId != null){
+            VxEvent vxEvent = VxDsService.getById(VxEvent.class, systemService.getVxBankDatastore(), vxEventPayment.vxEventId);
+            if (vxEvent.type != VxEvent.Type.payed1V1 ){
+                throw new IllegalStateException("Better call Bogdan code 002. Not supported vxGaming event type");
+            }
+
+            // create participant
+            Long userId = vxEventPayment.vxUserId;
+            Long eventId = vxEvent.getId();
+            VxEventParticipant vxEventParticipant = VxEventParticipant.builder()
+                    .vxUserId(userId)
+                    .vxEventId(eventId)
+                    .state(VxEventParticipant.State.active)
+                    .build();
+            VxDsService.persist(vxEventParticipant, systemService.getVxBankDatastore(), VxEventParticipant.class);
+        }
+
+
 
         logger.info("Finished processing vxEventPayment id="+vxEventPayment.id);
     }

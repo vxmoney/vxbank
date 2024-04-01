@@ -3,6 +3,7 @@ package eu.vxbank.api.publicevent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import com.stripe.net.Webhook;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -22,8 +23,13 @@ import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.service.VxDsService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Scanner;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PublicEventIntegrationTest {
@@ -331,8 +337,26 @@ public class PublicEventIntegrationTest {
         return client;
     }
 
+    public String loadFileAsString(String fileName) throws IOException {
+        // Get the class loader
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        // Use the class loader to load the file as a resource
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("File not found: " + fileName);
+        } else {
+            try (Scanner scanner = new Scanner(inputStream, "UTF-8")) {
+                // Use Scanner to read the content of the file into a string
+                return scanner.useDelimiter("\\A")
+                        .next();
+            }
+        }
+    }
+
     @Test
-    public void testClientDepositFunds() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void testClientDepositFunds() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         Setup setup = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
         Setup client = setupClientAndJoinEvent(setup.publicEventId);
 
@@ -352,11 +376,25 @@ public class PublicEventIntegrationTest {
         Assertions.assertEquals(setup.publicEventId, depositFundsResponse.vxPublicEventId);
         Assertions.assertNotNull(depositFundsResponse.vxEventPaymentId);
         Assertions.assertNotNull(depositFundsResponse.stripeSessionPaymentUrl);
+        Assertions.assertNotNull(depositFundsResponse.stripeSessionId);
 
         System.out.println("Payment url = " + depositFundsResponse.stripeSessionPaymentUrl);
         System.out.println("User card 4000000000000077");
 
         // simulate stripeWebhook
+        {
+            String fileName = "publicEventIntegrationTest/clientDepositFunds-00.json";
+            String fileContent = loadFileAsString(fileName);
+            String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
+            String body = fileContent.replace("#tagStripeSessionId", depositFundsResponse.stripeSessionId);
+
+            long timeStamp = (new Date()).getTime();
+            String payload = timeStamp + "." + body;
+            String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
+            String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
+
+            WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
+        }
 
 
     }

@@ -376,6 +376,7 @@ public class PublicEventEndpoint {
         response.vxPublicEventId = vxPublicEventId;
         response.vxEventPaymentId = vxEventPayment.id;
         response.stripeSessionPaymentUrl = stripeSessionCreateResponse.url;
+        response.stripeSessionId = stripeSessionCreateResponse.stripeSessionId;
         return response;
     }
 
