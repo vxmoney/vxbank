@@ -6,11 +6,13 @@ import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
+import eu.vxbank.api.utils.stripe.VxStripeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.VxEvent;
+import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventClient;
@@ -297,6 +299,24 @@ public class PublicEventEndpoint {
         }
     }
 
+    private VxStripeConfig checkGetStripeConfigForEventOwner(Long vxUserId, String currency) throws StripeException {
+        List<VxStripeConfig> configList = VxDsService.getByUserId(vxUserId,
+                new HashMap<>(),
+                systemService.getVxBankDatastore(),
+                VxStripeConfig.class);
+        Optional<VxStripeConfig> optionalConfig = configList.stream().findFirst();
+        if (optionalConfig.isEmpty()) {
+            throw new IllegalStateException("User needs to configure first bank for currency=" + currency);
+        }
+        VxStripeConfig stripeConfig = optionalConfig.get();
+        Boolean canProcessCurrency = VxStripeUtil.clientCanReceivePaymentInCurrency(stripeKeys.stripeSecretKey,
+                stripeConfig.stripeAccountId,
+                currency);
+        if (!canProcessCurrency) {
+            throw new IllegalStateException("Event owner can not process currency=" + currency);
+        }
+        return stripeConfig;
+    }
     // implement clientDepositFunds endpoint
     @PostMapping("/{eventId}/clientDepositFunds")
     public PublicEventClientDepositFundsResponse clientDepositFunds(Authentication auth,
@@ -309,9 +329,14 @@ public class PublicEventEndpoint {
         VxPublicEvent vxPublicEvent = getVxEvent(eventId);
         checkUserIsClientForEvent(vxUser, vxPublicEvent);
 
+       VxStripeConfig stripeConfig = checkGetStripeConfigForEventOwner(vxPublicEvent.vxUserId, vxPublicEvent.currency);
+
+
         // create
        throw new IllegalStateException("Please implement this");
     }
+
+
 
 
 }
