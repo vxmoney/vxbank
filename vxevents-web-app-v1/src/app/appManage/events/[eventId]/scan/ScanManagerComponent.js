@@ -4,10 +4,11 @@ import jsQR from "jsqr";
 export default function ScanManagerComponent() {
   const [qrCodeText, setQrCodeText] = useState("");
   const [isScanning, setIsScanning] = useState(false);
-  const videoRef = useRef(null); // Reference to the video element
-  const streamRef = useRef(null); // Reference to the media stream
-  const [frameCount, setFrameCount] = useState(0); // For tracking the number of frames processed
-  const [eventLog, setEventLog] = useState([]); // For tracking detected events
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const animationFrameId = useRef(null); // Store the requestAnimationFrame ID
+  const [frameCount, setFrameCount] = useState(0);
+  const [eventLog, setEventLog] = useState([]);
 
   useEffect(() => {
     const tick = () => {
@@ -16,43 +17,30 @@ export default function ScanManagerComponent() {
         !videoRef.current ||
         videoRef.current.readyState !== videoRef.current.HAVE_ENOUGH_DATA
       ) {
-        // If not scanning or video isn't ready, try again later
-        requestAnimationFrame(tick);
+        cancelAnimationFrame(animationFrameId.current); // Cancel the frame update when not scanning
         return;
       }
 
-      setFrameCount((prevFrameCount) => prevFrameCount + 1); // Increment frame count
+      setFrameCount((prevFrameCount) => prevFrameCount + 1);
 
-      // Create a canvas to capture the current video frame
       const canvasElement = document.createElement("canvas");
       canvasElement.width = videoRef.current.videoWidth;
       canvasElement.height = videoRef.current.videoHeight;
       const canvas = canvasElement.getContext("2d");
-      canvas.drawImage(
-        videoRef.current,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
-      const imageData = canvas.getImageData(
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
+      canvas.drawImage(videoRef.current, 0, 0, canvasElement.width, canvasElement.height);
+      const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
       const code = jsQR(imageData.data, imageData.width, imageData.height, {
         inversionAttempts: "dontInvert",
       });
 
       if (code) {
         setQrCodeText(code.data);
-        setIsScanning(false); // Stop scanning once QR code is found
-        setEventLog((prevEventLog) => [...prevEventLog, "QR Code detected: " + code.data]); // Log event
+        setIsScanning(false); // This will lead to the animationFrame being cancelled
+        setEventLog((prevEventLog) => [...prevEventLog, "QR Code detected: " + code.data]);
         streamRef.current?.getTracks().forEach((track) => track.stop());
       } else {
         setEventLog((prevEventLog) => [...prevEventLog, "No QR Code detected"]);
-        requestAnimationFrame(tick); // Continue scanning
+        animationFrameId.current = requestAnimationFrame(tick); // Continue scanning
       }
     };
 
@@ -63,31 +51,37 @@ export default function ScanManagerComponent() {
           streamRef.current = stream;
           videoRef.current.srcObject = stream;
           videoRef.current.play().then(() => {
-            requestAnimationFrame(tick); // Start the scanning loop once the video plays
+            animationFrameId.current = requestAnimationFrame(tick);
           });
         })
         .catch((error) => {
           console.error("Error accessing the camera", error);
-          setIsScanning(false); // If there's an error, stop scanning
+          setIsScanning(false);
         });
-    } else {
+    }
+
+    // Cleanup function to cancel the animation frame when the component unmounts or scanning stops
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
-    }
-  }, [isScanning]); // Make sure useEffect depends on `isScanning` to re-trigger scanning
+    };
+  }, [isScanning]); // Depend on isScanning to re-trigger scanning
 
   const handleScanClick = () => {
     setQrCodeText("");
     setFrameCount(0);
     setEventLog([]);
     setIsScanning(true);
-    setEventLog((prevEventLog) => [...prevEventLog, "Scan started"]); // Log event
+    setEventLog((prevEventLog) => [...prevEventLog, "Scan started"]);
   };
 
   const handleCancelClick = () => {
     setIsScanning(false);
-    setEventLog((prevEventLog) => [...prevEventLog, "Scan canceled"]); // Log event
+    setEventLog((prevEventLog) => [...prevEventLog, "Scan canceled"]);
   };
 
   return (
