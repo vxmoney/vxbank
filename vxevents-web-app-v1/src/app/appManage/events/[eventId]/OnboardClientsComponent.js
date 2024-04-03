@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 
 export default function OnboardClientsComponent() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -33,9 +33,9 @@ export default function OnboardClientsComponent() {
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+              <div className={`absolute inset-0 ${modalOpen ? 'bg-gray-500 opacity-50' : ''} ${modalOpen ? 'dark:bg-gray-800 dark:opacity-50' : ''}`}></div>
             </div>
-            <div className="relative bg-white rounded-lg p-8 max-w-md">
+            <div className="relative bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md">
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-4">Modal Title</h3>
                 <p className="text-gray-700 dark:text-gray-400">
