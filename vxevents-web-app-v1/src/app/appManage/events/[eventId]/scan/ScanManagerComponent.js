@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import jsQR from 'jsqr';
 
@@ -40,6 +39,11 @@ export default function ScanManagerComponent() {
         if (code) {
           setQrCodeText(code.data);
           setIsScanning(false); // Stop scanning once QR code is found
+          // New: Additionally check for code.location to ensure a detection box is found
+          if (code.location) {
+            // Code location exists, indicating a detection box has been found
+            // You can also process the detection box here if needed
+          }
           if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
           }
