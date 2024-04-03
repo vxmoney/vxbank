@@ -57,14 +57,15 @@ export default function ScanManagerComponent() {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
-      setQrCodeText('');
-      setFrameCount(0);
-      setEventLog([]);
+     
     }
   }, [isScanning]); // Make sure useEffect depends on `isScanning` to re-trigger scanning
   
 
   const handleScanClick = () => {
+    setQrCodeText('');
+    setFrameCount(0);
+    setEventLog([]);
     setIsScanning(true);
     setEventLog(prevEventLog => [...prevEventLog, 'Scan started']); // Log event
   };
