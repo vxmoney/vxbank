@@ -22,6 +22,26 @@ export default function OnboardClientsComponent() {
     setModalOpen(false);
   };
 
+  // Effect to handle clicks outside the modal
+  useEffect(() => {
+    // Function to detect click outside
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    // Add event listener when modal is open
+    if (modalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    // Remove event listener on cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [modalOpen]); // Ensure the effect runs only when modalOpen changes
+
   return (
     <div>
       <div className="pl-8 pr-8 pt-8">
