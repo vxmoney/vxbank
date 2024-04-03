@@ -52,6 +52,7 @@ export default function ShowMyCodeComponent() {
           <p className="font-normal text-gray-700 dark:text-gray-400">
             Use this to buy stuff
           </p>
+          <>Event id = {eventId}</>
           <button
             className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             onClick={openModal}
@@ -80,7 +81,7 @@ export default function ShowMyCodeComponent() {
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-4">My details</h3>
                 <p className="text-gray-700 dark:text-gray-400">
-                  I love VxEvents. I want to buy more stuff 
+                  I love VxEvents. I want to buy more stuff
                 </p>
               </div>
               <div className="mt-6 text-center">
