@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import PublicEventManageDetailsComponent from "./PublicEventManageDetailsComponent";
 import PublicEventManageManagersComponent from "./PublicEventManageManagersComponent";
+import OnboardClientsComponent from "./OnboardClientsComponent";
 
 export default function PublicEventMangePage() {
   let { eventId } = useParams();
@@ -12,6 +13,7 @@ export default function PublicEventMangePage() {
     <>
       <PublicEventManageDetailsComponent />
       <PublicEventManageManagersComponent />
+      <OnboardClientsComponent />
     </>
   );
 }
