@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function OnboardClientsComponent() {
   const [modalOpen, setModalOpen] = useState(false);
+  const modalRef = useRef(null);
 
   const openModal = () => {
     setModalOpen(true);
@@ -10,6 +11,24 @@ export default function OnboardClientsComponent() {
   const closeModal = () => {
     setModalOpen(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    if (modalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [modalOpen]);
 
   return (
     <div>
@@ -22,7 +41,7 @@ export default function OnboardClientsComponent() {
             Use this to onboard new clients
           </p>
           <button
-            class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             onClick={openModal}
           >
             Open Modal
@@ -35,7 +54,7 @@ export default function OnboardClientsComponent() {
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className={`absolute inset-0 ${modalOpen ? 'bg-gray-500 opacity-50' : ''} ${modalOpen ? 'dark:bg-gray-800 dark:opacity-50' : ''}`}></div>
             </div>
-            <div className="relative bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md">
+            <div ref={modalRef} className="relative bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md">
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-4">Modal Title</h3>
                 <p className="text-gray-700 dark:text-gray-400">
@@ -44,7 +63,7 @@ export default function OnboardClientsComponent() {
               </div>
               <div className="mt-6 text-center">
                 <button
-                  class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   onClick={closeModal}
                 >
                   Close
