@@ -7,10 +7,14 @@ export default function ShowMyCodeComponent() {
   const { eventId } = useParams();
 
   const [currentURL, setCurrentURL] = useState("");
+  const [qrMessage, setQrMessage] = useState("");
   useEffect(() => {
     setCurrentURL(window.location.origin);
   }, []);
-  const qrMessage = `${currentURL}/appManage/events/${eventId}/sell/fakeClientId`;
+
+  useEffect(() => {
+    setQrMessage(`${currentURL}/appManage/events/${eventId}/sell/fakeClientId`);
+  }, [currentURL, eventId]);
 
   const modalRef = useRef(null);
 
