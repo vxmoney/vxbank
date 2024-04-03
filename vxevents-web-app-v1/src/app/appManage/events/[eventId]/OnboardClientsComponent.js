@@ -1,9 +1,15 @@
 import { useState, useRef } from "react";
 import QRCode from "qrcode.react";
+import { useParams } from "next/navigation";
 
 export default function OnboardClientsComponent() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [qrMessage, setQrMessage] = useState("hello qr code message");
+  const { eventId } = useParams();
+
+  const currentURL = window.location.origin; 
+  const qrMessage = `${currentURL}/appClient/publicEvent/${eventId}`;
+      
+
   const modalRef = useRef(null);
 
   const openModal = () => {
@@ -35,10 +41,20 @@ export default function OnboardClientsComponent() {
       {modalOpen && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className={`absolute inset-0 ${modalOpen ? 'bg-gray-500 opacity-50' : ''} ${modalOpen ? 'dark:bg-gray-800 dark:opacity-50' : ''}`}></div>
+            <div
+              className="fixed inset-0 transition-opacity"
+              aria-hidden="true"
+            >
+              <div
+                className={`absolute inset-0 ${
+                  modalOpen ? "bg-gray-500 opacity-50" : ""
+                } ${modalOpen ? "dark:bg-gray-800 dark:opacity-50" : ""}`}
+              ></div>
             </div>
-            <div ref={modalRef} className="relative bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md">
+            <div
+              ref={modalRef}
+              className="relative bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md"
+            >
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-4">Modal Title</h3>
                 <p className="text-gray-700 dark:text-gray-400">
