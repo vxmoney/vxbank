@@ -6,6 +6,8 @@ export default function ScanManagerComponent() {
   const [isScanning, setIsScanning] = useState(false);
   const videoRef = useRef(null); // Reference to the video element
   const streamRef = useRef(null); // Reference to the media stream
+  const [frameCount, setFrameCount] = useState(0); // For tracking the number of frames processed
+  const [eventLog, setEventLog] = useState([]); // For tracking detected events
 
   useEffect(() => {
     if (isScanning) {
@@ -23,10 +25,14 @@ export default function ScanManagerComponent() {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       setQrCodeText('');
+      setFrameCount(0); // Reset the frame count when not scanning
+      setEventLog([]); // Clear the event log
     }
 
     const tick = () => {
       if (isScanning && videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
+        setFrameCount(prevFrameCount => prevFrameCount + 1); // Increment frame count
+
         const canvasElement = document.createElement('canvas');
         canvasElement.width = videoRef.current.videoWidth;
         canvasElement.height = videoRef.current.videoHeight;
@@ -39,15 +45,12 @@ export default function ScanManagerComponent() {
         if (code) {
           setQrCodeText(code.data);
           setIsScanning(false); // Stop scanning once QR code is found
-          // New: Additionally check for code.location to ensure a detection box is found
-          if (code.location) {
-            // Code location exists, indicating a detection box has been found
-            // You can also process the detection box here if needed
-          }
+          setEventLog(prevEventLog => [...prevEventLog, 'QR Code detected']); // Log event
           if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
           }
         } else {
+          setEventLog(prevEventLog => [...prevEventLog, 'No QR Code detected']); // Log event
           requestAnimationFrame(tick);
         }
       }
@@ -57,10 +60,12 @@ export default function ScanManagerComponent() {
 
   const handleScanClick = () => {
     setIsScanning(true);
+    setEventLog(prevEventLog => [...prevEventLog, 'Scan started']); // Log event
   };
 
   const handleCancelClick = () => {
     setIsScanning(false);
+    setEventLog(prevEventLog => [...prevEventLog, 'Scan canceled']); // Log event
   };
 
   return (
@@ -89,6 +94,17 @@ export default function ScanManagerComponent() {
             Cancel
           </button>
         </div>
+      </div>
+        {/* Debug Box with Dark Mode */}
+        <div className={`mt-4 p-4 bg-gray-100 border border-gray-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300`}>
+        <h6 className="font-bold text-gray-900 dark:text-gray-300">Debug Info:</h6>
+        <p>Frame Count: {frameCount}</p>
+        <div>Events:</div>
+        <ul>
+          {eventLog.slice(-10).map((event, index) => (
+            <li key={index}>{event}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
