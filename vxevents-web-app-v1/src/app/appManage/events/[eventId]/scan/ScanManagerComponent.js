@@ -10,53 +10,59 @@ export default function ScanManagerComponent() {
   const [eventLog, setEventLog] = useState([]); // For tracking detected events
 
   useEffect(() => {
+    const tick = () => {
+      if (!isScanning || !videoRef.current || videoRef.current.readyState !== videoRef.current.HAVE_ENOUGH_DATA) {
+        // If not scanning or video isn't ready, try again later
+        requestAnimationFrame(tick);
+        return;
+      }
+  
+      setFrameCount(prevFrameCount => prevFrameCount + 1); // Increment frame count
+  
+      // Create a canvas to capture the current video frame
+      const canvasElement = document.createElement('canvas');
+      canvasElement.width = videoRef.current.videoWidth;
+      canvasElement.height = videoRef.current.videoHeight;
+      const canvas = canvasElement.getContext('2d');
+      canvas.drawImage(videoRef.current, 0, 0, canvasElement.width, canvasElement.height);
+      const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+  
+      if (code) {
+        setQrCodeText(code.data);
+        setIsScanning(false); // Stop scanning once QR code is found
+        setEventLog(prevEventLog => [...prevEventLog, 'QR Code detected']);
+        streamRef.current?.getTracks().forEach(track => track.stop());
+      } else {
+        setEventLog(prevEventLog => [...prevEventLog, 'No QR Code detected']);
+        requestAnimationFrame(tick); // Continue scanning
+      }
+    };
+  
     if (isScanning) {
       navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(function(stream) {
+        .then(stream => {
           streamRef.current = stream;
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-            videoRef.current.play();
-            requestAnimationFrame(tick);
-          }
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().then(() => {
+            requestAnimationFrame(tick); // Start the scanning loop once the video plays
+          });
+        }).catch(error => {
+          console.error("Error accessing the camera", error);
+          setIsScanning(false); // If there's an error, stop scanning
         });
     } else {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
       setQrCodeText('');
-      setFrameCount(0); // Reset the frame count when not scanning
-      setEventLog([]); // Clear the event log
+      setFrameCount(0);
+      setEventLog([]);
     }
-
-    const tick = () => {
-      if (isScanning && videoRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
-        setFrameCount(prevFrameCount => prevFrameCount + 1); // Increment frame count
-
-        const canvasElement = document.createElement('canvas');
-        canvasElement.width = videoRef.current.videoWidth;
-        canvasElement.height = videoRef.current.videoHeight;
-        const canvas = canvasElement.getContext('2d');
-        canvas.drawImage(videoRef.current, 0, 0, canvasElement.width, canvasElement.height);
-        var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-        var code = jsQR(imageData.data, imageData.width, imageData.height, {
-          inversionAttempts: "dontInvert",
-        });
-        if (code) {
-          setQrCodeText(code.data);
-          setIsScanning(false); // Stop scanning once QR code is found
-          setEventLog(prevEventLog => [...prevEventLog, 'QR Code detected']); // Log event
-          if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-          }
-        } else {
-          setEventLog(prevEventLog => [...prevEventLog, 'No QR Code detected']); // Log event
-          requestAnimationFrame(tick);
-        }
-      }
-    };
-
-  }, [isScanning]);
+  }, [isScanning]); // Make sure useEffect depends on `isScanning` to re-trigger scanning
+  
 
   const handleScanClick = () => {
     setIsScanning(true);
