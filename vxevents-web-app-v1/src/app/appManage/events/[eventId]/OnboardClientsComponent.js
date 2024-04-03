@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
+import QRCode from "qrcode.react";
 
 export default function OnboardClientsComponent() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [qrMessage, setQrMessage] = useState("hello qr code message");
   const modalRef = useRef(null);
 
   const openModal = () => {
@@ -11,24 +13,6 @@ export default function OnboardClientsComponent() {
   const closeModal = () => {
     setModalOpen(false);
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        closeModal();
-      }
-    };
-
-    if (modalOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [modalOpen]);
 
   return (
     <div>
@@ -62,6 +46,7 @@ export default function OnboardClientsComponent() {
                 </p>
               </div>
               <div className="mt-6 text-center">
+                <QRCode value={qrMessage} />
                 <button
                   className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   onClick={closeModal}
