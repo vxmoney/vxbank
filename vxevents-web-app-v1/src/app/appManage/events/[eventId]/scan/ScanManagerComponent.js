@@ -48,7 +48,7 @@ export default function ScanManagerComponent() {
       if (code) {
         setQrCodeText(code.data);
         setIsScanning(false); // Stop scanning once QR code is found
-        setEventLog((prevEventLog) => [...prevEventLog, "QR Code detected"]);
+        setEventLog((prevEventLog) => [...prevEventLog, "QR Code detected: " + code.data]); // Log event
         streamRef.current?.getTracks().forEach((track) => track.stop());
       } else {
         setEventLog((prevEventLog) => [...prevEventLog, "No QR Code detected"]);
