@@ -1,8 +1,6 @@
 "use client";
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
-import { publicEventAPI } from "@/api/publicEvent";
+import { useParams } from "next/navigation";
 
 export default function PublicEventManageManagersComponent() {
   const { vxUserInfo } = UserAuth();
@@ -15,10 +13,10 @@ export default function PublicEventManageManagersComponent() {
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             Event Managers
           </h5>
-          <p class="font-normal text-gray-700 dark:text-gray-400">
+          <p className="font-normal text-gray-700 dark:text-gray-400">
             To be implemented but you can also use postman ...
           </p>
-          <p class="font-normal text-gray-700 dark:text-gray-400">
+          <p className="font-normal text-gray-700 dark:text-gray-400">
             Your choice ...
           </p>
         </div>
