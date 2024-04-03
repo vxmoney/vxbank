@@ -85,6 +85,21 @@ export default function PublicEventManageDetailsComponent() {
                     </Link>
                   </td>
                 </tr>
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Sell app
+                  </th>
+                  <td className="px-6 py-4">
+                    <Link href={`${eventId}/sell/exampleUserIdValue`}>
+                      <button
+                        type="button"
+                        className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                      >
+                        Scan app
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
               </tbody>
             </table>
             <h6 className="pt-8 mb-2 text-1xl font-bold tracking-tight text-gray-900 dark:text-white">
