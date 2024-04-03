@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import QRCode from "qrcode.react";
 import { useParams } from "next/navigation";
 
@@ -6,7 +6,10 @@ export default function OnboardClientsComponent() {
   const [modalOpen, setModalOpen] = useState(false);
   const { eventId } = useParams();
 
-  const currentURL = window.location.origin;
+  const [currentURL, setCurrentURL] = useState("");
+  useEffect(() => {
+    setCurrentURL(window.location.origin);
+  }, []);
   const qrMessage = `${currentURL}/appClient/publicEvent/${eventId}`;
 
   const modalRef = useRef(null);
