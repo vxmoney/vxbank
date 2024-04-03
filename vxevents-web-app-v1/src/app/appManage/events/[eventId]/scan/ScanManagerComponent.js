@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import jsQR from 'jsqr';
+import React, { useState, useEffect, useRef } from "react";
+import jsQR from "jsqr";
 
 export default function ScanManagerComponent() {
-  const [qrCodeText, setQrCodeText] = useState('');
+  const [qrCodeText, setQrCodeText] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const videoRef = useRef(null); // Reference to the video element
   const streamRef = useRef(null); // Reference to the media stream
@@ -11,68 +11,83 @@ export default function ScanManagerComponent() {
 
   useEffect(() => {
     const tick = () => {
-      if (!isScanning || !videoRef.current || videoRef.current.readyState !== videoRef.current.HAVE_ENOUGH_DATA) {
+      if (
+        !isScanning ||
+        !videoRef.current ||
+        videoRef.current.readyState !== videoRef.current.HAVE_ENOUGH_DATA
+      ) {
         // If not scanning or video isn't ready, try again later
         requestAnimationFrame(tick);
         return;
       }
-  
-      setFrameCount(prevFrameCount => prevFrameCount + 1); // Increment frame count
-  
+
+      setFrameCount((prevFrameCount) => prevFrameCount + 1); // Increment frame count
+
       // Create a canvas to capture the current video frame
-      const canvasElement = document.createElement('canvas');
+      const canvasElement = document.createElement("canvas");
       canvasElement.width = videoRef.current.videoWidth;
       canvasElement.height = videoRef.current.videoHeight;
-      const canvas = canvasElement.getContext('2d');
-      canvas.drawImage(videoRef.current, 0, 0, canvasElement.width, canvasElement.height);
-      const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const canvas = canvasElement.getContext("2d");
+      canvas.drawImage(
+        videoRef.current,
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+      );
+      const imageData = canvas.getImageData(
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+      );
       const code = jsQR(imageData.data, imageData.width, imageData.height, {
         inversionAttempts: "dontInvert",
       });
-  
+
       if (code) {
         setQrCodeText(code.data);
         setIsScanning(false); // Stop scanning once QR code is found
-        setEventLog(prevEventLog => [...prevEventLog, 'QR Code detected']);
-        streamRef.current?.getTracks().forEach(track => track.stop());
+        setEventLog((prevEventLog) => [...prevEventLog, "QR Code detected"]);
+        streamRef.current?.getTracks().forEach((track) => track.stop());
       } else {
-        setEventLog(prevEventLog => [...prevEventLog, 'No QR Code detected']);
+        setEventLog((prevEventLog) => [...prevEventLog, "No QR Code detected"]);
         requestAnimationFrame(tick); // Continue scanning
       }
     };
-  
+
     if (isScanning) {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(stream => {
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: "environment" } })
+        .then((stream) => {
           streamRef.current = stream;
           videoRef.current.srcObject = stream;
           videoRef.current.play().then(() => {
             requestAnimationFrame(tick); // Start the scanning loop once the video plays
           });
-        }).catch(error => {
+        })
+        .catch((error) => {
           console.error("Error accessing the camera", error);
           setIsScanning(false); // If there's an error, stop scanning
         });
     } else {
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
-     
     }
   }, [isScanning]); // Make sure useEffect depends on `isScanning` to re-trigger scanning
-  
 
   const handleScanClick = () => {
-    setQrCodeText('');
+    setQrCodeText("");
     setFrameCount(0);
     setEventLog([]);
     setIsScanning(true);
-    setEventLog(prevEventLog => [...prevEventLog, 'Scan started']); // Log event
+    setEventLog((prevEventLog) => [...prevEventLog, "Scan started"]); // Log event
   };
 
   const handleCancelClick = () => {
     setIsScanning(false);
-    setEventLog(prevEventLog => [...prevEventLog, 'Scan canceled']); // Log event
+    setEventLog((prevEventLog) => [...prevEventLog, "Scan canceled"]); // Log event
   };
 
   return (
@@ -88,23 +103,36 @@ export default function ScanManagerComponent() {
         ) : (
           <>
             <p className="font-normal text-gray-700 dark:text-gray-400">
-              {isScanning ? 'Scanning...' : 'Click "Scan" to start scanning'}
+              {isScanning ? "Scanning..." : 'Click "Scan" to start scanning'}
             </p>
-            <video ref={videoRef} style={{ width: '100%', height: 'auto' }}></video>
+            <video
+              ref={videoRef}
+              style={{ width: "100%", height: "auto" }}
+            ></video>
           </>
         )}
         <div className="mt-4">
-          <button onClick={handleScanClick} className="mr-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          <button
+            className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            onClick={handleScanClick}
+          >
             Scan
           </button>
-          <button onClick={handleCancelClick} className="p-2 bg-red-500 text-white rounded hover:bg-red-600">
+          <button
+            className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            onClick={handleCancelClick}
+          >
             Cancel
           </button>
         </div>
       </div>
-        {/* Debug Box with Dark Mode */}
-        <div className={`mt-4 p-4 bg-gray-100 border border-gray-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300`}>
-        <h6 className="font-bold text-gray-900 dark:text-gray-300">Debug Info:</h6>
+      {/* Debug Box with Dark Mode */}
+      <div
+        className={`mt-4 p-4 bg-gray-100 border border-gray-200 rounded dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300`}
+      >
+        <h6 className="font-bold text-gray-900 dark:text-gray-300">
+          Debug Info:
+        </h6>
         <p>Frame Count: {frameCount}</p>
         <div>Events:</div>
         <ul>
