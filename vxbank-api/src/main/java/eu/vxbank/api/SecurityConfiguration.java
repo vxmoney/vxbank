@@ -93,6 +93,7 @@ public class SecurityConfiguration {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000",
                                 "http://192.168.1.37:3000",
+                                "http://192.168.1.49:3000",
                                 "https://vxbank-eu-dev.ew.r.appspot.com",
                                 "https://vxbank-eu-prod.ew.r.appspot.com",
                                 "https://vxevents-dot-vxbank-eu-dev.ew.r.appspot.com")
