@@ -7,9 +7,11 @@ import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.PublicEventClientPa
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventClientDepositFundsParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventClientDepositFundsResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventGetManagerListResponse;
+import eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
+import eu.vxbank.api.utils.components.vxintegration.VxIntegrationId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -66,11 +68,11 @@ public class PublicEventClientPaymentEndpoint {
         report.vxPublicEventClientId = clientId;
         report.totalDebit = 0L;
         report.totalCredit = 0L;
-        for (VxPublicEventClientPayment payment: paymentList){
-            if (payment.type == VxPublicEventClientPayment.Type.debit){
+        for (VxPublicEventClientPayment payment : paymentList) {
+            if (payment.type == VxPublicEventClientPayment.Type.debit) {
                 report.totalDebit += payment.value;
             }
-            if (payment.type == VxPublicEventClientPayment.Type.credit){
+            if (payment.type == VxPublicEventClientPayment.Type.credit) {
                 report.totalCredit += payment.value;
             }
         }
@@ -94,11 +96,42 @@ public class PublicEventClientPaymentEndpoint {
 
     @PostMapping("/managerRegistersPayment")
     public ManagerRegistersPaymentResponse managerRegistersPayment(Authentication auth,
-                                                              @RequestBody ManagerRegistersPaymentParams params) throws
+                                                                   @RequestBody ManagerRegistersPaymentParams params) throws
             StripeException {
 
+        // checking security
         VxUser vxUser = systemService.validateAndGetUser(auth);
-        throw new IllegalStateException("Please implement this");
+        PublicEventEndpointTools.checkUserIsManagerOfEvent(systemService.getVxBankDatastore(), vxUser, params.eventId);
+        VxPublicEventClient client = VxDsService.getById(VxPublicEventClient.class, systemService.getVxBankDatastore(), params.clientId);
+        if (!params.eventId.equals(client.publicEventId)) {
+            throw new IllegalStateException("Client does not belong to event");
+        }
+        PublicEventClientPaymentReportResponse clientReport = buildReportForClient(params.eventId, params.clientId);
+        if (clientReport.availableBalance < params.value) {
+            throw new IllegalStateException("Client does not have sufficient funds");
+        }
+
+        Long timeStamp = System.currentTimeMillis();
+
+        // register payment
+        VxPublicEventClientPayment payment = VxPublicEventClientPayment.builder()
+                .vxIntegrationId(VxIntegrationId.vxEvents.toString())
+                .vxPublicEventId(params.eventId)
+                .vxPublicEventClientId(params.clientId)
+                .vxPublicEventManagerUserId(vxUser.id)
+                .type(VxPublicEventClientPayment.Type.credit)
+                .state(VxPublicEventClientPayment.State.complete)
+                .method(VxPublicEventClientPayment.Method.managerRegistersPayment)
+                .value(params.value)
+                .timeStamp(timeStamp)
+                .updatedTimeStamp(timeStamp)
+                .build();
+        VxDsService.persist(VxPublicEventClientPayment.class, systemService.getVxBankDatastore(), payment);
+
+        ManagerRegistersPaymentResponse response = new ManagerRegistersPaymentResponse();
+        response.publicEventClientPayment = payment;
+        response.updatedAvailableBalance = clientReport.availableBalance - params.value;
+        return response;
     }
 
 }

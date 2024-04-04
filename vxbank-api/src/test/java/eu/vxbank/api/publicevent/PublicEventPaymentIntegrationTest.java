@@ -215,7 +215,7 @@ public class PublicEventPaymentIntegrationTest {
     }
 
     @Test
-    public void testClientPayments() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void testGoodPayments() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         Setup manager = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
         Setup client = setupClientAndJoinEvent(manager.publicEventId);
 
@@ -242,6 +242,7 @@ public class PublicEventPaymentIntegrationTest {
                         .value(250L)
                         .build(),
                 200);
+        Assertions.assertEquals(750L, response.updatedAvailableBalance);
 
         clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
                 port,
@@ -249,8 +250,57 @@ public class PublicEventPaymentIntegrationTest {
                 client.publicEventId,
                 client.vxPublicEventClientId,
                 200);
-        Assertions.assertEquals(value, clientReport.availableBalance);
+        Assertions.assertEquals(750L, clientReport.availableBalance);
+        Assertions.assertEquals(2, clientReport.clinetPaymentList.size());
 
         System.out.println("end of test");
+    }
+
+    @Test
+    public void testRandomUserPayment() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        Setup manager = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
+
+        Long randomId = System.currentTimeMillis();
+
+        PublicEventClientPaymentHelper.managerRegistersPayment(
+                restTemplate,
+                port,
+                manager.vxToken,
+                ManagerRegistersPaymentParams.builder()
+                        .eventId(manager.publicEventId)
+                        .clientId(randomId)
+                        .value(250L)
+                        .build(),
+                500);
+    }
+
+    @Test
+    public void testNotSufficientFunds() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        Setup manager = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
+        Setup clientA = setupClientAndJoinEvent(manager.publicEventId);
+        PublicEventClientPaymentHelper.managerRegistersPayment(
+                restTemplate,
+                port,
+                manager.vxToken,
+                ManagerRegistersPaymentParams.builder()
+                        .eventId(clientA.publicEventId)
+                        .clientId(clientA.vxPublicEventClientId)
+                        .value(250L)
+                        .build(),
+                500);
+
+        Setup clientB = setupClientAndJoinEvent(manager.publicEventId);
+        Long value = 1000L;
+        depositFunds(clientB.vxToken, clientB.publicEventId, clientB.vxPublicEventClientId, value);
+        PublicEventClientPaymentHelper.managerRegistersPayment(
+                restTemplate,
+                port,
+                manager.vxToken,
+                ManagerRegistersPaymentParams.builder()
+                        .eventId(clientB.publicEventId)
+                        .clientId(clientB.vxPublicEventClientId)
+                        .value(1001L)
+                        .build(),
+                500);
     }
 }
