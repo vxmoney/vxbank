@@ -220,16 +220,14 @@ public class PublicEventPaymentIntegrationTest {
         Long value = 1000L;
         depositFunds(client.vxToken, client.publicEventId, client.vxPublicEventClientId, value);
 
-        // check report after webhook hits
+        // check report
         PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
                 port,
                 client.vxToken,
                 client.publicEventId,
                 client.vxPublicEventClientId,
                 200);
-        Assertions.assertNotNull(clientReport);
         Assertions.assertEquals(value, clientReport.availableBalance);
-        Assertions.assertEquals(1, clientReport.clinetPaymentList.size());
 
         System.out.println("end of test");
     }

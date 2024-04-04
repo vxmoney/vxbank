@@ -1,6 +1,11 @@
 package eu.vxbank.api.endpoints.publicevent.clinetpayment;
 
+import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentParams;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentResponse;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.PublicEventClientPaymentReportResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventClientDepositFundsParams;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventClientDepositFundsResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventGetManagerListResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
@@ -86,4 +91,14 @@ public class PublicEventClientPaymentEndpoint {
         }
         throw new IllegalStateException("User not allowed to vie client payments");
     }
+
+    @PostMapping("/managerRegistersPayment")
+    public ManagerRegistersPaymentResponse managerRegistersPayment(Authentication auth,
+                                                              @RequestBody ManagerRegistersPaymentParams params) throws
+            StripeException {
+
+        VxUser vxUser = systemService.validateAndGetUser(auth);
+        throw new IllegalStateException("Please implement this");
+    }
+
 }
