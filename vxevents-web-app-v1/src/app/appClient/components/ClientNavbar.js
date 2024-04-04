@@ -5,7 +5,7 @@ import ThemeSwitch from "@/app/components/ThemeSwitch";
 import { useParams } from "next/navigation";
 
 export default function ClientNavbar() {
-  const { googleSignIn, logOut, vxUserInfo } = UserAuth();
+  const { googleSignIn, logOut, vxUserInfo, pendingLogin } = UserAuth();
   let { eventId } = useParams();
 
   const [isClient, setIsClient] = useState(false);
@@ -31,32 +31,35 @@ export default function ClientNavbar() {
     }
   };
 
+  let loginButtonContent = (
+    <li onClick={handleSignIn} className="p-2 cursor-pointer">
+      Login
+    </li>
+  );
+
+  if (pendingLogin) {
+    loginButtonContent = <li>Logging in ... </li>;
+  } else if (vxUserInfo) {
+    loginButtonContent = (
+      <>
+        <li onClick={handleSignOut} className="p-2 cursor-pointer">
+          Logout
+        </li>
+      </>
+    );
+  }
+
   return (
     <div className="h-20 w-full border-b-2 flex items-center justify-between p-2 bg-light dark:bg-gray-800">
+      {vxUserInfo && (
+        <ul className="flex">
+          <li className="p-2 cursor-pointer">
+            <Link href={`/appClient/account`}>Account</Link>
+          </li>
+        </ul>
+      )}
       <ul className="flex">
-        <li className="p-2 cursor-pointer">
-          <Link href={`/appClient/publicEvent/${eventId}`}>Home</Link>
-        </li>
-        
-
-        <li className="p-2 cursor-pointer">
-          <Link href={`/appClient/publicEvent/${eventId}/hello`}>Hello</Link>
-        </li>
-      </ul>
-      <ul className="flex">
-        {isClient &&
-          (vxUserInfo === null ? (
-            <li onClick={handleSignIn} className="p-2 cursor-pointer">
-              Login
-            </li>
-          ) : (
-            <>
-              <li className="p-2 cursor-pointer">{vxUserInfo?.email}</li>
-              <li onClick={handleSignOut} className="p-2 cursor-pointer">
-                Logout
-              </li>
-            </>
-          ))}
+        {isClient && loginButtonContent}
         <ThemeSwitch />
       </ul>
     </div>
