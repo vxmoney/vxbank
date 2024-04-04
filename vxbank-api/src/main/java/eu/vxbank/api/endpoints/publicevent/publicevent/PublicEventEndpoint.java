@@ -9,6 +9,7 @@ import com.stripe.param.PriceCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
+import eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegration;
@@ -20,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxEventPayment;
 import vxbank.datastore.data.models.VxStripeConfig;
 import vxbank.datastore.data.models.VxUser;
@@ -210,7 +212,7 @@ public class PublicEventEndpoint {
         VxPublicEvent vxPublicEvent = getVxEvent(eventId);
         checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
         VxUser vxUser = checkGetUserByEmail(email);
-        checkUserIsManagerOfEvent(vxUser, eventId);
+        PublicEventEndpointTools. checkUserIsManagerOfEvent(systemService.getVxBankDatastore(), vxUser, eventId);
 
         List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
                 systemService.getVxBankDatastore(),
@@ -250,15 +252,7 @@ public class PublicEventEndpoint {
         }
     }
 
-    public void checkUserIsManagerOfEvent(VxUser vxUser, Long vxPublicEventId) {
-        List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
-                systemService.getVxBankDatastore(),
-                vxPublicEventId);
-        Set<Long> managersSet = managerList.stream().map(m -> m.userId).collect(Collectors.toSet());
-        if (!managersSet.contains(vxUser.id)) {
-            throw new IllegalStateException("User is not a manager for this event");
-        }
-    }
+
 
     @GetMapping("/{eventId}/checkRegisterClient")
     @ResponseBody

@@ -27,7 +27,8 @@ public class VxPublicEventClientPayment {
     }
 
     public enum Method{
-        clientDepositFiat
+        clientDepositFiat,
+        managerRegistersPayment
     }
 
     @Id
@@ -39,6 +40,8 @@ public class VxPublicEventClientPayment {
     public Long vxPublicEventId;
     @Index
     public Long vxPublicEventClientId;
+    @Index
+    public Long vxPublicEventManagerUserId;
     @Index
     public Long vxEventPaymentId;
     @Index

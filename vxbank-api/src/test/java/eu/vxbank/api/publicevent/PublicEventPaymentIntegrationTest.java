@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import com.stripe.net.Webhook;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentParams;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentResponse;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.PublicEventClientPaymentReportResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
@@ -176,7 +178,7 @@ public class PublicEventPaymentIntegrationTest {
         }
     }
 
-    void depositFunds(String vxToken, Long publicEventId, Long vxPublicEventClientId, Long value ) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    void depositFunds(String vxToken, Long publicEventId, Long vxPublicEventClientId, Long value) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 
         // client deposit funds
 
@@ -213,7 +215,7 @@ public class PublicEventPaymentIntegrationTest {
     }
 
     @Test
-    public void testClientDepositFunds() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void testClientPayments() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         Setup manager = setupUserAndEvent("acct_1P05koBBqbt0qcrd");
         Setup client = setupClientAndJoinEvent(manager.publicEventId);
 
@@ -222,6 +224,26 @@ public class PublicEventPaymentIntegrationTest {
 
         // check report
         PublicEventClientPaymentReportResponse clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
+                port,
+                client.vxToken,
+                client.publicEventId,
+                client.vxPublicEventClientId,
+                200);
+        Assertions.assertEquals(value, clientReport.availableBalance);
+
+
+        ManagerRegistersPaymentResponse response = PublicEventClientPaymentHelper.managerRegistersPayment(
+                restTemplate,
+                port,
+                manager.vxToken,
+                ManagerRegistersPaymentParams.builder()
+                        .eventId(client.publicEventId)
+                        .clientId(client.vxPublicEventClientId)
+                        .value(250L)
+                        .build(),
+                200);
+
+        clientReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
                 port,
                 client.vxToken,
                 client.publicEventId,
