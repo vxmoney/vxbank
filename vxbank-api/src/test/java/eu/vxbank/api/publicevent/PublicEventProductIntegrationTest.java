@@ -3,6 +3,7 @@ package eu.vxbank.api.publicevent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
@@ -105,6 +107,7 @@ public class PublicEventProductIntegrationTest {
         setup.publicEventId = publicEventCreateResponse.id;
         return setup;
     }
+
     private Setup setupManager(String ownerVxToken, Long publicEventId) throws FirebaseAuthException, JsonProcessingException {
 
         Setup manager = new Setup();
@@ -174,7 +177,7 @@ public class PublicEventProductIntegrationTest {
     }
 
     @Test
-    public void testAddManager() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void createTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
 
 
         Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
@@ -185,10 +188,22 @@ public class PublicEventProductIntegrationTest {
         Assertions.assertEquals(owner.publicEventId, client.publicEventId);
         Assertions.assertNotNull(client.vxPublicEventClientId);
 
+        ProductCreateParams params = ProductCreateParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("title-1")
+                .description("description")
+                .availability(VxPublicEventProduct.Availability.available)
+                .price(250L)
+                .build();
+        VxPublicEventProduct product = PublicEventProductHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+        Assertions.assertNotNull(product.id);
+
         System.out.println("End of test");
     }
-
-
 
 
 }
