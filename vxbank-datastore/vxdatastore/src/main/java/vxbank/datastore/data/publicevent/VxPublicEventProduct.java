@@ -29,4 +29,6 @@ public class VxPublicEventProduct {
     public String description;
     public Availability availability;
     public Long price;
+    public Long createTimeStamp;
+    public Long updateTimeStamp;
 }
