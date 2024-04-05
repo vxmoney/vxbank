@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
+
+import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.checkUserIsOwnerOfEvent;
+import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.getVxEvent;
 
 @RestController
 @RequestMapping("/publicEventProduct")
@@ -35,7 +39,9 @@ public class PublicEventProductEndpoint {
     public VxPublicEventProduct create(Authentication auth, @RequestBody ProductCreateParams params) throws
             StripeException {
 
-        VxUser vxUser = systemService.validateAndGetUser(auth);
+        VxUser currentUser = systemService.validateAndGetUser(auth);
+        VxPublicEvent vxPublicEvent = getVxEvent(systemService.getVxBankDatastore(), params.vxPublicEventId);
+        checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
         throw new IllegalStateException("Please implement this");
 
     }

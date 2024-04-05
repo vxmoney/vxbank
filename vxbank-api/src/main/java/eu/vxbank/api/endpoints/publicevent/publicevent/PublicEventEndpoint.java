@@ -33,6 +33,9 @@ import vxbank.datastore.data.service.VxDsService;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.checkUserIsOwnerOfEvent;
+import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.getVxEvent;
+
 @RestController
 @RequestMapping("/publicEvent")
 public class PublicEventEndpoint {
@@ -155,7 +158,7 @@ public class PublicEventEndpoint {
 
         // check stuff
         VxUser currentUser = systemService.validateAndGetUser(auth);
-        VxPublicEvent vxPublicEvent = getVxEvent(params.publicEventId);
+        VxPublicEvent vxPublicEvent = getVxEvent(systemService.getVxBankDatastore(), params.publicEventId);
         checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
         VxUser vxUser = checkGetUserByEmail(params.email);
         checkUserIsNotMangerForEvent(vxUser, vxPublicEvent);
@@ -196,10 +199,6 @@ public class PublicEventEndpoint {
         return user.get();
     }
 
-    private VxPublicEvent getVxEvent(Long publicEventId) {
-        VxPublicEvent vxPublicEvent = VxDsService.getById(VxPublicEvent.class, systemService.getVxBankDatastore(), publicEventId);
-        return vxPublicEvent;
-    }
 
     @DeleteMapping("/{eventId}/managers/{email}")
     public String managersDeleteManager(Authentication auth,
@@ -208,10 +207,10 @@ public class PublicEventEndpoint {
             StripeException {
 
         VxUser currentUser = systemService.validateAndGetUser(auth);
-        VxPublicEvent vxPublicEvent = getVxEvent(eventId);
+        VxPublicEvent vxPublicEvent = getVxEvent(systemService.getVxBankDatastore(), eventId);
         checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
         VxUser vxUser = checkGetUserByEmail(email);
-        PublicEventEndpointTools. checkUserIsManagerOfEvent(systemService.getVxBankDatastore(), vxUser, eventId);
+        PublicEventEndpointTools.checkUserIsManagerOfEvent(systemService.getVxBankDatastore(), vxUser, eventId);
 
         List<VxPublicEventManager> managerList = VxDsService.getByPublicEventId(VxPublicEventManager.class,
                 systemService.getVxBankDatastore(),
@@ -244,13 +243,6 @@ public class PublicEventEndpoint {
 
         return response;
     }
-
-    public void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
-        if (vxPublicEvent.vxUserId != vxUser.id) {
-            throw new IllegalStateException("User is not Owner of event");
-        }
-    }
-
 
 
     @GetMapping("/{eventId}/checkRegisterClient")
@@ -333,7 +325,7 @@ public class PublicEventEndpoint {
 
         VxUser vxUser = systemService.validateAndGetUser(auth);
         checkPublicEventExists(eventId);
-        VxPublicEvent vxPublicEvent = getVxEvent(eventId);
+        VxPublicEvent vxPublicEvent = getVxEvent(systemService.getVxBankDatastore(), eventId);
         VxPublicEventClient vxPublicEventClient = checkGetUserIsClientForEvent(vxUser, vxPublicEvent);
 
         VxStripeConfig vxStripeConfig = checkGetStripeConfigForEventOwner(vxPublicEvent.vxUserId, vxPublicEvent.currency);

@@ -2,6 +2,7 @@ package eu.vxbank.api.endpoints.publicevent.tools;
 
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
 import vxbank.datastore.data.service.VxDsService;
 
@@ -18,5 +19,16 @@ public class PublicEventEndpointTools {
         if (!managersSet.contains(vxUser.id)) {
             throw new IllegalStateException("User is not a manager for this event");
         }
+    }
+
+    public static void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
+        if (vxPublicEvent.vxUserId != vxUser.id) {
+            throw new IllegalStateException("User is not Owner of event");
+        }
+    }
+
+    public static VxPublicEvent getVxEvent(VxBankDatastore ds, Long vxPublicEventId) {
+        VxPublicEvent vxPublicEvent = VxDsService.getById(VxPublicEvent.class, ds, vxPublicEventId);
+        return vxPublicEvent;
     }
 }
