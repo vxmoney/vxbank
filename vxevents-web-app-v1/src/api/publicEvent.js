@@ -20,14 +20,11 @@ export const publicEventAPI = {
     };
     return instance.post("", eventData, { headers });
   },
-  search: (
-    vxToken,
-    vxUserId
-  ) => {
+  search: (vxToken, vxUserId) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
-    
+
     return instance.get("", { headers, params: { vxUserId } });
   },
   getById: (vxToken, eventId) => {
@@ -36,5 +33,21 @@ export const publicEventAPI = {
     };
 
     return instance.get(`/${eventId}`, { headers });
+  },
+  join: (vxToken, eventId) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.get(`/${eventId}/checkRegisterClient`, { headers });
+  },
+  clientDepositFunds: (vxToken, eventId, value) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    return instance.post(
+      `/${eventId}/clientDepositFunds`,
+      { value },
+      { headers }
+    );
   },
 };

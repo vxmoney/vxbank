@@ -54,7 +54,9 @@ export default function ClientNavbar() {
       {vxUserInfo && (
         <ul className="flex">
           <li className="p-2 cursor-pointer">
-            <Link href={`/appClient/account`}>Account</Link>
+            <Link href={`/appClient/publicEvent/${eventId}/account`}>
+              Account
+            </Link>
           </li>
         </ul>
       )}

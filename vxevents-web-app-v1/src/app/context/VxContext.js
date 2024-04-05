@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
-import { eventAPI } from '@/api/event';
-import { publicEventAPI } from '@/api/publicEvent';
-
+import React, { useState, useEffect, useContext, createContext } from "react";
+import { eventAPI } from "@/api/event";
+import { publicEventAPI } from "@/api/publicEvent";
 
 const VxContext = createContext();
 
@@ -12,18 +11,21 @@ export const useVxContext = () => {
 export const VxProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
 
-  const fetchEvents = (vxToken,vxUserId) => {
+  const fetchEvents = (vxToken, vxUserId) => {
     if (!vxToken) {
-      console.error('VxToken is required for fetching events.');
+      console.error("VxToken is required for fetching events.");
       return;
     }
 
-    publicEventAPI.search(vxToken,vxUserId)
-      .then(response => {
+    publicEventAPI
+      .search(vxToken, vxUserId)
+      .then((response) => {
+        console.log("result");
+        console.log(response);
         setEvents(response.data.eventList);
       })
-      .catch(error => {
-        console.error('API Error:', error);
+      .catch((error) => {
+        console.error("API Error:", error);
         // Handle errors if needed
       });
   };
@@ -33,9 +35,5 @@ export const VxProvider = ({ children }) => {
     fetchEvents,
   };
 
-  return (
-    <VxContext.Provider value={value}>
-      {children}
-    </VxContext.Provider>
-  );
+  return <VxContext.Provider value={value}>{children}</VxContext.Provider>;
 };
