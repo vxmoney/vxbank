@@ -143,12 +143,47 @@ public class PublicEventProductIntegrationTest {
         return manager;
     }
 
+    private Setup setupClient(Long publicEventId) throws StripeException, FirebaseAuthException, JsonProcessingException {
+        // ---- setup part
+        Setup client = new Setup();
+
+        client.email = RandomUtil.generateRandomEmail();
+        client.vxToken = UserHelper.generateVxToken(client.email, restTemplate, port);
+
+
+        LoginResponse loginResponse = PingHelper.whoAmI(client.vxToken, restTemplate, port, 200);
+        Assertions.assertEquals(client.email, loginResponse.email);
+
+
+        client.userId = loginResponse.id;
+
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+
+        Optional<VxUser> vxUser = VxDsService.getUserByEmail(client.email, ds);
+
+        // ------- join event
+        PublicEventCheckRegisterClientResponse checkRegisterClientResponse = PublicEventHelper.checkRegisterClient(restTemplate,
+                port,
+                client.vxToken,
+                publicEventId,
+                200);
+        client.vxPublicEventClientId = checkRegisterClientResponse.id;
+        client.publicEventId = publicEventId;
+        return client;
+    }
+
     @Test
     public void testAddManager() throws StripeException, FirebaseAuthException, JsonProcessingException {
 
 
         Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
         Setup manager = setupManager(owner.vxToken, owner.publicEventId);
+        Setup client = setupClient(manager.publicEventId);
+
+        Assertions.assertEquals(owner.publicEventId, manager.publicEventId);
+        Assertions.assertEquals(owner.publicEventId, client.publicEventId);
+        Assertions.assertNotNull(client.vxPublicEventClientId);
 
         System.out.println("End of test");
     }
