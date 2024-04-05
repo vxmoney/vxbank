@@ -12,6 +12,7 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [pendingLogin, setPendingLogin] = useState(false);
   const [vxToken, setVxToken] = useState(() => {
     // Try to get the token from localStorage on component mount
     if (typeof localStorage !== "undefined") {
@@ -26,7 +27,7 @@ export const AuthContextProvider = ({ children }) => {
     if (typeof localStorage !== "undefined") {
       const storedVxUserInfo = localStorage.getItem("vxUserInfo");
       return storedVxUserInfo ? JSON.parse(storedVxUserInfo) : null;
-    }else{
+    } else {
       return null;
     }
   });
@@ -40,7 +41,9 @@ export const AuthContextProvider = ({ children }) => {
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
-  
+    setPendingLogin(true);
+    console.log(pendingLogin);
+
     // Sign in with Google and update local state when successful
     signInWithPopup(auth, provider)
       .then(async (result) => {
@@ -50,9 +53,11 @@ export const AuthContextProvider = ({ children }) => {
         // Additional logic if needed
         const response = await userAPI.login(user.accessToken);
         setVxUserInfo(response.data);
+        setPendingLogin(false);
       })
       .catch((error) => {
         console.error("Google Sign-In Error:", error);
+        setPendingLogin(false);
       });
   };
 
@@ -85,6 +90,7 @@ export const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        pendingLogin,
         user,
         googleSignIn,
         logOut,
