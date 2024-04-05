@@ -235,6 +235,50 @@ public class PublicEventProductIntegrationTest {
 
     }
 
+    @Test
+    public void updateTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
+        ProductCreateParams params = ProductCreateParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("title-1")
+                .description("description")
+                .availability(VxPublicEventProduct.Availability.available)
+                .price(250L)
+                .build();
+        VxPublicEventProduct product = PublicEventProductHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+
+        ProductCreateParams updateParams = ProductCreateParams.builder()
+                .title("title-2")
+                .description("description-2")
+                .availability(VxPublicEventProduct.Availability.notAvailable)
+                .price(300L)
+                .build();
+        VxPublicEventProduct updatedProduct = PublicEventProductHelper.update(restTemplate,
+                port,
+                owner.vxToken,
+                product.id,
+                updateParams,
+                200);
+
+        VxPublicEventProduct getProduct = PublicEventProductHelper.get(restTemplate,
+                port,
+                owner.vxToken,
+                product.id,
+                200);
+        Assertions.assertEquals(updatedProduct.id, getProduct.id);
+        Assertions.assertEquals(updatedProduct.title, getProduct.title);
+        Assertions.assertEquals(updatedProduct.price, getProduct.price);
+
+        // check also against the update params
+        Assertions.assertEquals(updatedProduct.title, updateParams.title);
+        Assertions.assertEquals(updatedProduct.price, updateParams.price);
+
+    }
+
 
 
 

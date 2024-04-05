@@ -11,6 +11,7 @@ import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vxbank.datastore.data.models.VxEvent;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
@@ -64,6 +65,26 @@ public class PublicEventProductEndpoint {
     public VxPublicEventProduct get(Authentication auth, @PathVariable Long productId) {
         VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
         VxPublicEventProduct vxPublicEventProduct = VxDsService.getById(VxPublicEventProduct.class, systemService.getVxBankDatastore(), productId);
+        return vxPublicEventProduct;
+    }
+
+    @PutMapping("/{productId}")
+    public VxPublicEventProduct update(Authentication auth, @PathVariable Long productId, @RequestBody ProductCreateParams params) {
+        VxUser currentUser = systemService.validateAndGetUser(auth);
+        VxPublicEventProduct vxPublicEventProduct = VxDsService.getById(VxPublicEventProduct.class, systemService.getVxBankDatastore(), productId);
+        VxPublicEvent vxEvent = getVxEvent(systemService.getVxBankDatastore(), vxPublicEventProduct.vxPublicEventId);
+        checkUserIsOwnerOfEvent(currentUser, vxEvent);
+
+        vxPublicEventProduct = vxPublicEventProduct.toBuilder()
+                .title(params.title)
+                .description(params.description)
+                .availability(params.availability)
+                .price(params.price)
+                .updateTimeStamp(System.currentTimeMillis())
+                .build();
+
+        VxDsService.persist(VxPublicEventProduct.class, systemService.getVxBankDatastore(), vxPublicEventProduct);
+
         return vxPublicEventProduct;
     }
 }

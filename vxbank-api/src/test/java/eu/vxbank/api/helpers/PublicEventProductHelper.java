@@ -62,4 +62,33 @@ public class PublicEventProductHelper {
     }
 
 
+    public static VxPublicEventProduct update(TestRestTemplate restTemplate,
+                                              int port,
+                                              String vxToken,
+                                              Long productId,
+                                              ProductCreateParams params,
+                                              int expectedStatusCode) {
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<ProductCreateParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<VxPublicEventProduct> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEventProduct/" + productId,
+                HttpMethod.PUT, requestEntity, VxPublicEventProduct.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        VxPublicEventProduct response = responseEntity.getBody();
+        return response;
+
+    }
 }
