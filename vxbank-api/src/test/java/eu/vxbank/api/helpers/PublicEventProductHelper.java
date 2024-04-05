@@ -1,8 +1,6 @@
 package eu.vxbank.api.helpers;
 
 import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -37,4 +35,31 @@ public class PublicEventProductHelper {
         VxPublicEventProduct response = responseEntity.getBody();
         return response;
     }
+
+    public static VxPublicEventProduct get(TestRestTemplate restTemplate,
+                                           int port,
+                                           String vxToken,
+                                           Long productId,
+                                           int expectedStatusCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<VxPublicEventProduct> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEventProduct/" + productId,
+                HttpMethod.GET,
+                requestEntity,
+                VxPublicEventProduct.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        VxPublicEventProduct response = responseEntity.getBody();
+        return response;
+    }
+
+
 }

@@ -205,5 +205,37 @@ public class PublicEventProductIntegrationTest {
         System.out.println("End of test");
     }
 
+    @Test
+    public void getTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+
+
+        Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
+
+        ProductCreateParams params = ProductCreateParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("title-1")
+                .description("description")
+                .availability(VxPublicEventProduct.Availability.available)
+                .price(250L)
+                .build();
+        VxPublicEventProduct product = PublicEventProductHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+
+        VxPublicEventProduct getProduct = PublicEventProductHelper.get(restTemplate,
+                port,
+                owner.vxToken,
+                product.id,
+                200);
+        Assertions.assertEquals(product.id, getProduct.id);
+        Assertions.assertEquals(product.title, getProduct.title);
+        Assertions.assertEquals(product.price, getProduct.price);
+
+    }
+
+
+
 
 }

@@ -10,10 +10,7 @@ import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
@@ -60,5 +57,13 @@ public class PublicEventProductEndpoint {
 
         return vxPublicEventProduct;
 
+    }
+
+    @GetMapping("/{productId}")
+    @ResponseBody
+    public VxPublicEventProduct get(Authentication auth, @PathVariable Long productId) {
+        VxUser vxUser = systemService.validateUserAndStripeConfig(auth);
+        VxPublicEventProduct vxPublicEventProduct = VxDsService.getById(VxPublicEventProduct.class, systemService.getVxBankDatastore(), productId);
+        return vxPublicEventProduct;
     }
 }
