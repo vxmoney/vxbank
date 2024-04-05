@@ -129,6 +129,19 @@ public class VxDsService {
 
         return list;
     }
+
+    public static <T> List<T> getByVxPublicEventId(Class<T> vxClass, VxBankDatastore ds, Long vxPublicEventId) {
+
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter("vxPublicEventId", vxPublicEventId);
+
+        query = query.chunkAll();
+        List<T> list = query.list();
+
+        return list;
+    }
+
     public static List<VxEventPayment> getVxEventPaymentList(VxBankDatastore ds, Long vxEventId) {
         Query<VxEventPayment> query = ds.ofy.load()
                 .type(VxEventPayment.class)
@@ -274,4 +287,6 @@ public class VxDsService {
 
         return list;
     }
+
+
 }

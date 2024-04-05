@@ -1,12 +1,15 @@
 package eu.vxbank.api.helpers;
 
 import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductSearchResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventSearchResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 
 public class PublicEventProductHelper {
@@ -90,5 +93,37 @@ public class PublicEventProductHelper {
         VxPublicEventProduct response = responseEntity.getBody();
         return response;
 
+    }
+
+    public static ProductSearchResponse search(TestRestTemplate restTemplate,
+                                               int port,
+                                               String vxToken,
+                                               Long publicEventId,
+                                               int expectedStatusCode) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+
+        // Build the URL with query parameters
+        UriComponentsBuilder builder =
+                UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/publicEventProduct")
+                        .queryParam("publicEventId", publicEventId);
+
+
+        // Make the GET request
+        ResponseEntity<ProductSearchResponse> responseEntity = restTemplate.exchange(builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                ProductSearchResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        ProductSearchResponse response = responseEntity.getBody();
+        return response;
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductSearchResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
@@ -25,6 +26,7 @@ import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -276,6 +278,38 @@ public class PublicEventProductIntegrationTest {
         // check also against the update params
         Assertions.assertEquals(updatedProduct.title, updateParams.title);
         Assertions.assertEquals(updatedProduct.price, updateParams.price);
+
+    }
+
+    // test search by event id
+    @Test
+    public void searchByEventIdTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
+        ProductCreateParams params = ProductCreateParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("title-1")
+                .description("description")
+                .availability(VxPublicEventProduct.Availability.available)
+                .price(250L)
+                .build();
+        VxPublicEventProduct product = PublicEventProductHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+
+        ProductSearchResponse searchResponse = PublicEventProductHelper.search(restTemplate,
+                port,
+                owner.vxToken,
+                owner.publicEventId,
+                200);
+        List<VxPublicEventProduct> products = searchResponse.productList;
+        Assertions.assertEquals(1, products.size());
+        VxPublicEventProduct item = products.get(0);
+
+        Assertions.assertEquals(product.id, item.id);
+        Assertions.assertEquals(product.title, item.title);
+        Assertions.assertEquals(product.price, item.price);
 
     }
 

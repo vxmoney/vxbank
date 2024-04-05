@@ -85,7 +85,7 @@ public class PublicEventHelper {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/publicEvent")
                 .queryParam("vxUserId", vxUserId);
 
-        // Make the GET request to /ping/whoAmI
+        // Make the GET request
         ResponseEntity<PublicEventSearchResponse> responseEntity = restTemplate.exchange(builder.toUriString(),
                 HttpMethod.GET,
                 requestEntity,
