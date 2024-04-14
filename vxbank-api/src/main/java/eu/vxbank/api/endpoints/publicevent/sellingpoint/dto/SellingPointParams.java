@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SellingPointCreateParams {
+public class SellingPointParams {
     public Long vxPublicEventId;
     public String title;
     public List<Long> productIdList;

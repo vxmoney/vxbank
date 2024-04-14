@@ -1,8 +1,8 @@
 package eu.vxbank.api.endpoints.publicevent.sellingpoint;
 
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointCreateParams;
-import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointCreateResponse;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
@@ -36,7 +36,7 @@ public class PublicEventSellingPointEndpoint {
     private VxIntegrationConfig vxIntegrationConfig;
 
     @PostMapping
-    public SellingPointCreateResponse create(Authentication auth, @RequestBody SellingPointCreateParams params) throws
+    public SellingPointResponse create(Authentication auth, @RequestBody SellingPointParams params) throws
             StripeException {
 
         VxUser currentUser = systemService.validateAndGetUser(auth);
@@ -57,7 +57,7 @@ public class PublicEventSellingPointEndpoint {
 
 
         VxDsService.persist(VxPublicEventSellingPoint.class, systemService.getVxBankDatastore(), vxSellingPoint);
-        SellingPointCreateResponse response = SellingPointCreateResponse.builder()
+        SellingPointResponse response = SellingPointResponse.builder()
                 .id(vxSellingPoint.getId())
                 .vxPublicEventId(vxSellingPoint.getVxPublicEventId())
                 .title(vxSellingPoint.getTitle())

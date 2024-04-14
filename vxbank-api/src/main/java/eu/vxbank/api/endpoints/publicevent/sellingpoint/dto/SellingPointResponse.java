@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SellingPointCreateResponse {
+public class SellingPointResponse {
     public Long id;
     public Long vxPublicEventId;
     public String title;
