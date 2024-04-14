@@ -14,6 +14,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VxPublicEventOrderItem {
+
+    public enum IndexedField {
+        vxPublicEventProductId,
+        vxPublicEventId,
+        vxPublicEventSellingPointId,
+        vxPublicClientPaymentId,
+        vxPublicEventClientId,
+        vxPublicEventManagerUserId
+    }
+
     @Id
     public Long id;
     @Index

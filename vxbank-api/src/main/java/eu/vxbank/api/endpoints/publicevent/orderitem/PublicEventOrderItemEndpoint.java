@@ -1,5 +1,6 @@
 package eu.vxbank.api.endpoints.publicevent.orderitem;
 
+import eu.vxbank.api.endpoints.publicevent.orderitem.dto.OrderItemSearchResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
@@ -27,5 +28,13 @@ public class PublicEventOrderItemEndpoint {
         systemService.validateAndGetUser(auth);
         VxPublicEventOrderItem item = VxDsService.getById(VxPublicEventOrderItem.class, systemService.getVxBankDatastore(), itemId);
         return item;
+    }
+
+    @GetMapping("/get/byLongIndexField")
+    @ResponseBody
+    public OrderItemSearchResponse getByLongIndexField(Authentication auth,
+                                                       @RequestParam VxPublicEventOrderItem.IndexedField indexedField,
+                                                       @RequestParam Long value) {
+        throw new UnsupportedOperationException("Please implement this");
     }
 }

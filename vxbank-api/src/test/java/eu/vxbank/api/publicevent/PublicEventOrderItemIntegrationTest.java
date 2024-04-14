@@ -7,6 +7,7 @@ import com.stripe.net.Webhook;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentParams;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentResponse;
 import eu.vxbank.api.endpoints.publicevent.orderitem.dto.OrderItemParams;
+import eu.vxbank.api.endpoints.publicevent.orderitem.dto.OrderItemSearchResponse;
 import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
@@ -108,6 +109,16 @@ public class PublicEventOrderItemIntegrationTest {
         VxPublicEventOrderItem getItem = PublicEventOrderItemHelper.get(restTemplate, port, manager.vxToken, orderItem.getId(), 200);
         Assertions.assertEquals(orderItem.getId(), getItem.getId());
         Assertions.assertEquals(orderItem.getValue(), getItem.getValue());
+
+        // getByLongIndexField
+        OrderItemSearchResponse searchResponse = PublicEventOrderItemHelper.getByLongIndexField(restTemplate,
+                port,
+                manager.vxToken,
+                VxPublicEventOrderItem.IndexedField.vxPublicEventSellingPointId,
+                owner.sellingPointList.get(0).getId(),
+                200);
+        Assertions.assertEquals(2, searchResponse.orderItemList.size());
+
     }
 
     public Setup setupOwner(String stripeAccountId) throws
