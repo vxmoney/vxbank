@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
+import vxbank.datastore.data.publicevent.VxPublicEventProduct;
+import vxbank.datastore.data.publicevent.VxPublicEventSellingPoint;
+import vxbank.datastore.data.service.VxDsService;
+
+import java.util.List;
 
 import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.checkUserIsOwnerOfEvent;
 import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.getVxEvent;
@@ -38,9 +43,28 @@ public class PublicEventSellingPointEndpoint {
         VxPublicEvent vxPublicEvent = getVxEvent(systemService.getVxBankDatastore(), params.vxPublicEventId);
         checkUserIsOwnerOfEvent(currentUser, vxPublicEvent);
 
+        List<VxPublicEventProduct> productList = VxDsService.getByIdList(
+                systemService.getVxBankDatastore(),
+                VxPublicEventProduct.class,
+                params.productIdList        );
+        List<Long> productIdList = productList.stream().map(VxPublicEventProduct::getId).toList();
+
+        VxPublicEventSellingPoint vxSellingPoint = VxPublicEventSellingPoint.builder()
+                .vxPublicEventId(params.vxPublicEventId)
+                .title(params.title)
+                .productIdList(productIdList)
+                .build();
 
 
-        throw new IllegalStateException("Please implement this");
+        VxDsService.persist(VxPublicEventSellingPoint.class, systemService.getVxBankDatastore(), vxSellingPoint);
+        SellingPointCreateResponse response = SellingPointCreateResponse.builder()
+                .id(vxSellingPoint.getId())
+                .vxPublicEventId(vxSellingPoint.getVxPublicEventId())
+                .title(vxSellingPoint.getTitle())
+                .productList(productList)
+                .build();
+
+       return response;
 
     }
 }
