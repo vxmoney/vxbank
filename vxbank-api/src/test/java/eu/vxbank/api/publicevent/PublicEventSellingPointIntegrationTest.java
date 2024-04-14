@@ -3,6 +3,7 @@ package eu.vxbank.api.publicevent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventAddMangerParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCheckRegisterClientResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
@@ -23,9 +24,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 import vxbank.datastore.data.service.VxDsService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,6 +42,7 @@ public class PublicEventSellingPointIntegrationTest {
         String email;
         Long publicEventId;
         Long vxPublicEventClientId;
+        List<VxPublicEventProduct> productList;
 
     }
 
@@ -61,9 +66,26 @@ public class PublicEventSellingPointIntegrationTest {
         Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
         Setup manager = setupManager(owner.vxToken, owner.publicEventId);
         Setup client = setupClient(manager.publicEventId);
+
+
     }
 
-    public Setup setupOwner(String stripeAccountId) throws StripeException, FirebaseAuthException, JsonProcessingException {
+    private VxPublicEventProduct createProduct(String vxToken, Long publicEventId, String title, long price) {
+        ProductCreateParams params = ProductCreateParams.builder()
+                .vxPublicEventId(publicEventId)
+                .title(title)
+                .availability(VxPublicEventProduct.Availability.available)
+                .price(price)
+                .build();
+        return PublicEventProductHelper.create(restTemplate, port, vxToken, params, 200);
+
+
+    }
+
+    public Setup setupOwner(String stripeAccountId) throws
+            StripeException,
+            FirebaseAuthException,
+            JsonProcessingException {
         Setup setup = setupUser(stripeAccountId);
         Long timeStamp = new Date().getTime();
         String title = "Event - " + timeStamp;
@@ -80,6 +102,19 @@ public class PublicEventSellingPointIntegrationTest {
                 params,
                 200);
         setup.publicEventId = publicEventCreateResponse.id;
+
+        setup.productList = new ArrayList<>();
+        VxPublicEventProduct productA = createProduct(setup.vxToken,
+                setup.publicEventId,
+                "ProductA - " + new Date().getTime(),
+                1000L);
+        VxPublicEventProduct productB = createProduct(setup.vxToken,
+                setup.publicEventId,
+                "ProductB - " + new Date().getTime(),
+                1000L);
+        setup.productList.add(productA);
+        setup.productList.add(productB);
+
         return setup;
     }
 
@@ -119,7 +154,9 @@ public class PublicEventSellingPointIntegrationTest {
         return setup;
     }
 
-    private Setup setupManager(String ownerVxToken, Long publicEventId) throws FirebaseAuthException, JsonProcessingException {
+    private Setup setupManager(String ownerVxToken, Long publicEventId) throws
+            FirebaseAuthException,
+            JsonProcessingException {
 
         Setup manager = new Setup();
 
@@ -149,15 +186,14 @@ public class PublicEventSellingPointIntegrationTest {
                 .publicEventId(publicEventId)
                 .email(manager.email)
                 .build();
-        PublicEventHelper.addManager(restTemplate,
-                port,
-                ownerVxToken,
-                goodParams,
-                200);
+        PublicEventHelper.addManager(restTemplate, port, ownerVxToken, goodParams, 200);
         return manager;
     }
 
-    private Setup setupClient(Long publicEventId) throws StripeException, FirebaseAuthException, JsonProcessingException {
+    private Setup setupClient(Long publicEventId) throws
+            StripeException,
+            FirebaseAuthException,
+            JsonProcessingException {
         // ---- setup part
         Setup client = new Setup();
 
@@ -177,7 +213,8 @@ public class PublicEventSellingPointIntegrationTest {
         Optional<VxUser> vxUser = VxDsService.getUserByEmail(client.email, ds);
 
         // ------- join event
-        PublicEventCheckRegisterClientResponse checkRegisterClientResponse = PublicEventHelper.checkRegisterClient(restTemplate,
+        PublicEventCheckRegisterClientResponse checkRegisterClientResponse = PublicEventHelper.checkRegisterClient(
+                restTemplate,
                 port,
                 client.vxToken,
                 publicEventId,
