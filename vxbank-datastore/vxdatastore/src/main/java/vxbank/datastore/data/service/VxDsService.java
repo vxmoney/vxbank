@@ -118,6 +118,7 @@ public class VxDsService {
 
         return list;
     }
+
     public static <T> List<T> getByPublicEventId(Class<T> vxClass, VxBankDatastore ds, Long publicEventId) {
 
         Query<T> query = ds.ofy.load()
@@ -203,7 +204,7 @@ public class VxDsService {
         return eventList;
     }
 
-    public static List<VxPublicEvent> searchPublicEvent(VxBankDatastore ds, Long vxUserId){
+    public static List<VxPublicEvent> searchPublicEvent(VxBankDatastore ds, Long vxUserId) {
         Query<VxPublicEvent> query = ds.ofy.load().type(VxPublicEvent.class);
         query = query.filter("vxUserId", vxUserId);
         // order by createTimeStamp
@@ -212,7 +213,6 @@ public class VxDsService {
         List<VxPublicEvent> eventList = query.list();
         return eventList;
     }
-
 
 
     public static List<VxEventParticipant> getParticipantsByEventId(VxBankDatastore ds, Long vxEventId) {
@@ -224,8 +224,8 @@ public class VxDsService {
         return participantList;
     }
 
-    public static void transactionLess(VxBankDatastore ds, Runnable runnable){
-        ds.ofy.transactionless(()->{
+    public static void transactionLess(VxBankDatastore ds, Runnable runnable) {
+        ds.ofy.transactionless(() -> {
             runnable.run();
         });
     }
@@ -247,18 +247,18 @@ public class VxDsService {
     }
 
     public static <T> List<T> getByIdList(VxBankDatastore ds,
-                                            Class<T> vxClass,
-                                            List<Long> idList) {
-       Map<Long, T> result = ds.ofy.load()
+                                          Class<T> vxClass,
+                                          List<Long> idList) {
+        Map<Long, T> result = ds.ofy.load()
                 .type(vxClass)
                 .ids(idList);
-       if (result.isEmpty()){
-           return Collections.emptyList();
-       }
-       return result.values().stream().toList();
+        if (result.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return result.values().stream().toList();
     }
 
-    public static <T> List<T> getByStripeSessionId(Class<T> vxClass, VxBankDatastore ds, String  stripeSessionId) {
+    public static <T> List<T> getByStripeSessionId(Class<T> vxClass, VxBankDatastore ds, String stripeSessionId) {
         Query<T> query = ds.ofy.load()
                 .type(vxClass)
                 .filter("stripeSessionId", stripeSessionId);
@@ -276,7 +276,7 @@ public class VxDsService {
                 .now();
     }
 
-    public static <T> List<T> vxPublicEventClientId(Class<T> vxClass, VxBankDatastore ds, Long  vxPublicEventClientId) {
+    public static <T> List<T> vxPublicEventClientId(Class<T> vxClass, VxBankDatastore ds, Long vxPublicEventClientId) {
         Query<T> query = ds.ofy.load()
                 .type(vxClass)
                 .filter("vxPublicEventClientId", vxPublicEventClientId);
@@ -285,6 +285,19 @@ public class VxDsService {
         List<T> list = query.list();
 
 
+        return list;
+    }
+
+    public static <T> List<T> getByLongIndexField(Class<T> vxClass,
+                                                  VxBankDatastore ds,
+                                                  String indexedField,
+                                                  Long fieldValue) {
+        Query<T> query = ds.ofy.load()
+                .type(vxClass)
+                .filter(indexedField, fieldValue);
+        query = query.order("-createTimeStamp");
+        query = query.chunkAll();
+        List<T> list = query.list();
         return list;
     }
 

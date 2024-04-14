@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.publicevent.VxPublicEventOrderItem;
 import vxbank.datastore.data.service.VxDsService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/publicEventOrderItem")
 public class PublicEventOrderItemEndpoint {
@@ -35,6 +37,17 @@ public class PublicEventOrderItemEndpoint {
     public OrderItemSearchResponse getByLongIndexField(Authentication auth,
                                                        @RequestParam VxPublicEventOrderItem.IndexedField indexedField,
                                                        @RequestParam Long value) {
-        throw new UnsupportedOperationException("Please implement this");
+
+        systemService.validateAndGetUser(auth);
+        List<VxPublicEventOrderItem> itemList = VxDsService.getByLongIndexField(
+                VxPublicEventOrderItem.class,
+                systemService.getVxBankDatastore(),
+                indexedField.toString(),
+                value);
+
+        OrderItemSearchResponse response = new OrderItemSearchResponse();
+        response.totalCount = itemList.size();
+        response.orderItemList = itemList;
+        return response;
     }
 }
