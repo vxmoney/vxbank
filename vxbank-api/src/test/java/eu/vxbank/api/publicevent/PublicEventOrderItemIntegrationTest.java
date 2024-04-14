@@ -73,19 +73,20 @@ public class PublicEventOrderItemIntegrationTest {
         Setup manager = setupManager(owner.vxToken, owner.publicEventId);
         Setup client = setupClient(manager.publicEventId);
 
-        Long value = 1000L;
+        Long value = 10000L;
         depositFunds(client.vxToken, client.publicEventId, client.vxPublicEventClientId, value);
 
         // build order item param list
-        List<OrderItemParams> orderItemList = new ArrayList<>();
+        List<OrderItemParams> orderItemParamsList = new ArrayList<>();
         for (VxPublicEventProduct product : owner.productList) {
             OrderItemParams orderItemParams = OrderItemParams.builder()
                     .vxPublicEventProductId(product.getId())
                     .quantity(2L)
                     .value(2 * product.getPrice())
                     .build();
-            orderItemList.add(orderItemParams);
+            orderItemParamsList.add(orderItemParams);
         }
+        Long orderValue = orderItemParamsList.stream().mapToLong(OrderItemParams::getValue).sum();
 
 
         ManagerRegistersPaymentResponse response = PublicEventClientPaymentHelper.managerRegistersPayment(
@@ -95,10 +96,11 @@ public class PublicEventOrderItemIntegrationTest {
                 ManagerRegistersPaymentParams.builder()
                         .eventId(client.publicEventId)
                         .clientId(client.vxPublicEventClientId)
-                        .value(250L)
+                        .value(orderValue)
                         .build(),
                 200);
-        Assertions.assertEquals(750L, response.updatedAvailableBalance);
+        Assertions.assertEquals(6000L, response.updatedAvailableBalance);
+        Assertions.assertEquals(orderItemParamsList.size(), response.publicEventOrderItemList.size());
 
         System.out.println("End of test");
     }
