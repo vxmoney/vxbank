@@ -4,6 +4,7 @@ import com.stripe.exception.StripeException;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentParams;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentResponse;
 import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.PublicEventClientPaymentReportResponse;
+import eu.vxbank.api.endpoints.publicevent.orderitem.dto.OrderItemParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventClientDepositFundsParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventClientDepositFundsResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventGetManagerListResponse;
@@ -19,8 +20,10 @@ import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEventClient;
 import vxbank.datastore.data.publicevent.VxPublicEventClientPayment;
 import vxbank.datastore.data.publicevent.VxPublicEventManager;
+import vxbank.datastore.data.publicevent.VxPublicEventOrderItem;
 import vxbank.datastore.data.service.VxDsService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -131,6 +134,26 @@ public class PublicEventClientPaymentEndpoint {
         ManagerRegistersPaymentResponse response = new ManagerRegistersPaymentResponse();
         response.publicEventClientPayment = payment;
         response.updatedAvailableBalance = clientReport.availableBalance - params.value;
+
+        // if items are provided then we need to update the order items
+        if (params.orderItemParamsList != null) {
+            response.publicEventOrderItemList = new ArrayList<>();
+            for (OrderItemParams itemParams : params.orderItemParamsList) {
+                VxPublicEventOrderItem.VxPublicEventOrderItemBuilder itemBuilder = VxPublicEventOrderItem.builder()
+                        .vxPublicEventId(params.eventId)
+                        .vxPublicEventClientId(params.clientId)
+                        .vxPublicEventManagerUserId(vxUser.id)
+                        .vxPublicEventSellingPointId(params.vxPublicEventSellingPointId)
+                        .vxPublicEventProductId(itemParams.vxPublicEventProductId)
+                        .quantity(itemParams.quantity)
+                        .value(itemParams.value)
+                        .timeStamp(timeStamp);
+                VxPublicEventOrderItem item = itemBuilder.build();
+                VxDsService.persist(VxPublicEventOrderItem.class, systemService.getVxBankDatastore(), item);
+                response.publicEventOrderItemList.add(item);
+            }
+        }
+
         return response;
     }
 

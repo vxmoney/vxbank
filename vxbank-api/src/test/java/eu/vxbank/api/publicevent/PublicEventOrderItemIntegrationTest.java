@@ -96,7 +96,9 @@ public class PublicEventOrderItemIntegrationTest {
                 ManagerRegistersPaymentParams.builder()
                         .eventId(client.publicEventId)
                         .clientId(client.vxPublicEventClientId)
+                        .vxPublicEventSellingPointId(owner.sellingPointList.get(0).getId())
                         .value(orderValue)
+                        .orderItemParamsList(orderItemParamsList)
                         .build(),
                 200);
         Assertions.assertEquals(6000L, response.updatedAvailableBalance);

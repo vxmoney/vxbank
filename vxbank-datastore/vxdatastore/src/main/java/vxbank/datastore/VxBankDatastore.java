@@ -101,6 +101,7 @@ public class VxBankDatastore {
         factory.register(VxPublicEventClientPayment.class);
         factory.register(VxPublicEventProduct.class);
         factory.register(VxPublicEventSellingPoint.class);
+        factory.register(VxPublicEventOrderItem.class);
     }
 
     public Boolean getInitialized() {
