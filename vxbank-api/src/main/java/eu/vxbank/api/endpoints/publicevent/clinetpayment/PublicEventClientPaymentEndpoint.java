@@ -140,6 +140,7 @@ public class PublicEventClientPaymentEndpoint {
             response.publicEventOrderItemList = new ArrayList<>();
             for (OrderItemParams itemParams : params.orderItemParamsList) {
                 VxPublicEventOrderItem.VxPublicEventOrderItemBuilder itemBuilder = VxPublicEventOrderItem.builder()
+                        .vxPublicClientPaymentId(payment.id)
                         .vxPublicEventId(params.eventId)
                         .vxPublicEventClientId(params.clientId)
                         .vxPublicEventManagerUserId(vxUser.id)

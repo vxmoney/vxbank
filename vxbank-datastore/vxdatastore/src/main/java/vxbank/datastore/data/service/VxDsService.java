@@ -295,7 +295,7 @@ public class VxDsService {
         Query<T> query = ds.ofy.load()
                 .type(vxClass)
                 .filter(indexedField, fieldValue);
-        query = query.order("-createTimeStamp");
+        query = query.order("-timeStamp");
         query = query.chunkAll();
         List<T> list = query.list();
         return list;
