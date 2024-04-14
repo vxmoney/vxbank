@@ -29,10 +29,7 @@ import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PublicEventSellingPointIntegrationTest {
@@ -121,6 +118,42 @@ public class PublicEventSellingPointIntegrationTest {
 
     }
 
+    @Test
+    public void updateTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+
+        Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
+
+        SellingPointParams params = SellingPointParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("SellingPoint - " + new Date().getTime())
+                .productIdList(owner.productList.stream()
+                        .map(product -> product.id)
+                        .toList())
+                .build();
+
+        SellingPointResponse response = PublicEventSellingPointHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+
+        SellingPointParams updateParams = SellingPointParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("UpdatePoint - " + new Date().getTime())
+                .productIdList(Collections.singletonList(owner.productList.get(0).id))
+                .build();
+
+        SellingPointResponse updateResponse = PublicEventSellingPointHelper.update(restTemplate,
+                port,
+                owner.vxToken,
+                response.id,
+                updateParams,
+                200);
+        Assertions.assertEquals(response.id, updateResponse.id);
+        Assertions.assertEquals(updateParams.title, updateResponse.title);
+        Assertions.assertFalse(updateResponse.productList.isEmpty());
+        Assertions.assertEquals(1, updateResponse.productList.size());
+    }
 
 
     private VxPublicEventProduct createProduct(String vxToken, Long publicEventId, String title, long price) {

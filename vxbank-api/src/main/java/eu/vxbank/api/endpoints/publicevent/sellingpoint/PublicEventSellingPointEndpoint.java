@@ -1,6 +1,7 @@
 package eu.vxbank.api.endpoints.publicevent.sellingpoint;
 
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
 import eu.vxbank.api.utils.components.SystemService;
@@ -73,6 +74,26 @@ public class PublicEventSellingPointEndpoint {
                 systemService.getVxBankDatastore(), pointId);
 
         SellingPointResponse response = buildResponse(vxPublicEventSellingPoint);
+        return response;
+    }
+
+    @PutMapping("/{pointId}")
+    public SellingPointResponse update(Authentication auth, @PathVariable Long pointId, @RequestBody SellingPointParams params) {
+        VxUser currentUser = systemService.validateAndGetUser(auth);
+        VxPublicEventSellingPoint vxPublicEventSellingPoint = VxDsService.getById(VxPublicEventSellingPoint.class, systemService.getVxBankDatastore(), pointId);
+        VxPublicEvent vxEvent = getVxEvent(systemService.getVxBankDatastore(), vxPublicEventSellingPoint.vxPublicEventId);
+        checkUserIsOwnerOfEvent(currentUser, vxEvent);
+
+        vxPublicEventSellingPoint = vxPublicEventSellingPoint.toBuilder()
+                .title(params.title)
+                .productIdList(params.productIdList)
+                .build();
+
+
+        VxDsService.persist(VxPublicEventSellingPoint.class, systemService.getVxBankDatastore(), vxPublicEventSellingPoint);
+
+        SellingPointResponse response = buildResponse(vxPublicEventSellingPoint);
+
         return response;
     }
 

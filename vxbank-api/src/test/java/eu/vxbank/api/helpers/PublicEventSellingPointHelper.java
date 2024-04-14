@@ -1,5 +1,6 @@
 package eu.vxbank.api.helpers;
 
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
 import org.junit.jupiter.api.Assertions;
@@ -61,5 +62,35 @@ public class PublicEventSellingPointHelper {
 
         SellingPointResponse response = responseEntity.getBody();
         return response;
+    }
+
+    public static SellingPointResponse update(TestRestTemplate restTemplate,
+                                              int port,
+                                              String vxToken,
+                                              Long pointId,
+                                              SellingPointParams params,
+                                              int expectedStatusCode) {
+
+        // Set up the HTTP headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<SellingPointParams> requestEntity = new HttpEntity<>(params, headers);
+
+        // Make the POST request
+        ResponseEntity<SellingPointResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEventSellingPoint/" + pointId,
+                HttpMethod.PUT, requestEntity, SellingPointResponse.class);
+
+        // check status code
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        // Extract the response
+        SellingPointResponse response = responseEntity.getBody();
+        return response;
+
     }
 }
