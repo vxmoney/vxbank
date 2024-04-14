@@ -25,10 +25,9 @@ public class TokenTest {
     @Test
     void testOauthValidationTools() throws Exception {
 
-        try {
+        if (FirebaseApp.getApps().isEmpty()) {
+            // Firebase has not been initialized yet, so initialize it
             FirebaseApp.initializeApp();
-        }catch (Exception e){
-            // no need to initialize again
         }
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

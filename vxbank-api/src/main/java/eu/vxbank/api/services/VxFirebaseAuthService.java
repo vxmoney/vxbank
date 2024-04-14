@@ -25,10 +25,9 @@ public class VxFirebaseAuthService {
 
     @PostConstruct
     public void initializeFirebaseApp() {
-        try {
+        if (FirebaseApp.getApps().isEmpty()) {
+            // Firebase has not been initialized yet, so initialize it
             FirebaseApp.initializeApp();
-        } catch (IllegalStateException e) {
-            System.out.println("Default app has already bean initialized " + e.getMessage());
         }
     }
 
