@@ -8,10 +8,7 @@ import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.models.VxUser;
 import vxbank.datastore.data.publicevent.VxPublicEvent;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
@@ -66,5 +63,32 @@ public class PublicEventSellingPointEndpoint {
 
        return response;
 
+    }
+
+    @GetMapping("/{pointId}")
+    @ResponseBody
+    public SellingPointResponse get(Authentication auth, @PathVariable Long pointId) {
+        systemService.validateUserAndStripeConfig(auth);
+        VxPublicEventSellingPoint vxPublicEventSellingPoint = VxDsService.getById(VxPublicEventSellingPoint.class,
+                systemService.getVxBankDatastore(), pointId);
+
+        SellingPointResponse response = buildResponse(vxPublicEventSellingPoint);
+        return response;
+    }
+
+    private SellingPointResponse buildResponse(VxPublicEventSellingPoint vxPublicEventSellingPoint) {
+        List<VxPublicEventProduct> productList = VxDsService.getByIdList(
+                systemService.getVxBankDatastore(),
+                VxPublicEventProduct.class,
+                vxPublicEventSellingPoint.getProductIdList()
+        );
+
+        SellingPointResponse response = SellingPointResponse.builder()
+                .id(vxPublicEventSellingPoint.getId())
+                .vxPublicEventId(vxPublicEventSellingPoint.getVxPublicEventId())
+                .title(vxPublicEventSellingPoint.getTitle())
+                .productList(productList)
+                .build();
+        return response;
     }
 }
