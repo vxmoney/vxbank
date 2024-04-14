@@ -10,7 +10,7 @@ import vxbank.datastore.data.publicevent.VxPublicEventOrderItem;
 
 @RestController
 @RequestMapping("/publicEventOrderItem")
-public class PublicEventOrderItem {
+public class PublicEventOrderItemEndpoint {
     @Autowired
     SystemService systemService;
 

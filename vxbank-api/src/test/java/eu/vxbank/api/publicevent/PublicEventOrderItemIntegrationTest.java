@@ -27,8 +27,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import vxbank.datastore.VxBankDatastore;
 import vxbank.datastore.data.models.VxUser;
+import vxbank.datastore.data.publicevent.VxPublicEventOrderItem;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
-import vxbank.datastore.data.publicevent.VxPublicEventSellingPoint;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.io.IOException;
@@ -104,7 +104,10 @@ public class PublicEventOrderItemIntegrationTest {
         Assertions.assertEquals(6000L, response.updatedAvailableBalance);
         Assertions.assertEquals(orderItemParamsList.size(), response.publicEventOrderItemList.size());
 
-        System.out.println("End of test");
+        VxPublicEventOrderItem orderItem = response.publicEventOrderItemList.get(0);
+        VxPublicEventOrderItem getItem = PublicEventOrderItemHelper.get(restTemplate, port, manager.vxToken, orderItem.getId(), 200);
+        Assertions.assertEquals(orderItem.getId(), getItem.getId());
+        Assertions.assertEquals(orderItem.getValue(), getItem.getValue());
     }
 
     public Setup setupOwner(String stripeAccountId) throws
