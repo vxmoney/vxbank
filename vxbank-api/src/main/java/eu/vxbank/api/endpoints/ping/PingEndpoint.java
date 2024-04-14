@@ -87,12 +87,11 @@ public class PingEndpoint {
             throw new IllegalStateException("You are allowed to do this only when oauth emulator is active");
         }
 
-        try {
+        if (FirebaseApp.getApps().isEmpty()) {
+            // Firebase has not been initialized yet, so initialize it
             FirebaseApp.initializeApp();
-        } catch (Exception e) {
-            System.out.println("Firebase was already initialized");
-            // no need to initialize again
         }
+
 
         if (systemService.getEnvironment() != Environment.LOCALHOST) {
             throw new IllegalStateException("We only do this on localhost");

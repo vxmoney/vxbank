@@ -62,11 +62,9 @@ public class StripeOnboardingSecurityIntegrationTest {
             throw new IllegalStateException("FIREBASE_AUTH_EMULATOR_HOST is not set");
         }
 
-        try {
+        if (FirebaseApp.getApps().isEmpty()) {
+            // Firebase has not been initialized yet, so initialize it
             FirebaseApp.initializeApp();
-        } catch (Exception e) {
-            System.out.println("Firebase was already initialized");
-            // no need to initialize again
         }
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

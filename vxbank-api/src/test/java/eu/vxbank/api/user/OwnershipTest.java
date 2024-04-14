@@ -52,7 +52,7 @@ public class OwnershipTest {
         PingResponse pingResponse = PingHelper.getEnvironment(restTemplate, port, 200);
         VxIntegrationConfig responseIntegrationConfig = pingResponse.vxIntegrationConfig;
         Assertions.assertNotNull(responseIntegrationConfig);
-        Assertions.assertEquals(2, responseIntegrationConfig.vxIntegrationList.size());
+        Assertions.assertEquals(3, responseIntegrationConfig.vxIntegrationList.size());
 
         Assertions.assertEquals(vxIntegrationConfig, responseIntegrationConfig);
 

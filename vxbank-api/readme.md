@@ -14,6 +14,11 @@ as fast as possible. Just use the bash commands that you need and start coding.
 - [dev frontend](https://vxbank-eu-dev.ew.r.appspot.com/)
 - [prod frontend](https://vxbank-eu-prod.ew.r.appspot.com)
 
+## run all tests
+- go here and add funds: https://vxbank-eu-dev.ew.r.appspot.com/usageExamples#
+- run all datastore tests
+- run all vxbank tests
+
 ## some bash accelerators
 
 ```bash
