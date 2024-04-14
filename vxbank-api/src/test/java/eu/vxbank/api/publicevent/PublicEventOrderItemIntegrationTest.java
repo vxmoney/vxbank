@@ -3,11 +3,12 @@ package eu.vxbank.api.publicevent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.stripe.exception.StripeException;
+import com.stripe.net.Webhook;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentParams;
+import eu.vxbank.api.endpoints.publicevent.clinetpayment.dto.ManagerRegistersPaymentResponse;
+import eu.vxbank.api.endpoints.publicevent.orderitem.dto.OrderItemParams;
 import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventAddMangerParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCheckRegisterClientResponse;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
-import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
+import eu.vxbank.api.endpoints.publicevent.publicevent.dto.*;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
@@ -30,10 +31,11 @@ import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 import vxbank.datastore.data.publicevent.VxPublicEventSellingPoint;
 import vxbank.datastore.data.service.VxDsService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PublicEventOrderItemIntegrationTest {
@@ -65,11 +67,38 @@ public class PublicEventOrderItemIntegrationTest {
     SystemService systemService;
 
     @Test
-    public void createTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+    public void createTest() throws StripeException, FirebaseAuthException, IOException, NoSuchAlgorithmException, InvalidKeyException {
 
         Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
         Setup manager = setupManager(owner.vxToken, owner.publicEventId);
         Setup client = setupClient(manager.publicEventId);
+
+        Long value = 1000L;
+        depositFunds(client.vxToken, client.publicEventId, client.vxPublicEventClientId, value);
+
+        // build order item param list
+        List<OrderItemParams> orderItemList = new ArrayList<>();
+        for (VxPublicEventProduct product : owner.productList) {
+            OrderItemParams orderItemParams = OrderItemParams.builder()
+                    .vxPublicEventProductId(product.getId())
+                    .quantity(2L)
+                    .value(2 * product.getPrice())
+                    .build();
+            orderItemList.add(orderItemParams);
+        }
+
+
+        ManagerRegistersPaymentResponse response = PublicEventClientPaymentHelper.managerRegistersPayment(
+                restTemplate,
+                port,
+                manager.vxToken,
+                ManagerRegistersPaymentParams.builder()
+                        .eventId(client.publicEventId)
+                        .clientId(client.vxPublicEventClientId)
+                        .value(250L)
+                        .build(),
+                200);
+        Assertions.assertEquals(750L, response.updatedAvailableBalance);
 
         System.out.println("End of test");
     }
@@ -226,6 +255,7 @@ public class PublicEventOrderItemIntegrationTest {
             StripeException,
             FirebaseAuthException,
             JsonProcessingException {
+
         // ---- setup part
         Setup client = new Setup();
 
@@ -254,6 +284,60 @@ public class PublicEventOrderItemIntegrationTest {
         client.vxPublicEventClientId = checkRegisterClientResponse.id;
         client.publicEventId = publicEventId;
         return client;
+    }
+
+    void depositFunds(String vxToken, Long publicEventId, Long vxPublicEventClientId, Long value) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+
+        // client deposit funds
+
+        PublicEventClientDepositFundsParams depositFundsParams = PublicEventClientDepositFundsParams.builder()
+                .value(value)
+                .build();
+        PublicEventClientDepositFundsResponse depositFundsResponse = PublicEventHelper.clientDepositFunds(restTemplate,
+                port,
+                vxToken,
+                publicEventId,
+                depositFundsParams,
+                200);
+        Assertions.assertNotNull(depositFundsResponse);
+        Assertions.assertEquals(vxPublicEventClientId, depositFundsResponse.vxPublicEventClientId);
+        Assertions.assertEquals(publicEventId, depositFundsResponse.vxPublicEventId);
+        Assertions.assertNotNull(depositFundsResponse.vxEventPaymentId);
+        Assertions.assertNotNull(depositFundsResponse.stripeSessionPaymentUrl);
+        Assertions.assertNotNull(depositFundsResponse.stripeSessionId);
+
+        // simulate stripeWebhook
+        String fileName = "publicEventIntegrationTest/clientDepositFunds-00.json";
+        String fileContent = loadFileAsString(fileName);
+        String webhookSigningSecret = "whsec_b36f59fd7556a24cbdd59589110a616aebb7a35167d04d2aade484c8a345af53";
+        String body = fileContent.replace("#tagStripeSessionId", depositFundsResponse.stripeSessionId);
+
+        long timeStamp = (new Date()).getTime();
+        String payload = timeStamp + "." + body;
+        String signedPayload = Webhook.Util.computeHmacSha256(webhookSigningSecret, payload);
+        String stripeSignature = "t=" + timeStamp + ",v1=" + signedPayload;
+
+        WebhookHelper.handleStripeWebhook(restTemplate, port, stripeSignature, body, 200);
+
+
+    }
+
+    public String loadFileAsString(String fileName) throws IOException {
+        // Get the class loader
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        // Use the class loader to load the file as a resource
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("File not found: " + fileName);
+        } else {
+            try (Scanner scanner = new Scanner(inputStream, "UTF-8")) {
+                // Use Scanner to read the content of the file into a string
+                return scanner.useDelimiter("\\A")
+                        .next();
+            }
+        }
     }
 
 }

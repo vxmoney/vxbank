@@ -17,11 +17,14 @@ public class VxPublicEventOrderItem {
     @Id
     public Long id;
     @Index
+    public Long vxPublicEventProductId;
+
+
+    @Index
     public Long vxPublicEventId;
     @Index
     public Long vxPublicEventSellingPointId;
-    @Index
-    public Long vxPublicEventProductId;
+
     @Index
     public Long vxPublicClientPaymentId;
     @Index
@@ -30,6 +33,7 @@ public class VxPublicEventOrderItem {
     public Long vxPublicEventManagerUserId;
     @Index
     public Long timeStamp;
+
+    public Long quantity;
     public Long value;
-    public String currency;
 }
