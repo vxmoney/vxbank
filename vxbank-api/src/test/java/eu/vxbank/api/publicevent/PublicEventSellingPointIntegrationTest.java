@@ -157,6 +157,7 @@ public class PublicEventSellingPointIntegrationTest {
 
 
     private VxPublicEventProduct createProduct(String vxToken, Long publicEventId, String title, long price) {
+
         ProductCreateParams params = ProductCreateParams.builder()
                 .vxPublicEventId(publicEventId)
                 .title(title)
@@ -164,8 +165,6 @@ public class PublicEventSellingPointIntegrationTest {
                 .price(price)
                 .build();
         return PublicEventProductHelper.create(restTemplate, port, vxToken, params, 200);
-
-
     }
 
     public Setup setupOwner(String stripeAccountId) throws
