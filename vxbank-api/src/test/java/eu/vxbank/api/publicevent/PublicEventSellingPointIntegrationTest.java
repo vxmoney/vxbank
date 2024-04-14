@@ -8,6 +8,8 @@ import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventAddMangerP
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCheckRegisterClientResponse;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateParams;
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointCreateParams;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointCreateResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -67,6 +69,22 @@ public class PublicEventSellingPointIntegrationTest {
         Setup manager = setupManager(owner.vxToken, owner.publicEventId);
         Setup client = setupClient(manager.publicEventId);
 
+        // ---- create selling point
+        SellingPointCreateParams params = SellingPointCreateParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("SellingPoint - " + new Date().getTime())
+                .productIdList(owner.productList.stream()
+                        .map(product -> product.id)
+                        .toList())
+                .build();
+
+        SellingPointCreateResponse response = PublicEventSellingPointHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+        Assertions.assertNotNull(response.id);
+        Assertions.assertEquals(owner.productList.size(), response.productList.size());
 
     }
 
