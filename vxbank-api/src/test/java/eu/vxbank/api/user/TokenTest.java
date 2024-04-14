@@ -34,15 +34,12 @@ public class TokenTest {
         long timeStamp = (new Date()).getTime();
         String email = String.format("user_%s@example.com", timeStamp);
 
-        System.out.println("EMIL = " + email);
         UserRecord userRecord = createUserWithEmail(firebaseAuth, email);
         String userId = userRecord.getUid();
-        System.out.println("userId=" + userId);
 
         String customToken = firebaseAuth.createCustomToken(userRecord.getUid());
         String idToken = OauthUtils.swapCustomTokenForIdToken(customToken);
 
-        System.out.println("idToken Token: " + idToken);
 
         FirebaseToken decodedToken = firebaseAuth.verifyIdToken(idToken);
         Assertions.assertEquals(userRecord.getUid(), decodedToken.getUid());

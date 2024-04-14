@@ -87,7 +87,6 @@ public class EventIntegrationTest {
 
         setupFullUserA();
 
-        System.out.println("Hello setup");
     }
 
     @Test
