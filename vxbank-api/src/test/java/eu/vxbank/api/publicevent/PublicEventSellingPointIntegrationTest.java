@@ -88,6 +88,41 @@ public class PublicEventSellingPointIntegrationTest {
 
     }
 
+    @Test
+    public void getTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+
+
+        Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
+
+        // ---- create selling point
+        SellingPointParams params = SellingPointParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("SellingPoint - " + new Date().getTime())
+                .productIdList(owner.productList.stream()
+                        .map(product -> product.id)
+                        .toList())
+                .build();
+
+        SellingPointResponse response = PublicEventSellingPointHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+
+        SellingPointResponse getResponse = PublicEventSellingPointHelper.get(restTemplate,
+                port,
+                owner.vxToken,
+                response.id,
+                200);
+        Assertions.assertEquals(response.id, getResponse.id);
+        Assertions.assertEquals(response.title, getResponse.title);
+        Assertions.assertFalse(response.productList.isEmpty());
+        Assertions.assertEquals(response.productList.size(), getResponse.productList.size());
+
+    }
+
+
+
     private VxPublicEventProduct createProduct(String vxToken, Long publicEventId, String title, long price) {
         ProductCreateParams params = ProductCreateParams.builder()
                 .vxPublicEventId(publicEventId)

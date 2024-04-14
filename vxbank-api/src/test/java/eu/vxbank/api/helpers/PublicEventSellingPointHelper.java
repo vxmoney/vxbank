@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 
 public class PublicEventSellingPointHelper {
     public static SellingPointResponse create(TestRestTemplate restTemplate,
@@ -33,6 +34,31 @@ public class PublicEventSellingPointHelper {
         Assertions.assertEquals(expectedStatusCode, statusCode);
 
         // Extract the response
+        SellingPointResponse response = responseEntity.getBody();
+        return response;
+    }
+
+    public static SellingPointResponse get(TestRestTemplate restTemplate,
+                                           int port,
+                                           String vxToken,
+                                           Long pointId,
+                                           int expectedStatusCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Make the GET request to /ping/whoAmI
+        ResponseEntity<SellingPointResponse> responseEntity = restTemplate.exchange(
+                "http://localhost:" + port + "/publicEventSellingPoint/" + pointId,
+                HttpMethod.GET,
+                requestEntity,
+                SellingPointResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
         SellingPointResponse response = responseEntity.getBody();
         return response;
     }
