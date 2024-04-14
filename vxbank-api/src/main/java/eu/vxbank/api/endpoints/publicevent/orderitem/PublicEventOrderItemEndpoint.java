@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import vxbank.datastore.data.publicevent.VxPublicEventOrderItem;
+import vxbank.datastore.data.service.VxDsService;
 
 @RestController
 @RequestMapping("/publicEventOrderItem")
@@ -23,6 +24,8 @@ public class PublicEventOrderItemEndpoint {
     @GetMapping("/{itemId}")
     @ResponseBody
     public VxPublicEventOrderItem get(Authentication auth, @PathVariable Long itemId) {
-        throw new IllegalStateException("Please implement this");
+        systemService.validateAndGetUser(auth);
+        VxPublicEventOrderItem item = VxDsService.getById(VxPublicEventOrderItem.class, systemService.getVxBankDatastore(), itemId);
+        return item;
     }
 }
