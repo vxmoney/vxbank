@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import ThemeSwitch from "@/app/components/ThemeSwitch";
 import TestingCornerNavItem from "./TestingCornerNavItem";
+import { useParams } from "next/navigation";
 
 export default function ManageNavbar() {
   const { googleSignIn, logOut, vxUserInfo } = UserAuth();
 
   const [isClient, setIsClient] = useState(false);
+  let { eventId } = useParams();
 
   useEffect(() => {
     setIsClient(true);
@@ -45,11 +47,18 @@ export default function ManageNavbar() {
             <li className="p-2 cursor-pointer">
               <Link href="/appManage/events">Events</Link>
             </li>
+
+            {eventId && (
+              <li className="p-2 cursor-pointer">
+                <Link href={`/appManage/events/${eventId}/products`}>
+                  Products
+                </Link>
+              </li>
+            )}
           </>
         )}
 
-        
-        <TestingCornerNavItem/>
+        <TestingCornerNavItem />
       </ul>
       <ul className="flex">
         {isClient &&
