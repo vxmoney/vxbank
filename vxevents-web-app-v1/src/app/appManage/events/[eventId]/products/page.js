@@ -6,6 +6,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import styled from "styled-components";
 import { publicEventProducts } from "@/api/publicEventProducts";
 import AddProductModal from "./components/AddProductModal";
+import ProductCard from "./components/ProductCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -18,7 +19,9 @@ const Title = styled.div`
   margin-top: 15px;
 `;
 
-const ProductList = styled.div``;
+const ProductList = styled.div`
+  margin-top: 35px;
+`;
 
 const AddProductButton = styled.div`
   user-select: none;
@@ -34,10 +37,11 @@ const Products = () => {
   let { eventId } = useParams();
 
   const [addProductModalOpened, setAddProductModalOpened] = useState(false);
+  const [productList, setProductList] = useState([]);
 
   useEffect(() => {
     publicEventProducts.getAll(vxUserInfo.vxToken, eventId).then((result) => {
-      console.log(result);
+      setProductList(result.data.productList);
     });
   }, [vxUserInfo, eventId]);
 
@@ -49,7 +53,7 @@ const Products = () => {
           setAddProductModalOpened(true);
         }}
       >
-        Add Product
+        Add New Product
       </AddProductButton>
       {addProductModalOpened && (
         <AddProductModal
@@ -60,6 +64,11 @@ const Products = () => {
           eventId={eventId}
         />
       )}
+      <ProductList>
+        {productList.map((x) => {
+          return <ProductCard product={x} />;
+        })}
+      </ProductList>
     </Wrapper>
   );
 };
