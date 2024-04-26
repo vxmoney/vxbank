@@ -22,7 +22,7 @@ public class PublicEventEndpointTools {
     }
 
     public static void checkUserIsOwnerOfEvent(VxUser vxUser, VxPublicEvent vxPublicEvent) {
-        if (vxPublicEvent.vxUserId != vxUser.id) {
+        if (!vxPublicEvent.vxUserId.equals(vxUser.id)) {
             throw new IllegalStateException("User is not Owner of event");
         }
     }
