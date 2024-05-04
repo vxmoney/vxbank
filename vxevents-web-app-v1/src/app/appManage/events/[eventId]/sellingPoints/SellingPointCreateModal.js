@@ -5,20 +5,20 @@ import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 
 export default function SellingPointCreateModal() {
-  const {vxUserInfo} = UserAuth();
+  const { vxUserInfo } = UserAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { eventId } = useParams();
-  const [eventCreateParams, setEventCreateParams] = useState({
+  const [createParams, setCreateParams] = useState({
     vxUserId: vxUserInfo?.id,
     type: "payed1V1",
     vxIntegrationId: "vxEvents",
-    title: "Example 001",
+    title: "Selling point 001",
     currency: "eur",
   });
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setEventCreateParams((prevData) => ({
+    setCreateParams((prevData) => ({
       ...prevData,
       [id]: value,
     }));
@@ -110,14 +110,14 @@ export default function SellingPointCreateModal() {
                   className="p-4 md:p-5 border-b rounded-t dark:border-gray-600"
                   // onSubmit={handleSubmit}
                 >
-                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                  <div className="flex items-center mb-6 flex-no-wrap">
                     {/* Title Section */}
-                    <div>
+                    <div className="flex items-center mr-6">
                       <label
                         htmlFor="title"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        className="mb-0 mr-2 text-sm font-medium text-gray-900 dark:text-white shrink-0"
                       >
-                        Event title
+                        Selling point title
                       </label>
                       <input
                         type="text"
@@ -125,7 +125,7 @@ export default function SellingPointCreateModal() {
                         placeholder="League of legends challenge"
                         required
                         id="title"
-                        value={eventCreateParams.title}
+                        value={createParams.title}
                         onChange={handleInputChange}
                       />
                     </div>

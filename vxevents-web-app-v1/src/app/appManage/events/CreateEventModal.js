@@ -38,7 +38,7 @@ const CreateEventModal = () => {
       .create(vxUserInfo?.vxToken, eventCreateParams)
       .then((response) => {
         console.log("PublicEvent created:", response.data);
-        fetchEvents(vxUserInfo?.vxToken)
+        fetchEvents(vxUserInfo?.vxToken);
         closeModal();
         // Handle successful response
       })
@@ -149,8 +149,6 @@ const CreateEventModal = () => {
                   onChange={handleInputChange}
                 />
               </div>
-
-              
             </div>
           </form>
 
