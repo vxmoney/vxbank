@@ -1,10 +1,12 @@
+import SellingPointCreateModal from "./SellingPointCreateModal";
 
 
 export default function SellingPointManagePage() {
 
   return (
-    <>
-      Hello SellingPointManagePage
-    </>
+    <div>
+
+      <SellingPointCreateModal/>
+    </div>
   );
 }
