@@ -1,7 +1,6 @@
 package eu.vxbank.api.endpoints.publicevent.sellingpoint;
 
 import com.stripe.exception.StripeException;
-import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
 import eu.vxbank.api.utils.components.SystemService;

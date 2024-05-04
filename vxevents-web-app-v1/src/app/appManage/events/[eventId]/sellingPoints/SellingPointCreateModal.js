@@ -2,10 +2,27 @@
 import { useState, useRef, useEffect } from "react";
 import QRCode from "qrcode.react";
 import { useParams } from "next/navigation";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function SellingPointCreateModal() {
+  const {vxUserInfo} = UserAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { eventId } = useParams();
+  const [eventCreateParams, setEventCreateParams] = useState({
+    vxUserId: vxUserInfo?.id,
+    type: "payed1V1",
+    vxIntegrationId: "vxEvents",
+    title: "Example 001",
+    currency: "eur",
+  });
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setEventCreateParams((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
 
   const [currentURL, setCurrentURL] = useState("");
   useEffect(() => {
@@ -56,15 +73,16 @@ export default function SellingPointCreateModal() {
             className="flex items-center"
             type="button"
           >
-            <span className="text-gray-500 dark:text-gray-400"
-            onClick={openModal}>
+            <span
+              className="text-gray-500 dark:text-gray-400"
+              onClick={openModal}
+            >
               Create sellingPoint
             </span>
           </button>
         </div>
       </section>
 
-     
       {modalOpen && (
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen">
@@ -83,20 +101,42 @@ export default function SellingPointCreateModal() {
               className="relative bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md"
             >
               <div className="text-center">
-                <h3 className="text-lg font-semibold mb-4">Modal Title</h3>
-                <p className="text-gray-700 dark:text-gray-400">
-                  VxEvents. Please scan this to join the fun
-                </p>
+                <h3 className="text-lg font-semibold mb-4">
+                  Create Selling point
+                </h3>
               </div>
               <div className="mt-6 text-center">
-                <div className="flex flex-col items-center pb-4">
-                  <QRCode value={qrMessage} />
-                </div>
+                <form
+                  className="p-4 md:p-5 border-b rounded-t dark:border-gray-600"
+                  // onSubmit={handleSubmit}
+                >
+                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                    {/* Title Section */}
+                    <div>
+                      <label
+                        htmlFor="title"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Event title
+                      </label>
+                      <input
+                        type="text"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="League of legends challenge"
+                        required
+                        id="title"
+                        value={eventCreateParams.title}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                </form>
+
                 <button
                   className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   onClick={closeModal}
                 >
-                  Close
+                  Cancel
                 </button>
               </div>
             </div>
