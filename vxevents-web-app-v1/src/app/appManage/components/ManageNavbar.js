@@ -49,11 +49,18 @@ export default function ManageNavbar() {
             </li>
 
             {eventId && (
-              <li className="p-2 cursor-pointer">
-                <Link href={`/appManage/events/${eventId}/products`}>
-                  Products
-                </Link>
-              </li>
+              <>
+                <li className="p-2 cursor-pointer">
+                  <Link href={`/appManage/events/${eventId}/products`}>
+                    Products
+                  </Link>
+                </li>
+                <li className="p-2 cursor-pointer">
+                  <Link href={`/appManage/events/${eventId}/sellingPoints`}>
+                    SellingPoints
+                  </Link>
+                </li>
+              </>
             )}
           </>
         )}
