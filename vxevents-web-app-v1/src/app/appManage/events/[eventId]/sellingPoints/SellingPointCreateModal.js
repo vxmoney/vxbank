@@ -18,14 +18,14 @@ export default function SellingPointCreateModal() {
   });
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [missingProducts, setMissingProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
     publicEventProductAPI.getAll(vxUserInfo.vxToken, eventId).then((result) => {
       setMissingProducts(result.data.productList);
+      setAllProducts(result.data.productList);
     });
   }, [vxUserInfo, eventId]);
-
-  console.log(missingProducts);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -39,6 +39,7 @@ export default function SellingPointCreateModal() {
 
   const openModal = () => {
     setModalOpen(true);
+    resetProducts();
   };
 
   const closeModal = () => {
@@ -65,12 +66,34 @@ export default function SellingPointCreateModal() {
     };
   }, [modalOpen]); // Ensure the effect runs only when modalOpen changes
 
-
   const formatPrice = (price) => {
     // Convert price to a string
     const priceStr = price.toString();
     // Insert a dot two characters from the end
-    return priceStr.slice(0, -2) + '.' + priceStr.slice(-2);
+    return priceStr.slice(0, -2) + "." + priceStr.slice(-2);
+  };
+
+  const addItemToSelectedProducts = (product) => {
+    // Remove from missingProducts
+    const updatedMissing = missingProducts.filter((p) => p.id !== product.id);
+    setMissingProducts(updatedMissing);
+
+    // Add to selectedProducts
+    setSelectedProducts([...selectedProducts, product]);
+  };
+
+  const removeFromSelectedProducts = (product) => {
+    // Remove from selectedProducts
+    const updatedSelected = selectedProducts.filter((p) => p.id !== product.id);
+    setSelectedProducts(updatedSelected);
+
+    // Add to missingProducts
+    setMissingProducts([...missingProducts, product]);
+  };
+
+  const resetProducts = () => {
+    setMissingProducts(allProducts);
+    setSelectedProducts([]);
   };
 
   return (
@@ -145,15 +168,36 @@ export default function SellingPointCreateModal() {
                   </div>
                 </form>
 
-                <div className="flex flex-wrap gap-2 pt-2 pb-2 border-b dark:border-gray-600">
-                  {missingProducts.map((product) => (
-                    <span
-                      key={product.id}
-                      className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
-                    >
-                      {`${product.title} €${formatPrice(product.price)}`}
-                    </span>
-                  ))}
+                {/* selected products */}
+                <div>
+                  <div>Selected products</div>
+                  <div className="flex flex-wrap gap-2 pt-2 pb-2 border-b dark:border-gray-600">
+                    {selectedProducts.map((product) => (
+                      <span
+                        key={product.id}
+                        className="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
+                        onClick={() => removeFromSelectedProducts(product)}
+                      >
+                        {`${product.title} €${formatPrice(product.price)}`}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* missing products */}
+                <div>
+                  <div>missing products</div>
+                  <div className="flex flex-wrap gap-2 pt-2 pb-2 border-b dark:border-gray-600">
+                    {missingProducts.map((product) => (
+                      <span
+                        key={product.id}
+                        className="cursor-pointer bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
+                        onClick={() => addItemToSelectedProducts(product)}
+                      >
+                        {`${product.title} €${formatPrice(product.price)}`}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex pt-4 justify-center">
