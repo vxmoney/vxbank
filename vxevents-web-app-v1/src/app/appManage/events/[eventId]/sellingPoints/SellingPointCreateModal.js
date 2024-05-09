@@ -1,9 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import QRCode from "qrcode.react";
 import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 import { publicEventProductAPI } from "@/api/publicEventProduct";
+import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 
 export default function SellingPointCreateModal() {
   const { vxUserInfo } = UserAuth();
@@ -96,6 +96,25 @@ export default function SellingPointCreateModal() {
     setSelectedProducts([]);
   };
 
+  const getProductIdList = () => {
+    return selectedProducts.map(product => product.id);
+};
+
+
+  const callCreateSellingPoint = () => {
+    publicEventSellingPointAPI.create(vxUserInfo.vxToken, {
+      vxPublicEventId: eventId,
+      title: createParams.title,
+      productIdList: getProductIdList()
+    }).then((response) => {
+      console.log("Selling point created:", response.data);
+      closeModal();
+    }).catch((error) => {
+      console.error("Error creating selling point:", error);
+      // Handle error
+    });
+  }
+
   return (
     <div>
       <section className="bg-white dark:bg-gray-900">
@@ -186,7 +205,7 @@ export default function SellingPointCreateModal() {
 
                 {/* missing products */}
                 <div>
-                  <div>missing products</div>
+                  <div>Missing products</div>
                   <div className="flex flex-wrap gap-2 pt-2 pb-2 border-b dark:border-gray-600">
                     {missingProducts.map((product) => (
                       <span
@@ -209,7 +228,7 @@ export default function SellingPointCreateModal() {
                   </button>
                   <button
                     className="py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-blue-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-blue-500 dark:focus:ring-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-blue-700"
-                    // onClick={createEvent}
+                    onClick={callCreateSellingPoint}
                   >
                     Create
                   </button>
