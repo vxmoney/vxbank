@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import QRCode from "qrcode.react";
 import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
+import { publicEventProductAPI } from "@/api/publicEventProduct";
 
 export default function SellingPointCreateModal() {
   const { vxUserInfo } = UserAuth();
@@ -15,11 +16,16 @@ export default function SellingPointCreateModal() {
     title: "Selling point 001",
     currency: "eur",
   });
-  const [missingProducts, setMissingProducts] = useState([])
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [missingProducts, setMissingProducts] = useState([]);
 
   useEffect(() => {
-    
-  })
+    publicEventProductAPI.getAll(vxUserInfo.vxToken, eventId).then((result) => {
+      setMissingProducts(result.data.productList);
+    });
+  }, [vxUserInfo, eventId]);
+
+  console.log(missingProducts);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -58,6 +64,14 @@ export default function SellingPointCreateModal() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [modalOpen]); // Ensure the effect runs only when modalOpen changes
+
+
+  const formatPrice = (price) => {
+    // Convert price to a string
+    const priceStr = price.toString();
+    // Insert a dot two characters from the end
+    return priceStr.slice(0, -2) + '.' + priceStr.slice(-2);
+  };
 
   return (
     <div>
@@ -130,6 +144,17 @@ export default function SellingPointCreateModal() {
                     </div>
                   </div>
                 </form>
+
+                <div className="flex flex-wrap gap-2 pt-2 pb-2 border-b dark:border-gray-600">
+                  {missingProducts.map((product) => (
+                    <span
+                      key={product.id}
+                      className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
+                    >
+                      {`${product.title} €${formatPrice(product.price)}`}
+                    </span>
+                  ))}
+                </div>
 
                 <div className="flex pt-4 justify-center">
                   <button
