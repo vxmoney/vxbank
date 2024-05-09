@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 
 import styled from "styled-components";
-import { publicEventProducts } from "@/api/publicEventProducts";
+import { publicEventProductAPI } from "@/api/publicEventProduct";
 import AddProductModal from "./components/AddProductModal";
 import ProductCard from "./components/ProductCard";
 
@@ -40,7 +40,7 @@ const Products = () => {
   const [productList, setProductList] = useState([]);
 
   useEffect(() => {
-    publicEventProducts.getAll(vxUserInfo.vxToken, eventId).then((result) => {
+    publicEventProductAPI.getAll(vxUserInfo.vxToken, eventId).then((result) => {
       setProductList(result.data.productList);
     });
   }, [vxUserInfo, eventId]);

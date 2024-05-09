@@ -15,6 +15,11 @@ export default function SellingPointCreateModal() {
     title: "Selling point 001",
     currency: "eur",
   });
+  const [missingProducts, setMissingProducts] = useState([])
+
+  useEffect(() => {
+    
+  })
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

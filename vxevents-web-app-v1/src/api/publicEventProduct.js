@@ -13,7 +13,7 @@ const instance = axios.create({
   },
 });
 
-export const publicEventProducts = {
+export const publicEventProductAPI = {
   getAll: (vxToken, publicEventId) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,

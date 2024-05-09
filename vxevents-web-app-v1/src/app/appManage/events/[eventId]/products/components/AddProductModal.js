@@ -1,4 +1,4 @@
-import { publicEventProducts } from "@/api/publicEventProducts";
+import { publicEventProductAPI } from "@/api/publicEventProduct";
 import { useEffect, useState } from "react";
 
 import styled from "styled-components";
@@ -74,7 +74,7 @@ const AddProductModal = ({ onClose, vxUserInfo, eventId }) => {
 
   const createProduct = () => {
     setCreationInProgress(true);
-    publicEventProducts
+    publicEventProductAPI
       .create(vxUserInfo.vxToken, {
         vxPublicEventId: Number(eventId),
         title: productName,
