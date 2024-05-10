@@ -18,7 +18,12 @@ export default function SellingPointListComponent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log("sellingPoints DEBUG 1", sellingPoints);
+  const formatPrice = (price) => {
+    // Convert price to a string
+    const priceStr = price.toString();
+    // Insert a dot two characters from the end
+    return priceStr.slice(0, -2) + "." + priceStr.slice(-2);
+  };
 
   return (
     <div className="p-2 relative overflow-x-auto">
@@ -46,10 +51,15 @@ export default function SellingPointListComponent() {
                 {sPoint.id}
               </td>
               <td className="px-6 py-4">{sPoint.title}</td>
-              <td className="px-6 py-4"> 
-                    {sPoint.productList.map((product) => (
-                        <div>{product.title}</div>
-                    ))}
+              <td className="flex flex-wrap gap-2 px-6 py-4">
+                {sPoint.productList.map((product) => (
+                  <span
+                    key={product.id}
+                    className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300"
+                  >
+                    {`${product.title} €${formatPrice(product.price)}`}
+                  </span>
+                ))}
               </td>
             </tr>
           ))}
