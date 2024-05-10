@@ -18,7 +18,6 @@ export const publicEventSellingPointAPI = {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
-
     return instance.get(``, { headers, params: { publicEventId } });
   },
 

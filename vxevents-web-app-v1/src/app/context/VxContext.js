@@ -22,8 +22,6 @@ export const VxProvider = ({ children }) => {
     publicEventAPI
       .search(vxToken, vxUserId)
       .then((response) => {
-        console.log("result");
-        console.log(response);
         setEvents(response.data.eventList);
       })
       .catch((error) => {
@@ -32,18 +30,26 @@ export const VxProvider = ({ children }) => {
       });
   };
 
-  const fetchSellingPoints = (vxToken, vxUserId) => {
-    if (!vxToken){
+  const fetchSellingPoints = (vxToken, publicEventId) => {
+    if (!vxToken) {
       console.error("VxToken is required for fetching sellingPoints.");
       return;
     }
-    
-
-  }
+    publicEventSellingPointAPI
+      .getAll(vxToken, publicEventId)
+      .then((response) => {
+        setSellingPoints(response.data.sellingPointList);
+      })
+      .catch((error) => {
+        console.error("Error publicEventSellingPointAPI.getAll:", error);
+      });
+  };
 
   const value = {
     events,
     fetchEvents,
+    sellingPoints,
+    fetchSellingPoints
   };
 
   return <VxContext.Provider value={value}>{children}</VxContext.Provider>;
