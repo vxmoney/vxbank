@@ -22,9 +22,19 @@ export default function SellingPointUpdateModal({
   const [selectedProducts, setSelectedProducts] = useState(pSelectedProducts);
   const [allProducts, setAllProducts] = useState(pAllProducts);
 
-  const [missingProducts, setMissingProducts] = useState([]);
+  // compute initial missing products
+  const initialMissingProducts = allProducts.filter(
+    (product) => !selectedProducts.some((p) => p.id === product.id)
+  );
+
+
+  
+  const [missingProducts, setMissingProducts] = useState(initialMissingProducts);
 
   const modalRef = useRef(null);
+  
+  console.log("update pAllProducts", pAllProducts);
+  console.log("update allProducts", allProducts);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
