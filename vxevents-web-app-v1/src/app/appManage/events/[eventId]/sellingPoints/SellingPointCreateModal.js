@@ -4,11 +4,14 @@ import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 import { publicEventProductAPI } from "@/api/publicEventProduct";
 import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
+import { useVxContext } from "@/app/context/VxContext";
 
 export default function SellingPointCreateModal() {
   const { vxUserInfo } = UserAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { eventId } = useParams();
+  const { fetchSellingPoints } = useVxContext();
+  
   const [createParams, setCreateParams] = useState({
     vxUserId: vxUserInfo?.id,
     type: "payed1V1",
@@ -109,6 +112,7 @@ export default function SellingPointCreateModal() {
     }).then((response) => {
       console.log("Selling point created:", response.data);
       closeModal();
+      fetchSellingPoints(vxUserInfo?.vxToken, eventId);
     }).catch((error) => {
       console.error("Error creating selling point:", error);
       // Handle error
