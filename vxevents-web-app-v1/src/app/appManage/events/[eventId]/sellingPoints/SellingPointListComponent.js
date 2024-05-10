@@ -16,7 +16,6 @@ export default function SellingPointListComponent() {
   useEffect(() => {
     // all products
     publicEventProductAPI.getAll(vxUserInfo.vxToken, eventId).then((result) => {
-      setMissingProducts(result.data.productList);
       setAllProducts(result.data.productList);
     });
   }, [vxUserInfo, eventId]);
@@ -35,6 +34,8 @@ export default function SellingPointListComponent() {
     // Insert a dot two characters from the end
     return priceStr.slice(0, -2) + "." + priceStr.slice(-2);
   };
+
+  console.log("All products in list, ", allProducts);
 
   return (
     <div className="p-2 relative overflow-x-auto">
@@ -63,10 +64,10 @@ export default function SellingPointListComponent() {
               </td>
               <td className="px-6 py-4">
                 <SellingPointUpdateModal
-                  sellingPointId={sPoint.id}
-                  title={sPoint.title}
-                  selectedProducts={sPoint.productList}
-                  allProducts={allProducts}
+                  pSellingPointId={sPoint.id}
+                  pTitle={sPoint.title}
+                  pSelectedProducts={sPoint.productList}
+                  pAllProducts={allProducts}
                 />
               </td>
               <td className="flex flex-wrap gap-2 px-6 py-4">

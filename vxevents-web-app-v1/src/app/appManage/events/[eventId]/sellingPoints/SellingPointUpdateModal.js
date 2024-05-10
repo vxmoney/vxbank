@@ -3,30 +3,26 @@ import { useState, useRef, useEffect } from "react";
 import { UserAuth } from "@/app/context/AuthContext";
 import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 import { useVxContext } from "@/app/context/VxContext";
+import { useParams } from "next/navigation";
 
 export default function SellingPointUpdateModal({
-  sellingPointId,
-  title: initialTitle,
-  selectedProducts: initialSelectedProducts,
-  allProducts,
+  pSellingPointId,
+  pTitle,
+  pSelectedProducts,
+  pAllProducts,
 }) {
   const { vxUserInfo } = UserAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { fetchSellingPoints } = useVxContext();
+  const { eventId } = useParams();
 
-  const [updateParams, setUpdateParams] = useState({
-    vxUserId: vxUserInfo?.id,
-    title: initialTitle || "Selling point 001",
-  });
+  const [title, setTitle] = useState(pTitle);
+  const [updatedTitle, setUpdatedTitle] = useState(pTitle);
 
-  const [selectedProducts, setSelectedProducts] = useState(
-    initialSelectedProducts || []
-  );
-  const [missingProducts, setMissingProducts] = useState(
-    allProducts.filter(
-      (product) => !initialSelectedProducts.some((p) => p.id === product.id)
-    )
-  );
+  const [selectedProducts, setSelectedProducts] = useState(pSelectedProducts);
+  const [allProducts, setAllProducts] = useState(pAllProducts);
+
+  const [missingProducts, setMissingProducts] = useState([]);
 
   const modalRef = useRef(null);
 
@@ -43,9 +39,8 @@ export default function SellingPointUpdateModal({
     }
   };
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setUpdateParams((prev) => ({ ...prev, [id]: value }));
+  const handleUpdateTitle = (e) => {
+    setUpdatedTitle(e.target.value); // Updates local state, does not affect parent component
   };
 
   const openModal = () => setModalOpen(true);
@@ -67,19 +62,24 @@ export default function SellingPointUpdateModal({
 
   const callUpdateSellingPoint = () => {
     publicEventSellingPointAPI
-      .update(vxUserInfo.vxToken, sellingPointId, {
-        title: updateParams.title,
+      .update(vxUserInfo.vxToken, pSellingPointId, {
+        title: updatedTitle,
         productIdList: getProductIdList(),
       })
       .then((response) => {
         console.log("Selling point updated:", response.data);
         closeModal();
-        fetchSellingPoints(vxUserInfo.vxToken);
+        setTitle(updatedTitle);
       })
       .catch((error) => {
         console.error("Error updating selling point:", error);
       });
   };
+
+  if (modalOpen) {
+    console.log("Modal is about to open.");
+    console.log("allProducts", allProducts);
+  }
 
   return (
     <div>
@@ -102,7 +102,7 @@ export default function SellingPointUpdateModal({
             >
               <div className="text-center">
                 <h3 className="text-lg font-semibold mb-4">
-                  Create Selling point
+                  Update: {updatedTitle}
                 </h3>
               </div>
               <div className="mt-6 text-center">
@@ -117,16 +117,15 @@ export default function SellingPointUpdateModal({
                         htmlFor="title"
                         className="mb-0 mr-2 text-sm font-medium text-gray-900 dark:text-white shrink-0"
                       >
-                        Selling point title
+                        Title
                       </label>
                       <input
                         type="text"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Placeholder"
                         required
-                        id="title"
-                        value={updateParams.title}
-                        onChange={handleInputChange}
+                        defaultValue={title} // Binding local state to the input
+                        onChange={handleUpdateTitle} // Using the new handler
                       />
                     </div>
                   </div>
@@ -183,7 +182,7 @@ export default function SellingPointUpdateModal({
           </div>
         </div>
       )}
-      <button onClick={openModal}>{updateParams.title}</button>
+      <button onClick={openModal}>{title}</button>
     </div>
   );
 }
