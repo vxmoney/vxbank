@@ -10,6 +10,7 @@ import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreatePara
 import eu.vxbank.api.endpoints.publicevent.publicevent.dto.PublicEventCreateResponse;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointSearchResponse;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigParams;
 import eu.vxbank.api.endpoints.stripe.dto.StripeConfigInitiateConfigResponse;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
@@ -30,6 +31,7 @@ import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PublicEventSellingPointIntegrationTest {
@@ -307,6 +309,47 @@ public class PublicEventSellingPointIntegrationTest {
         client.vxPublicEventClientId = checkRegisterClientResponse.id;
         client.publicEventId = publicEventId;
         return client;
+    }
+
+    // test search by event id
+    @Test
+    public void searchTest() throws StripeException, FirebaseAuthException, JsonProcessingException {
+        Setup owner = setupOwner("acct_1P05koBBqbt0qcrd");
+        SellingPointParams params = SellingPointParams.builder()
+                .vxPublicEventId(owner.publicEventId)
+                .title("SellingPoint - " + new Date().getTime())
+                .productIdList(owner.productList.stream()
+                        .map(product -> product.id)
+                        .toList())
+                .build();
+        SellingPointResponse response = PublicEventSellingPointHelper.create(restTemplate,
+                port,
+                owner.vxToken,
+                params,
+                200);
+
+        SellingPointSearchResponse searchResponse = PublicEventSellingPointHelper.search(restTemplate,
+                port,
+                owner.vxToken,
+                owner.publicEventId,
+                200);
+        List<SellingPointResponse> sellingPointList = searchResponse.sellingPointList;
+        Assertions.assertEquals(1, sellingPointList.size());
+        SellingPointResponse item = sellingPointList.get(0);
+
+        Assertions.assertEquals(response.id, item.id);
+        Assertions.assertEquals(response.title, item.title);
+
+        Set<Long> productIdSet = owner.productList.stream()
+                .map(product -> product.id)
+                .collect(Collectors.toSet());
+
+        // check if all products are in the list
+        item.getProductList()
+                .forEach(product -> {
+                    Assertions.assertTrue(productIdSet.contains(product.id));
+                });
+
     }
 
 }

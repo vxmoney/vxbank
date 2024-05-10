@@ -1,14 +1,17 @@
 package eu.vxbank.api.helpers;
 
 import eu.vxbank.api.endpoints.publicevent.product.dto.ProductCreateParams;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductSearchResponse;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointSearchResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 import vxbank.datastore.data.publicevent.VxPublicEventProduct;
 
 public class PublicEventSellingPointHelper {
@@ -90,6 +93,39 @@ public class PublicEventSellingPointHelper {
 
         // Extract the response
         SellingPointResponse response = responseEntity.getBody();
+        return response;
+
+    }
+
+    public static SellingPointSearchResponse search(TestRestTemplate restTemplate,
+                                                    int port,
+                                                    String vxToken,
+                                                    Long publicEventId,
+                                                    int expectedStatusCode) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + vxToken);
+
+        // Create the HTTP entity with the headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+
+        // Build the URL with query parameters
+        UriComponentsBuilder builder =
+                UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/publicEventSellingPoint")
+                        .queryParam("publicEventId", publicEventId);
+
+
+        // Make the GET request
+        ResponseEntity<SellingPointSearchResponse> responseEntity = restTemplate.exchange(builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                SellingPointSearchResponse.class);
+
+        int statusCode = responseEntity.getStatusCodeValue();
+        Assertions.assertEquals(expectedStatusCode, statusCode);
+
+        SellingPointSearchResponse response = responseEntity.getBody();
         return response;
 
     }
