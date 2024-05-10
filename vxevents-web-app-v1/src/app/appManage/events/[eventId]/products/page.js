@@ -66,7 +66,7 @@ const Products = () => {
       )}
       <ProductList>
         {productList.map((x) => {
-          return <ProductCard product={x} />;
+          return <ProductCard product={x} key={x.id} />;
         })}
       </ProductList>
     </Wrapper>
