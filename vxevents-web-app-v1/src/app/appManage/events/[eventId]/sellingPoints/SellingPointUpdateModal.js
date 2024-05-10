@@ -5,6 +5,7 @@ import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 import { useVxContext } from "@/app/context/VxContext";
 import { useParams } from "next/navigation";
 
+
 export default function SellingPointUpdateModal({
   pSellingPointId,
   pTitle,
@@ -80,6 +81,7 @@ export default function SellingPointUpdateModal({
         console.log("Selling point updated:", response.data);
         closeModal();
         setTitle(updatedTitle);
+        fetchSellingPoints(vxUserInfo?.vxToken, eventId);
       })
       .catch((error) => {
         console.error("Error updating selling point:", error);
