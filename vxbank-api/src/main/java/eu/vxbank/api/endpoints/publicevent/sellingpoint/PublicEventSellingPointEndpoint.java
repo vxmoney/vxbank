@@ -1,8 +1,10 @@
 package eu.vxbank.api.endpoints.publicevent.sellingpoint;
 
 import com.stripe.exception.StripeException;
+import eu.vxbank.api.endpoints.publicevent.product.dto.ProductSearchResponse;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointParams;
 import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointResponse;
+import eu.vxbank.api.endpoints.publicevent.sellingpoint.dto.SellingPointSearchResponse;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
@@ -16,6 +18,8 @@ import vxbank.datastore.data.publicevent.VxPublicEventSellingPoint;
 import vxbank.datastore.data.service.VxDsService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.checkUserIsOwnerOfEvent;
 import static eu.vxbank.api.endpoints.publicevent.tools.PublicEventEndpointTools.getVxEvent;
@@ -110,5 +114,45 @@ public class PublicEventSellingPointEndpoint {
                 .productList(productList)
                 .build();
         return response;
+    }
+
+    private SellingPointResponse buildResponseFromLoadedData(VxPublicEventSellingPoint vxPublicEventSellingPoint,
+                                                             Map<Long, VxPublicEventProduct> allProductsMap ) {
+        List<VxPublicEventProduct> productList = vxPublicEventSellingPoint.getProductIdList().stream()
+                .map(allProductsMap::get)
+                .collect(Collectors.toList());
+
+        SellingPointResponse response = SellingPointResponse.builder()
+                .id(vxPublicEventSellingPoint.getId())
+                .vxPublicEventId(vxPublicEventSellingPoint.getVxPublicEventId())
+                .title(vxPublicEventSellingPoint.getTitle())
+                .productList(productList)
+                .build();
+        return response;
+    }
+
+    @GetMapping
+    @ResponseBody
+    public SellingPointSearchResponse search(Authentication auth, @RequestParam(name = "publicEventId") Long publicEventId) {
+
+        VxUser vxUser = systemService.validateAndGetUser(auth);
+
+        List<VxPublicEventSellingPoint> sellingPointList = VxDsService.getByVxPublicEventId(VxPublicEventSellingPoint.class,
+                systemService.getVxBankDatastore(), publicEventId);
+
+        List<VxPublicEventProduct> productList = VxDsService.getByVxPublicEventId(VxPublicEventProduct.class,
+                systemService.getVxBankDatastore(), publicEventId);
+
+        Map<Long, VxPublicEventProduct> publicEventProductMap = productList.stream()
+                .collect(Collectors.toMap(product -> product.id, product -> product));
+
+        SellingPointSearchResponse response = new SellingPointSearchResponse();
+        response.totalCount = sellingPointList.size();
+        response.sellingPointList = sellingPointList.stream().map(
+                point -> buildResponseFromLoadedData(point, publicEventProductMap)
+        ).toList();
+
+        return response;
+
     }
 }
