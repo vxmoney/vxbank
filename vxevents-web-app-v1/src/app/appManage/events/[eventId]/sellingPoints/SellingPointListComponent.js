@@ -46,7 +46,11 @@ export default function SellingPointListComponent() {
                 {sPoint.id}
               </td>
               <td className="px-6 py-4">{sPoint.title}</td>
-              <td className="px-6 py-4"> list of products goes here</td>
+              <td className="px-6 py-4"> 
+                    {sPoint.productList.map((product) => (
+                        <div>{product.title}</div>
+                    ))}
+              </td>
             </tr>
           ))}
         </tbody>
