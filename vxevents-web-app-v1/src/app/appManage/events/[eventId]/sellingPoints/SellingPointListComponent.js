@@ -4,11 +4,22 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 import { useVxContext } from "@/app/context/VxContext";
+import SellingPointUpdateModal from "./SellingPointUpdateModal";
+import { publicEventProductAPI } from "@/api/publicEventProduct";
 
 export default function SellingPointListComponent() {
   const { vxUserInfo } = UserAuth();
   const { eventId } = useParams();
   const { sellingPoints, fetchSellingPoints } = useVxContext();
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    // all products
+    publicEventProductAPI.getAll(vxUserInfo.vxToken, eventId).then((result) => {
+      setMissingProducts(result.data.productList);
+      setAllProducts(result.data.productList);
+    });
+  }, [vxUserInfo, eventId]);
 
   useEffect(() => {
     // Check if vxToken is available before calling fetchEvents
@@ -50,7 +61,14 @@ export default function SellingPointListComponent() {
               <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {sPoint.id}
               </td>
-              <td className="px-6 py-4">{sPoint.title}</td>
+              <td className="px-6 py-4">
+                <SellingPointUpdateModal
+                  sellingPointId={sPoint.id}
+                  title={sPoint.title}
+                  selectedProducts={sPoint.productList}
+                  allProducts={allProducts}
+                />
+              </td>
               <td className="flex flex-wrap gap-2 px-6 py-4">
                 {sPoint.productList.map((product) => (
                   <span
