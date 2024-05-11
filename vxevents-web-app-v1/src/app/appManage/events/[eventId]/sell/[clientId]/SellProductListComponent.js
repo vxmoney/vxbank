@@ -33,22 +33,27 @@ export default function SellProductListComponent() {
   let productList = null;
   if (sellingPoint && sellingPoint.productList) {
     productList = sellingPoint.productList.map((product) => (
-      <div key={product.id} class="p-4 m-4 flex flex-col items-center justify-center">
-        <div class=" text-3xl font-extrabold whitespace-nowrap">{product.title}</div>
+      <div
+        key={product.id}
+        class="flex flex-col items-center justify-center"
+      >
+        <button
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 whitespace-nowrap"
+        >
+          {product.title}
+        </button>
       </div>
     ));
   }
 
   return (
-    <div class="block max-w-xl rounded-lg ">
+    <div class="block rounded-lg ">
       <div
-        class="bg-white dark:bg-gray-800"
-        id="stats"
-        role="tabpanel"
-        aria-labelledby="stats-tab"
+        class="bg-white dark:bg-gray-800 rounded-lg"
+        
       >
-
-        <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
+        <dl class="grid max-w-screen-xl grid-cols-3 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
           {productList}
         </dl>
       </div>
