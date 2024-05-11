@@ -9,6 +9,7 @@ export const useSellContext = () => {
 export const SellProvider = ({ children }) => {
   const [sellItemList, setSellItemList] = useState([]);
   const [addItems, setAddItems] = useState(true);
+  const [showToolBar, setShowToolBar] = useState(false);
 
   // create method appendItem that will append an item to the itemList
   const appendSellItem = (item) => {
@@ -45,7 +46,9 @@ export const SellProvider = ({ children }) => {
     processItem,
     addItems,
     setAddItems,
-    resetSelectedItems
+    resetSelectedItems,
+    showToolBar,
+    setShowToolBar
   };
 
   return <SellContext.Provider value={value}>{children}</SellContext.Provider>;
