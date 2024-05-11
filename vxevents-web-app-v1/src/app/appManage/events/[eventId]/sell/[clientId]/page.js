@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useVxContext } from "@/app/context/VxContext";
 import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 import { UserAuth } from "@/app/context/AuthContext";
-import SellTotalComponent from "./SellTotal";
+import SellProductListComponent from "./SellProductListComponent";
+import SellTotalComponent from "./SellTotalComponent";
 
 export default function SellManagePage() {
   let { eventId, clientId } = useParams();
@@ -33,7 +34,8 @@ export default function SellManagePage() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <SellTotalComponent />
+      <SellTotalComponent/>
+      <SellProductListComponent />
       <div>
         <div>Hello sell page</div>
         <div>Event ID: {eventId}</div>
