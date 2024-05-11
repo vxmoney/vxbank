@@ -13,6 +13,8 @@ export default function SellProductListComponent() {
   const [sellingPoint, setSellingPoint] = useState(null);
   const { sellItemList } = useSellContext();
 
+  console.log("sellItemList", sellItemList )
+
   const getDefaultSellingPointId = () => {
     if (typeof defaultSellingPointId !== "number") {
       return parseInt(defaultSellingPointId);

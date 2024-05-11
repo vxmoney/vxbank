@@ -7,14 +7,7 @@ export const useSellContext = () => {
 };
 
 export const SellProvider = ({ children }) => {
-  const [sellItemList, setSellItemList] = useState(() => {
-    if (typeof localStorage !== "undefined") {
-      const storedItemList = localStorage.getItem("itemList");
-      return storedItemList || [];
-    } else {
-      return [];
-    }
-  });
+  const [sellItemList, setSellItemList] = useState([]);
 
   // create method appendItem that will append an item to the itemList
   const appendSellItem = (item) => {

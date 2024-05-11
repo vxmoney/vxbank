@@ -35,6 +35,7 @@ export default function SellManagePage() {
   return (
     <div className="flex flex-col items-center justify-center">
       <SellTotalComponent/>
+      
       <SellProductListComponent />
       <div>
         <div>Hello sell page</div>
