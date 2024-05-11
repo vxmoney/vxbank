@@ -39,4 +39,15 @@ export const publicEventSellingPointAPI = {
     }
     return instance.put(`/${pointId}`, body, { headers });
   },
+
+  get: (vxToken, pointId) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+    // Ensure pointId is a number and included in the URL path
+    if (typeof pointId !== 'number') {
+      throw new Error('pointId must be a number');
+    }
+    return instance.get(`/${pointId}`, { headers });
+  }
 };

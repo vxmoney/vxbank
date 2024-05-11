@@ -3,8 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { useVxContext } from "@/app/context/VxContext";
 
 export default function SellingPointDefaultModal({ sellingPointId, title }) {
-
-  
+  //
+  const { defaultSellingPointId, setDefaultSellingPointId } = useVxContext();
 
   // <modal functionality>
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,8 +30,10 @@ export default function SellingPointDefaultModal({ sellingPointId, title }) {
 
   // </modal functionality>
 
-  const { defaultSellingPointId, setDefaultSellingPointId } = useVxContext();
-  console.log("defaultSellingPointId", defaultSellingPointId);
+  const handleSetDefaultSellingPointId = () => {
+    setDefaultSellingPointId(sellingPointId);
+    closeModal();
+  };
 
   return (
     <div>
@@ -72,7 +74,7 @@ export default function SellingPointDefaultModal({ sellingPointId, title }) {
                   </button>
                   <button
                     className="py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-blue-500 hover:text-white focus:z-10 focus:ring-4 focus:ring-blue-500 dark:focus:ring-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-blue-700"
-                    // onClick={callUpdateSellingPoint}
+                    onClick={handleSetDefaultSellingPointId}
                   >
                     Set As Default
                   </button>
