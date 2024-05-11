@@ -42,7 +42,9 @@ public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {"/ping/getEnvironment", "/testDatastore", //
             "/example/payment", "/stripeWebhook", "/handleCheckoutSessionCompleted",
-            "/ping" + "/generateFirebaseIdToken", "/user/login", "/swagger-ui/**", "/v3/api-docs/**"};
+            "/ping" + "/generateFirebaseIdToken",
+            "/ping/loginByUserId/**",
+            "/user/login", "/swagger-ui/**", "/v3/api-docs/**"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

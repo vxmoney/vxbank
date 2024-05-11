@@ -8,12 +8,16 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
 import com.stripe.model.checkout.Session;
 import eu.vxbank.api.endpoints.payment.dto.HandleCheckoutSessionCompletedDto;
 import eu.vxbank.api.endpoints.payment.dto.StripeSessionCreateResponse;
 import eu.vxbank.api.endpoints.ping.dto.*;
+import eu.vxbank.api.endpoints.stripe.dto.StripeCurrency;
 import eu.vxbank.api.endpoints.user.dto.Funds;
 import eu.vxbank.api.endpoints.user.dto.LoginResponse;
+import eu.vxbank.api.endpoints.user.dto.TokenInfo;
+import eu.vxbank.api.services.VxFirebaseAuthService;
 import eu.vxbank.api.utils.components.SystemService;
 import eu.vxbank.api.utils.components.VxStripeKeys;
 import eu.vxbank.api.utils.components.vxintegration.VxIntegrationConfig;
@@ -32,6 +36,7 @@ import vxbank.datastore.data.service.VxDsService;
 import eu.vxbank.api.utils.stripe.VxStripeUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class PingEndpoint {
@@ -43,6 +48,9 @@ public class PingEndpoint {
 
     @Autowired
     private VxIntegrationConfig vxIntegrationConfig;
+
+    @Autowired
+    private VxFirebaseAuthService vxFirebaseAuthService;
 
     @GetMapping("/ping/getEnvironment")
     @ResponseBody
@@ -78,6 +86,100 @@ public class PingEndpoint {
     }
 
 
+    @GetMapping("/ping/loginByUserId/{userId}")
+    @ResponseBody
+    public LoginResponse loginByUserId(@PathVariable Long userId) throws
+            FirebaseAuthException,
+            JsonProcessingException, StripeException {
+
+        if (systemService.getEnvironment() != Environment.LOCALHOST) {
+            throw new IllegalStateException("We only do loginByUserId on localhost");
+        }
+
+        VxUser vxUser = VxDsService.getById(VxUser.class, systemService.getVxBankDatastore(), userId);
+
+        LoginResponse loginResponse = buildLoginResponse(vxUser);
+        return loginResponse;
+    }
+
+    private LoginResponse buildLoginResponse(VxUser vxUser) throws StripeException {
+        TokenInfo tokenInfo = vxFirebaseAuthService.buildTokenForUser(vxUser.id, vxUser.email, Optional.empty());
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.id = vxUser.id;
+        loginResponse.email = vxUser.email;
+        loginResponse.name = vxUser.name;
+        loginResponse.vxTokenExpiresAt = tokenInfo.expiresAt;
+        loginResponse.vxToken = tokenInfo.vxToken;
+
+
+        VxBankDatastore ds = systemService.getVxBankDatastore();
+        List<VxStripeConfig> configList = VxDsService.getByUserId(loginResponse.id,
+                new HashMap<>(),
+                ds,
+                VxStripeConfig.class);
+        if (!configList.isEmpty()) {
+            VxStripeConfig config = configList.get(0);
+            loginResponse.stripeConfigState = config.state;
+
+            Account account = VxStripeUtil.getAccount(stripeKeys.stripeSecretKey, config.stripeAccountId);
+            loginResponse.payoutEnabled = account.getPayoutsEnabled();
+
+            List<Funds> immutableFunds = VxStripeUtil.getFundsList(stripeKeys.stripeSecretKey, config.stripeAccountId);
+            List<Funds> availableFunds = new ArrayList<>(immutableFunds);
+            loginResponse.availableFundsList = availableFunds;
+
+            //check add zero if eur are missing from that list.
+            String stripeSecretKey = stripeKeys.stripeSecretKey;
+            String userStripeAccountId = config.stripeAccountId;
+
+            // check and eur if necessary
+            Optional<Funds> optionalEuro = buildEmtpyFundsIfNotPresentAndUserCanProcessThem(stripeSecretKey,
+                    userStripeAccountId,
+                    StripeCurrency.eur,
+                    availableFunds);
+            optionalEuro.ifPresent(availableFunds::add);
+
+            // check and add ron if necessary
+            Optional<Funds> optionalRon = buildEmtpyFundsIfNotPresentAndUserCanProcessThem(stripeSecretKey,
+                    userStripeAccountId,
+                    StripeCurrency.ron,
+                    availableFunds);
+            optionalRon.ifPresent(availableFunds::add);
+        }
+
+        return loginResponse;
+    }
+
+    private Optional<Funds> buildEmtpyFundsIfNotPresentAndUserCanProcessThem(String stripeSecretKey,
+                                                                             String userStripeAccountId,
+                                                                             StripeCurrency currency,
+                                                                             List<Funds> listToCheck) throws
+            StripeException {
+        // if currency already there then we do nothing
+        Set<StripeCurrency> set = listToCheck.stream()
+                .map(funds -> StripeCurrency.valueOf(funds.currency))
+                .collect(Collectors.toSet());
+        if (set.contains(currency)) {
+            return Optional.empty();
+        }
+
+        // if user can not process currency we do noting
+        Boolean clientCanReceivePaymentInCurrency = VxStripeUtil.clientCanReceivePaymentInCurrency(stripeSecretKey,
+                userStripeAccountId,
+                currency.toString());
+        if (!clientCanReceivePaymentInCurrency) {
+            return Optional.empty();
+        }
+
+        // client can process but no funds in the list. We just add zero funds.
+        Funds zeroFunds = Funds.builder()
+                .amount(0L)
+                .currency(currency.toString())
+                .build();
+        return Optional.of(zeroFunds);
+    }
+
     // curl localhost:8080/ping/generateFirebaseIdToken
     @GetMapping("/ping/generateFirebaseIdToken")
     @ResponseBody
@@ -87,7 +189,8 @@ public class PingEndpoint {
             throw new IllegalStateException("You are allowed to do this only when oauth emulator is active");
         }
 
-        if (FirebaseApp.getApps().isEmpty()) {
+        if (FirebaseApp.getApps()
+                .isEmpty()) {
             // Firebase has not been initialized yet, so initialize it
             FirebaseApp.initializeApp();
         }
@@ -158,6 +261,7 @@ public class PingEndpoint {
         return oauthResponse.idToken;
 
     }
+
 
     @GetMapping("/ping/whoAmI")
     @ResponseBody
