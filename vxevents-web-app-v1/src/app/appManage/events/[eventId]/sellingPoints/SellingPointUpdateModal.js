@@ -5,6 +5,9 @@ import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 import { useVxContext } from "@/app/context/VxContext";
 import { useParams } from "next/navigation";
 
+import { useTheme } from "next-themes";
+import {  FaEdit } from "react-icons/fa";
+
 
 export default function SellingPointUpdateModal({
   pSellingPointId,
@@ -12,6 +15,7 @@ export default function SellingPointUpdateModal({
   pSelectedProducts,
   pAllProducts,
 }) {
+  const {  resolvedTheme } = useTheme();
   const { vxUserInfo } = UserAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { fetchSellingPoints } = useVxContext();
@@ -194,7 +198,8 @@ export default function SellingPointUpdateModal({
           </div>
         </div>
       )}
-      <button onClick={openModal}>{title}</button>
+      
+      <div> <FaEdit className="cursor-pointer" onClick={openModal}/> </div>
     </div>
   );
 }

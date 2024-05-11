@@ -51,6 +51,9 @@ export default function SellingPointListComponent() {
             <th scope="col" className="px-6 py-3">
               Products
             </th>
+            <th scope="col" className="px-6 py-3">
+              Edit
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -63,12 +66,7 @@ export default function SellingPointListComponent() {
                 {sPoint.id}
               </td>
               <td className="px-6 py-4">
-                <SellingPointUpdateModal
-                  pSellingPointId={sPoint.id}
-                  pTitle={sPoint.title}
-                  pSelectedProducts={sPoint.productList}
-                  pAllProducts={allProducts}
-                />
+                {sPoint.title}
               </td>
               <td className="flex flex-wrap gap-2 px-6 py-4">
                 {sPoint.productList.map((product) => (
@@ -79,6 +77,14 @@ export default function SellingPointListComponent() {
                     {`${product.title} €${formatPrice(product.price)}`}
                   </span>
                 ))}
+              </td>
+              <td className="px-6 py-4">
+                <SellingPointUpdateModal
+                  pSellingPointId={sPoint.id}
+                  pTitle={sPoint.title}
+                  pSelectedProducts={sPoint.productList}
+                  pAllProducts={allProducts}
+                />
               </td>
             </tr>
           ))}
