@@ -10,7 +10,7 @@ export default function SellProductListComponent() {
   const { vxUserInfo } = UserAuth();
   const { defaultSellingPointId, setDefaultSellingPointId } = useVxContext();
   const [sellingPoint, setSellingPoint] = useState(null);
-    const { sellItemList } = useSellContext();
+  const { sellItemList } = useSellContext();
 
   const getDefaultSellingPointId = () => {
     if (typeof defaultSellingPointId !== "number") {
@@ -30,6 +30,16 @@ export default function SellProductListComponent() {
       });
   }, [defaultSellingPointId]);
 
+  let productList = null;
+  if (sellingPoint && sellingPoint.productList) {
+    productList = sellingPoint.productList.map((product) => (
+      <div key={product.id}>
+        <p>ID: {product.id}</p>
+        <h3>Title: {product.title}</h3>
+      </div>
+    ));
+  }
+
   return (
     <div class="block max-w-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       <div
@@ -38,6 +48,8 @@ export default function SellProductListComponent() {
         role="tabpanel"
         aria-labelledby="stats-tab"
       >
+        {productList}
+
         <dl class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
           <div class="flex flex-col items-center justify-center">
             <dt class="mb-2 text-3xl font-extrabold">Cofey 1</dt>
