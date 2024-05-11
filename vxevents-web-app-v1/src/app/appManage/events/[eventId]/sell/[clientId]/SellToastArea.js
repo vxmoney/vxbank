@@ -4,22 +4,15 @@ import { useState, useEffect } from "react";
 import { useSellContext } from "@/app/context/SellContext";
 
 export default function SellToastArea() {
-  const [showToast, setShowToast] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowToast(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const { showToast } =
+    useSellContext();
 
   const toastContent = showToast ? (
     <div
       id="toast-success"
-      class="fixed bottom-0 right-0 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+      class="fixed  bottom-0 right-0 mb-10 mr-10 flex justify-end items-center p-4 max-w-xs text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
       role="alert"
-      style={{ zIndex: 1000 }} // Ensuring it stays on top of other elements
+      style={{ zIndex: 1000 }}
     >
       <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
         <svg
