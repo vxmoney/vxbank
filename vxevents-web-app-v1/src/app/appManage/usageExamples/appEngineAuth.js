@@ -21,8 +21,6 @@ export default function AppEngineAuthExample() {
   const [whoAmIFormattedResponse, setWhoAmIFormattedResponse] =
     useState(whoAmIMessage);
 
-  
-
   const fetchLogin = async () => {
     try {
       const response = await userAPI.login(user.accessToken);
@@ -145,9 +143,11 @@ export default function AppEngineAuthExample() {
         <div className="col-span-3">
           <p>
             {vxUserInfo && (
-              <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
-               {JSON.stringify(vxUserInfo, null, 2)}
-              </pre>
+              <div>
+                <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
+                  {JSON.stringify(vxUserInfo, null, 2)}
+                </pre>
+              </div>
             )}
           </p>
         </div>

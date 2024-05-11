@@ -3,7 +3,9 @@ import configValues from "./apiConfig";
 
 const { protocol, baseUrl, port } = configValues;
 
-const baseURL = `${protocol}://${baseUrl}${protocol === 'https' ? '' : `:${port}`}/ping`;
+const baseURL = `${protocol}://${baseUrl}${
+  protocol === "https" ? "" : `:${port}`
+}/ping`;
 
 const instance = axios.create({
   baseURL,
@@ -21,16 +23,22 @@ export const pingAPI = {
     };
     return instance.get("/whoAmI", { headers });
   },
-  requestFunds: (vxToken, requestFundsParams) =>{
+  requestFunds: (vxToken, requestFundsParams) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
     return instance.post("/requestFunds", requestFundsParams, { headers });
   },
-  initiateVxGamingCurrency: (vxToken, initiateVxGamingParams) =>{
+  initiateVxGamingCurrency: (vxToken, initiateVxGamingParams) => {
     const headers = {
       Authorization: `Bearer ${vxToken}`,
     };
-    return instance.post("/initiateVxGamingCurrency", initiateVxGamingParams, { headers });
-  }
+    return instance.post("/initiateVxGamingCurrency", initiateVxGamingParams, {
+      headers,
+    });
+  },
+  loginByUserId: (userId) => {
+   
+    return instance.get(`/loginByUserId/${userId}`);
+  },
 };

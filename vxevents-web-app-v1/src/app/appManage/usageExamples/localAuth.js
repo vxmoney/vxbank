@@ -92,6 +92,18 @@ export default function LocalAuthExample() {
     }
   };
 
+  const forceLoginByUserId = async (userId) => {
+    try {
+      const response = await pingAPI.loginByUserId(userId);
+      const formattedResponse = JSON.stringify(response.data, null, 2);
+
+      setVxUserInfo(response.data);
+    } catch (error) {
+      console.log("forceLoginByUserId error", error);
+    }
+  };
+
+
   const callRequestFunds = async () => {
     let requestParams = {
       userId: vxUserInfo.id,
@@ -149,23 +161,23 @@ export default function LocalAuthExample() {
   return (
     <div className="p-4">
       <p className="mb-3 text-gray-500 dark:text-gray-400">
-      <p>
-            Useful tools to help you kick off your testing session. Before you
-            use them, make sure that you have logged in and activated your bank
-            account. Check the User Profile tab for extra information and follow
-            the links if necessary.
-          </p>
-          <p>
-            What is what:
-            <ul className="list-disc ml-4">
-              <li>
-                initiate platform funds: Use this only if you are the first user
-                for today that starts to test the platform
-              </li>
-              <li>Request EUR: call this if you need euro in your account</li>
-              <li>Request RON: call this if you need ron in your account</li>
-            </ul>
-          </p>
+        <p>
+          Useful tools to help you kick off your testing session. Before you use
+          them, make sure that you have logged in and activated your bank
+          account. Check the User Profile tab for extra information and follow
+          the links if necessary.
+        </p>
+        <p>
+          What is what:
+          <ul className="list-disc ml-4">
+            <li>
+              initiate platform funds: Use this only if you are the first user
+              for today that starts to test the platform
+            </li>
+            <li>Request EUR: call this if you need euro in your account</li>
+            <li>Request RON: call this if you need ron in your account</li>
+          </ul>
+        </p>
       </p>
 
       <div className="grid grid-cols-4 gap-4 p-4">
@@ -200,9 +212,17 @@ export default function LocalAuthExample() {
         <div className="col-span-3">
           <p>
             {vxUserInfo && (
-              <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
-                {JSON.stringify(vxUserInfo, null, 2)}
-              </pre>
+              <div>
+                <pre className="p-4" style={{ whiteSpace: "pre-wrap" }}>
+                  {JSON.stringify(vxUserInfo, null, 2)}
+                </pre>
+                <button
+                  onClick={()=> forceLoginByUserId(vxUserInfo.id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Force login this user id
+                </button>
+              </div>
             )}
           </p>
         </div>
