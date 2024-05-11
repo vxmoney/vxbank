@@ -27,9 +27,12 @@ export default function SellingPointDefaultName() {
     publicEventSellingPointAPI
       .get(vxUserInfo.vxToken, getDefaultSellingPointId())
       .then((result) => {
-        setSellingPoint(result.data.sellingPoint);
+        console.log("DEBUG result data", result.data);
+        setSellingPoint(result.data);
       });
   }, [defaultSellingPointId]);
+
+  console.log("DEBUG sellingPoint value", sellingPoint);
 
   // if defaultSellingPointId is not set return
   if (defaultSellingPointId === "null") {
