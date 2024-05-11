@@ -10,7 +10,7 @@ export default function SellProductListComponent() {
   const { vxUserInfo } = UserAuth();
   const { defaultSellingPointId, setDefaultSellingPointId } = useVxContext();
   const [sellingPoint, setSellingPoint] = useState(null);
-  //  const { sellItemList } = useSellContext();
+    const { sellItemList } = useSellContext();
 
   const getDefaultSellingPointId = () => {
     if (typeof defaultSellingPointId !== "number") {

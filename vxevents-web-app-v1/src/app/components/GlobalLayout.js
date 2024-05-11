@@ -1,14 +1,16 @@
 "use client";
 import { AuthContextProvider } from "../context/AuthContext";
 import { VxProvider } from "../context/VxContext";
-import Navbar from "./Navbar";
 import { MyThemeProvider } from "../context/MyThemeContext";
+import { SellProvider } from "../context/SellContext";
 
 export default function GlobalLayout({ children }) {
   return (
     <AuthContextProvider>
       <VxProvider>
-        <MyThemeProvider>{children}</MyThemeProvider>
+        <SellProvider>
+          <MyThemeProvider>{children}</MyThemeProvider>
+        </SellProvider>
       </VxProvider>
     </AuthContextProvider>
   );

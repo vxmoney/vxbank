@@ -23,7 +23,7 @@ export const SellProvider = ({ children }) => {
 
   const value = {
     sellItemList,
-    appendSellItem
+    appendSellItem,
   };
 
   return <SellContext.Provider value={value}>{children}</SellContext.Provider>;
