@@ -6,12 +6,14 @@ import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 import { UserAuth } from "@/app/context/AuthContext";
 import SellProductListComponent from "./SellProductListComponent";
 import SellTotalComponent from "./SellTotalComponent";
+import SellToolBarComponent from "./SellToolBarComponent";
 
 export default function SellManagePage() {
   let { eventId, clientId } = useParams();
   const { vxUserInfo } = UserAuth();
   const { defaultSellingPointId, setDefaultSellingPointId } = useVxContext();
   const [sellingPoint, setSellingPoint] = useState(null);
+  
 
   // create a method that return default selling point id but as a number that passes this check typeof pointId !== 'number'
   const getDefaultSellingPointId = () => {
@@ -34,8 +36,8 @@ export default function SellManagePage() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <SellTotalComponent/>
-      
+      <SellTotalComponent />
+      <SellToolBarComponent />
       <SellProductListComponent />
       <div>
         <div>Hello sell page</div>
