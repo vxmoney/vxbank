@@ -11,7 +11,11 @@ export default function SellTotalComponent() {
     setShowToolBar,
     resetSelectedItems,
     setAddItems,
+    displayToast,
+    showToast,
   } = useSellContext();
+
+  console.log("Total log showToast", showToast);
 
   const switchToolBar = () => {
     setShowToolBar(!showToolBar);
@@ -23,9 +27,10 @@ export default function SellTotalComponent() {
   };
 
   const handleSubmit = () => {
-    console.log("Submit");
     resetSelectedItems();
     setAddItems(true);
+    displayToast();
+    console.log("handleSubmit finished");
   };
 
   // Function to compute the total price of all items in the sellItemList array
@@ -44,7 +49,7 @@ export default function SellTotalComponent() {
       className="w-10 h-10 stroke-current text-gray-500" // Disabled state
     />
   );
-  
+
   /**
    * If sellItemList is not empty, then add the okButton to the component with click functionality
    */
