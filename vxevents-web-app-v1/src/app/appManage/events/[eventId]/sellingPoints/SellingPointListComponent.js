@@ -6,6 +6,7 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { useVxContext } from "@/app/context/VxContext";
 import SellingPointUpdateModal from "./SellingPointUpdateModal";
 import { publicEventProductAPI } from "@/api/publicEventProduct";
+import SellingPointDefaultModal from "./SellingPointDefaultModal";
 
 export default function SellingPointListComponent() {
   const { vxUserInfo } = UserAuth();
@@ -34,8 +35,6 @@ export default function SellingPointListComponent() {
     // Insert a dot two characters from the end
     return priceStr.slice(0, -2) + "." + priceStr.slice(-2);
   };
-
-  console.log("All products in list, ", allProducts);
 
   return (
     <div className="p-2 relative overflow-x-auto">
@@ -66,7 +65,10 @@ export default function SellingPointListComponent() {
                 {sPoint.id}
               </td>
               <td className="px-6 py-4">
-                {sPoint.title}
+                <SellingPointDefaultModal
+                  sellingPointId={sPoint.id}
+                  title={sPoint.title}
+                />
               </td>
               <td className="flex flex-wrap gap-2 px-6 py-4">
                 {sPoint.productList.map((product) => (

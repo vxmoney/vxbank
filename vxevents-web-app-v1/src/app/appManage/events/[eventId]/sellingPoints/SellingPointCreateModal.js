@@ -5,13 +5,16 @@ import { UserAuth } from "@/app/context/AuthContext";
 import { publicEventProductAPI } from "@/api/publicEventProduct";
 import { publicEventSellingPointAPI } from "@/api/publicEventSellingPoint";
 import { useVxContext } from "@/app/context/VxContext";
+import SellingPointDefaultName from "./SellingPointDefaultName";
 
 export default function SellingPointCreateModal() {
   const { vxUserInfo } = UserAuth();
   const [modalOpen, setModalOpen] = useState(false);
   const { eventId } = useParams();
-  const { fetchSellingPoints } = useVxContext();
-  
+  const {
+    fetchSellingPoints,
+  } = useVxContext();
+
   const [createParams, setCreateParams] = useState({
     vxUserId: vxUserInfo?.id,
     type: "payed1V1",
@@ -100,24 +103,26 @@ export default function SellingPointCreateModal() {
   };
 
   const getProductIdList = () => {
-    return selectedProducts.map(product => product.id);
-};
-
+    return selectedProducts.map((product) => product.id);
+  };
 
   const callCreateSellingPoint = () => {
-    publicEventSellingPointAPI.create(vxUserInfo.vxToken, {
-      vxPublicEventId: eventId,
-      title: createParams.title,
-      productIdList: getProductIdList()
-    }).then((response) => {
-      console.log("Selling point created:", response.data);
-      closeModal();
-      fetchSellingPoints(vxUserInfo?.vxToken, eventId);
-    }).catch((error) => {
-      console.error("Error creating selling point:", error);
-      // Handle error
-    });
-  }
+    publicEventSellingPointAPI
+      .create(vxUserInfo.vxToken, {
+        vxPublicEventId: eventId,
+        title: createParams.title,
+        productIdList: getProductIdList(),
+      })
+      .then((response) => {
+        console.log("Selling point created:", response.data);
+        closeModal();
+        fetchSellingPoints(vxUserInfo?.vxToken, eventId);
+      })
+      .catch((error) => {
+        console.error("Error creating selling point:", error);
+        // Handle error
+      });
+  };
 
   return (
     <div>
@@ -125,6 +130,9 @@ export default function SellingPointCreateModal() {
         <div className="py-2 px-4 mx-auto max-w-screen-xl lg:py-2 flex justify-between items-center">
           <p className="mb-2 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-8 dark:text-gray-400">
             -- Selling points --
+          </p>
+          <p className="mb-2 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-8 dark:text-gray-400">
+           <SellingPointDefaultName  />
           </p>
           <button
             data-modal-target="default-modal"

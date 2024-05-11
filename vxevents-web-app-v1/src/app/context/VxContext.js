@@ -13,6 +13,24 @@ export const VxProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [sellingPoints, setSellingPoints] = useState([]);
 
+  // Default selling point id. Check first local storage and set to that value or null if not located
+  const [defaultSellingPointId, setDefaultSellingPointId] = useState(() => {
+    if (typeof localStorage !== "undefined") {
+      const storedSellingPointId = localStorage.getItem(
+        "defaultSellingPointId"
+      );
+      return storedSellingPointId || null;
+    } else {
+      return null;
+    }
+  });
+  // we add useEffect and persist the defaultSellingPointId to local storage when it changes
+  useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("defaultSellingPointId", defaultSellingPointId);
+    }
+  }, [defaultSellingPointId]);
+
   const fetchEvents = (vxToken, vxUserId) => {
     if (!vxToken) {
       console.error("VxToken is required for fetching events.");
@@ -49,7 +67,9 @@ export const VxProvider = ({ children }) => {
     events,
     fetchEvents,
     sellingPoints,
-    fetchSellingPoints
+    fetchSellingPoints,
+    defaultSellingPointId,
+    setDefaultSellingPointId,
   };
 
   return <VxContext.Provider value={value}>{children}</VxContext.Provider>;

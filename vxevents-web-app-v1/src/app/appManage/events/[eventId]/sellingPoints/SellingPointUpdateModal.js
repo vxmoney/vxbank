@@ -38,8 +38,6 @@ export default function SellingPointUpdateModal({
 
   const modalRef = useRef(null);
   
-  console.log("update pAllProducts", pAllProducts);
-  console.log("update allProducts", allProducts);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
