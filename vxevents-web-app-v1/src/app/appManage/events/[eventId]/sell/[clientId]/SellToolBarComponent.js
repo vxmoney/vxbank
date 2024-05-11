@@ -33,7 +33,7 @@ export default function SellToolBarComponent() {
               htmlFor="inline-radio"
               className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Inline 1
+              Append
             </label>
           </div>
           <div className="flex items-center me-4">
@@ -50,7 +50,7 @@ export default function SellToolBarComponent() {
               htmlFor="inline-2-radio"
               className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
             >
-              Inline 2
+              Remove
             </label>
           </div>
         </div>
