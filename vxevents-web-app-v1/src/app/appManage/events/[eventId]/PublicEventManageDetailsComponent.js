@@ -105,13 +105,13 @@ export default function PublicEventManageDetailsComponent() {
             <h6 className="pt-8 mb-2 text-1xl font-bold tracking-tight text-gray-900 dark:text-white">
               Other thing to be implemented
             </h6>
-            <p class="font-normal text-gray-700 dark:text-gray-400">
+            <p className="font-normal text-gray-700 dark:text-gray-400">
               How QR code for clients can register to this event
             </p>
-            <p class="font-normal text-gray-700 dark:text-gray-400">
+            <p className="font-normal text-gray-700 dark:text-gray-400">
               Show QR code for clients to self pay
             </p>
-            <p class="font-normal text-gray-700 dark:text-gray-400">
+            <p className="font-normal text-gray-700 dark:text-gray-400">
               Many other this
             </p>
           </div>

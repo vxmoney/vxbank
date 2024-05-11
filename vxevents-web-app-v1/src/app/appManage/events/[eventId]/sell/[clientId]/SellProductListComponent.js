@@ -39,15 +39,15 @@ export default function SellProductListComponent() {
       <SellProductButtonComponent
         product={product}
         key={product.id}
-        class="flex flex-col items-center justify-center"
+        className="flex flex-col items-center justify-center"
       />
     ));
   }
 
   return (
-    <div class="block rounded-lg ">
-      <div class="p-2 bg-white dark:bg-gray-800 rounded-lg">
-        <dl class="grid max-w-screen-xl grid-cols-3 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
+    <div className="block rounded-lg ">
+      <div className="p-2 bg-white dark:bg-gray-800 rounded-lg">
+        <dl className="grid max-w-screen-xl grid-cols-3 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
           {buttonList}
         </dl>
       </div>

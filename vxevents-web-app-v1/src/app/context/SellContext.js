@@ -25,6 +25,8 @@ export const SellProvider = ({ children }) => {
   const value = {
     sellItemList,
     processItem,
+    addItems,
+    setAddItems
   };
 
   return <SellContext.Provider value={value}>{children}</SellContext.Provider>;
