@@ -12,7 +12,7 @@ export default function SellProductButtonComponent({ product }) {
   let productCount = null;
   // iterate over product list and count the number of times the product appears by product.id
   if (sellItemList) {
-   let productCountVal = sellItemList.reduce((acc, item) => {
+    let productCountVal = sellItemList.reduce((acc, item) => {
       if (item.id === product.id) {
         return acc + 1;
       }
@@ -28,6 +28,8 @@ export default function SellProductButtonComponent({ product }) {
     }
   }
 
+  const formatPrice = (price) => `${(price / 100).toFixed(2)}`;
+
   return (
     <div className="flex flex-col items-center justify-center">
       <button
@@ -35,8 +37,10 @@ export default function SellProductButtonComponent({ product }) {
         className="relative text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 whitespace-nowrap"
         onClick={handleProcessItem}
       >
-        {product.title}
-
+        <div>
+          <div>{product.title} </div>
+          <div>{formatPrice(product.price)}</div>
+        </div>
         {productCount}
       </button>
     </div>
