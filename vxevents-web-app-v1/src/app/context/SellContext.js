@@ -44,10 +44,8 @@ export const SellProvider = ({ children }) => {
 
   const displayToast = () => {
     setShowToast(true);  // Show the toast
-    console.log("changed value displayToast ", showToast)
     setTimeout(() => {
         setShowToast(false);  // Hide the toast after 3 seconds
-        console.log("changed back value displayToast ", showToast)
     }, 5000);
 };
 

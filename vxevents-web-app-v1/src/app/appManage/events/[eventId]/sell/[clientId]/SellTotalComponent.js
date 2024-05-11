@@ -15,7 +15,6 @@ export default function SellTotalComponent() {
     showToast,
   } = useSellContext();
 
-  console.log("Total log showToast", showToast);
 
   const switchToolBar = () => {
     setShowToolBar(!showToolBar);
@@ -30,7 +29,6 @@ export default function SellTotalComponent() {
     resetSelectedItems();
     setAddItems(true);
     displayToast();
-    console.log("handleSubmit finished");
   };
 
   // Function to compute the total price of all items in the sellItemList array
