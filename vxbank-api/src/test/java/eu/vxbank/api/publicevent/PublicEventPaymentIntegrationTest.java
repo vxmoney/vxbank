@@ -231,6 +231,14 @@ public class PublicEventPaymentIntegrationTest {
                 200);
         Assertions.assertEquals(value, clientReport.availableBalance);
 
+        // same report should also be available for the manager
+        PublicEventClientPaymentReportResponse managerReport = PublicEventClientPaymentHelper.clientPaymentReport(restTemplate,
+                port,
+                manager.vxToken,
+                client.publicEventId,
+                client.vxPublicEventClientId,
+                200);
+
 
         ManagerRegistersPaymentResponse response = PublicEventClientPaymentHelper.managerRegistersPayment(
                 restTemplate,
