@@ -3,6 +3,10 @@ import { useSellContext } from "@/app/context/SellContext";
 import { MdOutlineSettings } from "react-icons/md";
 import { BiReset } from "react-icons/bi";
 import { FaCheckDouble } from "react-icons/fa";
+import { useParams } from "next/navigation";
+import { useVxContext } from "@/app/context/VxContext";
+import { publicEventClientPaymentAPI } from "@/api/publicEventClientPayment";
+import { UserAuth } from "@/app/context/AuthContext";
 
 export default function SellTotalComponent() {
   const {
@@ -15,6 +19,10 @@ export default function SellTotalComponent() {
     showToast,
   } = useSellContext();
 
+  let { eventId, clientId } = useParams();
+  const { defaultSellingPointId } = useVxContext();
+  const { vxUserInfo } = UserAuth();
+
   const switchToolBar = () => {
     setShowToolBar(!showToolBar);
   };
@@ -22,12 +30,6 @@ export default function SellTotalComponent() {
   const handleReset = () => {
     resetSelectedItems();
     setAddItems(true);
-  };
-
-  const handleSubmit = () => {
-    resetSelectedItems();
-    setAddItems(true);
-    displayToast();
   };
 
   // Function to compute the total price of all items in the sellItemList array
@@ -68,9 +70,36 @@ export default function SellTotalComponent() {
 
   const formatPrice = (price) => `${(price / 100).toFixed(2)}`;
 
-  const totalPrice = computeTotalPrice(sellItemList);
+  // section with important relevant param field values
+  const value = computeTotalPrice(sellItemList);
   const orderItemParamsList = buildOrderItemParamsList(sellItemList);
-  console.log("orderItemParamsList", orderItemParamsList);
+  const vxPublicEventSellingPointId = defaultSellingPointId;
+
+  const ManagerRegistersPaymentParams = {
+    eventId,
+    clientId,
+    value,
+    vxPublicEventSellingPointId,
+    orderItemParamsList,
+  };
+  console.log("ManagerRegistersPaymentParams", ManagerRegistersPaymentParams);
+
+  const handleSubmit = () => {
+    publicEventClientPaymentAPI
+      .managerRegistersPayment(
+        vxUserInfo.vxToken,
+        ManagerRegistersPaymentParams
+      )
+      .then((response) => {
+        console.log("Payment registered:", response.data);
+        resetSelectedItems();
+        setAddItems(true);
+        displayToast();
+      })
+      .catch((error) => {
+        console.error("Error registering payment:", error);
+      });
+  };
 
   let okButton = (
     <FaCheckDouble
@@ -95,7 +124,7 @@ export default function SellTotalComponent() {
       <BiReset onClick={handleReset} />{" "}
       <MdOutlineSettings onClick={switchToolBar} />
       <h5 className="ml-6 text-2xl font-bold tracking-tight text-gray-900 dark:text-white mr-4">
-        {formatPrice(totalPrice)} Euro
+        {formatPrice(value)} Euro
       </h5>
       {okButton}
     </div>

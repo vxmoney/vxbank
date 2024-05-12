@@ -24,4 +24,11 @@ export const publicEventClientPaymentAPI = {
       { headers }
     );
   },
+  managerRegistersPayment: (vxToken, body) => {
+    const headers = {
+      Authorization: `Bearer ${vxToken}`,
+    };
+
+    return instance.post(`/managerRegistersPayment`, body, { headers });
+  },
 };
