@@ -15,7 +15,6 @@ export default function SellTotalComponent() {
     showToast,
   } = useSellContext();
 
-
   const switchToolBar = () => {
     setShowToolBar(!showToolBar);
   };
@@ -38,9 +37,40 @@ export default function SellTotalComponent() {
     }, 0);
   }
 
+  // function to build order item list
+  function buildOrderItemParamsList(sellItemList) {
+    const orderItemMap = new Map();
+
+    // Iterate through each item in the sell item list
+    sellItemList.forEach((item) => {
+      const itemId = item.id;
+      const price = item.price;
+
+      // Check if the event ID is already in the map
+      if (orderItemMap.has(itemId)) {
+        const orderItem = orderItemMap.get(itemId);
+        // Update the quantity and value
+        orderItem.quantity += 1;
+        orderItem.value += price;
+      } else {
+        // Add new entry in the map
+        orderItemMap.set(itemId, {
+          vxPublicEventProductId: itemId,
+          quantity: 1,
+          value: price,
+        });
+      }
+    });
+
+    // Convert the map values to a list
+    return Array.from(orderItemMap.values());
+  }
+
   const formatPrice = (price) => `${(price / 100).toFixed(2)}`;
 
   const totalPrice = computeTotalPrice(sellItemList);
+  const orderItemParamsList = buildOrderItemParamsList(sellItemList);
+  console.log("orderItemParamsList", orderItemParamsList);
 
   let okButton = (
     <FaCheckDouble
