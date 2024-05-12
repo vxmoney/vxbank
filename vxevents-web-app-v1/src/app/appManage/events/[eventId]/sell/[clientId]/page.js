@@ -8,6 +8,7 @@ import SellProductListComponent from "./SellProductListComponent";
 import SellTotalComponent from "./SellTotalComponent";
 import SellToolBarComponent from "./SellToolBarComponent";
 import SellToastArea from "./SellToastArea";
+import SellClientInfoComponent from "./SellClientInfoComponent";
 
 export default function SellManagePage() {
   let { eventId, clientId } = useParams();
@@ -40,6 +41,7 @@ export default function SellManagePage() {
       <SellToolBarComponent />
       <SellProductListComponent />
       <SellToastArea />
+      <SellClientInfoComponent />
       <div>
         <div>Hello sell page</div>
         <div>Event ID: {eventId}</div>

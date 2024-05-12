@@ -8,7 +8,7 @@ import ProfileCard from "./components/ProfileCard";
 import FundsCard from "./components/FundsCard";
 
 import { publicEventAPI } from "@/api/publicEvent";
-import { publicEventClientPayment } from "@/api/publicEventClientPayment";
+import { publicEventClientPaymentAPI } from "@/api/publicEventClientPayment";
 
 const Wrapper = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ export default function AccountPage() {
       publicEventAPI.join(vxUserInfo.vxToken, eventId).then((result) => {
         setJoinedEventData(result.data);
         const clientId = result.data.id;
-        publicEventClientPayment
+        publicEventClientPaymentAPI
           .getClientReport(vxUserInfo.vxToken, eventId, clientId)
           .then((res) => {
             console.log(res);
