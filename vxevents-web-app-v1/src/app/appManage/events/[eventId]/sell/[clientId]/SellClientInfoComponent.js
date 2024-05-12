@@ -24,9 +24,9 @@ export default function SellClientInfoComponent() {
 
   return (
     <div className="flex-col gap-4 items-center block max-w-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-      <div>Client id</div>
-      <div>Email: </div>
-      <div>Available funds: </div>
+      <div>Client id: {clientReport.vxPublicEventClientId}</div>
+      <div>Email: {clientReport.clientEmail}</div>
+      <div>Available funds: {clientReport.availableBalance}</div>
     </div>
   );
 }
