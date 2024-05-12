@@ -43,11 +43,15 @@ public class PublicEventClientPaymentEndpoint {
 
     @GetMapping("/getClientReport/event/{eventId}/client/{clientId}")
     @ResponseBody
-    public PublicEventClientPaymentReportResponse getClientReport(Authentication auth, @PathVariable Long eventId, @PathVariable Long clientId) {
+    public PublicEventClientPaymentReportResponse getClientReport(Authentication auth,
+                                                                  @PathVariable Long eventId,
+                                                                  @PathVariable Long clientId) {
 
         VxUser currentUser = systemService.validateAndGetUser(auth);
 
-        VxPublicEventClient client = VxDsService.getById(VxPublicEventClient.class, systemService.getVxBankDatastore(), clientId);
+        VxPublicEventClient client = VxDsService.getById(VxPublicEventClient.class,
+                systemService.getVxBankDatastore(),
+                clientId);
         if (!eventId.equals(client.publicEventId)) {
             throw new IllegalStateException("Client does not belong to event");
         }
@@ -60,12 +64,25 @@ public class PublicEventClientPaymentEndpoint {
     }
 
     private PublicEventClientPaymentReportResponse buildReportForClient(Long eventId, Long clientId) {
-        List<VxPublicEventClientPayment> paymentList = VxDsService.vxPublicEventClientId(VxPublicEventClientPayment.class,
-                systemService.getVxBankDatastore(), clientId);
-        paymentList = paymentList.stream().filter(p -> p.state.equals(VxPublicEventClientPayment.State.complete))
+        // payment list
+        List<VxPublicEventClientPayment> paymentList =
+                VxDsService.vxPublicEventClientId(VxPublicEventClientPayment.class,
+                systemService.getVxBankDatastore(),
+                clientId);
+        paymentList = paymentList.stream()
+                .filter(p -> p.state.equals(VxPublicEventClientPayment.State.complete))
                 .filter(p -> p.vxPublicEventId.equals(eventId))
                 .collect(Collectors.toList());
+
+        // user email
+        VxPublicEventClient client = VxDsService.getById(VxPublicEventClient.class,
+                systemService.getVxBankDatastore(),
+                clientId);
+        String clientEmail = VxDsService.getById(VxUser.class, systemService.getVxBankDatastore(), client.userId).email;
+
+
         PublicEventClientPaymentReportResponse report = new PublicEventClientPaymentReportResponse();
+        report.clientEmail = clientEmail;
         report.clinetPaymentList = paymentList;
         report.vxPublicEventId = eventId;
         report.vxPublicEventClientId = clientId;
@@ -88,9 +105,11 @@ public class PublicEventClientPaymentEndpoint {
             return;
         }
         List<VxPublicEventManager> managers = VxDsService.getByPublicEventId(VxPublicEventManager.class,
-                systemService.getVxBankDatastore(), client.publicEventId);
-        Optional<VxPublicEventManager> optionalManager = managers.stream().filter(
-                m -> m.userId.equals(currentUser.id)).findFirst();
+                systemService.getVxBankDatastore(),
+                client.publicEventId);
+        Optional<VxPublicEventManager> optionalManager = managers.stream()
+                .filter(m -> m.userId.equals(currentUser.id))
+                .findFirst();
         if (optionalManager.isPresent()) {
             return;
         }
@@ -105,7 +124,9 @@ public class PublicEventClientPaymentEndpoint {
         // checking security
         VxUser vxUser = systemService.validateAndGetUser(auth);
         PublicEventEndpointTools.checkUserIsManagerOfEvent(systemService.getVxBankDatastore(), vxUser, params.eventId);
-        VxPublicEventClient client = VxDsService.getById(VxPublicEventClient.class, systemService.getVxBankDatastore(), params.clientId);
+        VxPublicEventClient client = VxDsService.getById(VxPublicEventClient.class,
+                systemService.getVxBankDatastore(),
+                params.clientId);
         if (!params.eventId.equals(client.publicEventId)) {
             throw new IllegalStateException("Client does not belong to event");
         }

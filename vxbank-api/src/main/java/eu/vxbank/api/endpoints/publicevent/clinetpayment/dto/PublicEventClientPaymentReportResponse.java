@@ -6,6 +6,7 @@ import java.util.List;
 
 public class PublicEventClientPaymentReportResponse {
     public Long vxPublicEventClientId;
+    public String clientEmail;
     public Long vxPublicEventId;
     public Long availableBalance;
     public Long totalDebit;
