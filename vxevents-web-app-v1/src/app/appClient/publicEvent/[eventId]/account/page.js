@@ -48,7 +48,7 @@ export default function AccountPage() {
 
   return (
     <Wrapper>
-      <ProfileCard vxUserInfo={vxUserInfo} />
+      <ProfileCard vxUserInfo={vxUserInfo} joinedEventData={joinedEventData} />
       <Divider />
       <FundsCard
         vxUserInfo={vxUserInfo}

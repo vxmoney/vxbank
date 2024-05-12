@@ -19,12 +19,13 @@ const ClientId = styled.h3`
   font-size: 1.15rem;
 `;
 
-const ProfileCard = ({ vxUserInfo }) => {
+const ProfileCard = ({ vxUserInfo, joinedEventData }) => {
   return (
     <Wrapper>
       <Name>{vxUserInfo?.name}</Name>
       <Email>{vxUserInfo?.email}</Email>
       <ClientId>{vxUserInfo?.id}</ClientId>
+      <ClientId>{joinedEventData?.id}</ClientId>
     </Wrapper>
   );
 };
