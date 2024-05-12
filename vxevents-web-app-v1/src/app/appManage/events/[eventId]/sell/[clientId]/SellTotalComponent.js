@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useSellContext } from "@/app/context/SellContext";
 import { MdOutlineSettings } from "react-icons/md";
 import { BiReset } from "react-icons/bi";
@@ -17,11 +18,23 @@ export default function SellTotalComponent() {
     setAddItems,
     displayToast,
     showToast,
+    clientAvailableFunds,
+    setClientAvailableFunds,
   } = useSellContext();
 
   let { eventId, clientId } = useParams();
   const { defaultSellingPointId } = useVxContext();
   const { vxUserInfo } = UserAuth();
+
+  useEffect(() => {
+    if (vxUserInfo) {
+      publicEventClientPaymentAPI
+        .getClientReport(vxUserInfo.vxToken, eventId, clientId)
+        .then((response) => {
+          setClientAvailableFunds(response.data?.availableBalance);
+        });
+    }
+  }, [vxUserInfo]);
 
   const switchToolBar = () => {
     setShowToolBar(!showToolBar);
@@ -95,6 +108,8 @@ export default function SellTotalComponent() {
         resetSelectedItems();
         setAddItems(true);
         displayToast();
+        const remainingFunds = clientAvailableFunds - value;
+        setClientAvailableFunds(remainingFunds);
       })
       .catch((error) => {
         console.error("Error registering payment:", error);

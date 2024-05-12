@@ -11,6 +11,7 @@ export const SellProvider = ({ children }) => {
   const [addItems, setAddItems] = useState(true);
   const [showToolBar, setShowToolBar] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [clientAvailableFunds, setClientAvailableFunds] = useState(0);
 
   // create method appendItem that will append an item to the itemList
   const appendSellItem = (item) => {
@@ -43,11 +44,11 @@ export const SellProvider = ({ children }) => {
   };
 
   const displayToast = () => {
-    setShowToast(true);  // Show the toast
+    setShowToast(true); // Show the toast
     setTimeout(() => {
-        setShowToast(false);  // Hide the toast after 3 seconds
+      setShowToast(false); // Hide the toast after 3 seconds
     }, 5000);
-};
+  };
 
   const value = {
     sellItemList,
@@ -58,7 +59,9 @@ export const SellProvider = ({ children }) => {
     showToolBar,
     setShowToolBar,
     displayToast,
-    showToast
+    showToast,
+    clientAvailableFunds,
+    setClientAvailableFunds,
   };
 
   return <SellContext.Provider value={value}>{children}</SellContext.Provider>;

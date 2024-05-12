@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { UserAuth } from "@/app/context/AuthContext";
 import { publicEventClientPaymentAPI } from "@/api/publicEventClientPayment";
+import { useSellContext } from "@/app/context/SellContext";
 
 export default function SellClientInfoComponent() {
   let { eventId, clientId } = useParams();
   let { vxUserInfo } = UserAuth();
-
+  let {clientAvailableFunds}  = useSellContext();
   let [clientReport, setClientReport] = useState();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function SellClientInfoComponent() {
     <div className="flex-col gap-4 items-center block max-w-xl p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       <div>Client id: {clientReport?.vxPublicEventClientId}</div>
       <div>Email: {clientReport?.clientEmail}</div>
-      <div>Available funds: {formatPrice(clientReport?.availableBalance)}</div>
+      <div>Available funds: {formatPrice(clientAvailableFunds)}</div>
     </div>
   );
 }
