@@ -35,4 +35,8 @@ User website: https://www.linkedin.com/in/bogdan-oloeriu
 ```bash
 sc-meta new --template empty --name vx-events
 mv vx-events vx-events-contract
+
+sc-meta new --template empty --name vx-events
+cd vx-events
+sc-meta all build
 ```
