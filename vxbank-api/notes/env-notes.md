@@ -30,3 +30,9 @@ stripe listen --forward-to localhost:8080/stripeWebhook
 # some form data
 Test card: 4000000000000077
 User website: https://www.linkedin.com/in/bogdan-oloeriu
+
+# smart contract start
+```bash
+sc-meta new --template empty --name vx-events
+mv vx-events vx-events-contract
+```
