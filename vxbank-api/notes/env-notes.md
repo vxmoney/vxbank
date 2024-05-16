@@ -38,5 +38,6 @@ mv vx-events vx-events-contract
 
 sc-meta new --template empty --name vx-events
 cd vx-events
+sc-meta install wasm32
 sc-meta all build
 ```
