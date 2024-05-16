@@ -2,7 +2,7 @@
 name = "vx-events"
 version = "0.0.0"
 authors = ["Bogdan Oloeriu"]
-edition = "2024"
+edition = "2021"
 publish = false
 
 [lib]
