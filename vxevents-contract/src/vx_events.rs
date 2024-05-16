@@ -3,6 +3,8 @@
 #[allow(unused_imports)]
 use multiversx_sc::imports::*;
 
+mod admin_tools;
+
 /// An empty contract. To be used as a template when starting a new contract from scratch.
 #[multiversx_sc::contract]
 pub trait VxEvents {
@@ -11,4 +13,7 @@ pub trait VxEvents {
 
     #[upgrade]
     fn upgrade(&self) {}
+
+
+   
 }

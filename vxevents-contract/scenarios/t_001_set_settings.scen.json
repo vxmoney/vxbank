@@ -46,7 +46,7 @@
               "gasLimit": "100,000,000",
               "gasPrice": "0",
               "arguments": [
-                "10000"
+                
               ]
             },
             "expect": {
