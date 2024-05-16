@@ -9,6 +9,6 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-fn empty_rs() {
-    world().run("scenarios/vx_events.scen.json");
+fn t_000_deploy_rs() {
+    world().run("scenarios/t_000_deploy.scen.json");
 }
