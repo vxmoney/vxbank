@@ -34,6 +34,28 @@
                 "gas": "*",
                 "refund": "*"
             }
-        }
+        },
+        {
+            "step": "scCall",
+            "txId": "call-setContractSettings",
+            "tx": {
+              "from": "address:owner",
+              "to": "sc:vxevents",
+              "function": "setContractSettings",
+              "value": "0",
+              "gasLimit": "100,000,000",
+              "gasPrice": "0",
+              "arguments": [
+                "10000"
+              ]
+            },
+            "expect": {
+              "out": [],
+              "status": "0",
+              "message": "",
+              "gas": "*",
+              "refund": "*"
+            }
+          }
     ]
 }

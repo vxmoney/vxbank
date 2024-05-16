@@ -12,3 +12,8 @@ fn world() -> ScenarioWorld {
 fn t_000_deploy_rs() {
     world().run("scenarios/t_000_deploy.scen.json");
 }
+
+#[test]
+fn t_001_set_settings_rs() {
+    world().run("scenarios/t_001_set_settings.scen.json");
+}

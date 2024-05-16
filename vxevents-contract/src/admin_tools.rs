@@ -4,7 +4,9 @@ multiversx_sc::imports!();
 
 pub trait AdminTools:{
 
-    fn set_token_settings(
+    #[only_owner]
+    #[endpoint(setContractSettings)]
+    fn set_contract_settings(
         percentage: u64
     ){
         let new_value: u64 = percentage;

@@ -8,3 +8,8 @@ fn world() -> ScenarioWorld {
 fn t_000_deploy_go() {
     world().run("scenarios/t_000_deploy.scen.json");
 }
+
+#[test]
+fn t_001_set_settings_go() {
+    world().run("scenarios/t_001_set_settings.scen.json");
+}
