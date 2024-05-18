@@ -18,3 +18,8 @@ fn t_001_set_settings_go() {
 fn t_002_register_payment_go() {
     world().run("scenarios/t_002_register_payment.scen.json");
 }
+
+#[test]
+fn t_003_register_payment_with_token_go() {
+    world().run("scenarios/t_003_register_payment_with_token.scen.json");
+}
