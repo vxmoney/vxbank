@@ -14,4 +14,8 @@ pub trait VxEvents: admin_tools::AdminTools + vx_events_endpoints::EventsEndpoin
 
     #[upgrade]
     fn upgrade(&self) {}
+
+    #[view(getTokenConfiguration)]
+    #[storage_mapper("tokenConfiguration")]
+    fn token_configuration(&self, identifier: EgldOrEsdtTokenIdentifier) -> SingleValueMapper<u64>;
 }
