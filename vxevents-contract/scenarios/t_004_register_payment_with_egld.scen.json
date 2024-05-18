@@ -14,10 +14,7 @@
         },
         "address:client-1": {
           "nonce": "1",
-          "balance": "0",
-          "esdt": {
-            "str:ACOIN-a00000": "2000000"
-          }
+          "balance": "2000000"
         }
       },
       "newAddresses": [
@@ -53,15 +50,9 @@
         "from": "address:client-1",
         "to": "sc:vxevents",
         "function": "registerPayment",
-        "value": "0",
+        "value": "1000000",
         "gasLimit": "100,000,000",
         "gasPrice": "0",
-        "esdtValue": [
-          {
-            "tokenIdentifier": "str:ACOIN-a00000",
-            "value": "1000000"
-          }
-        ],
         "arguments": []
       },
       "expect": {
