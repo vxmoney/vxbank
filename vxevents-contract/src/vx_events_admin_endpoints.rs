@@ -5,9 +5,7 @@ multiversx_sc::imports!();
 #[multiversx_sc::module]
 
 pub trait AdminTools: vx_events_store::EventsStore {
-    #[only_owner]
-    #[endpoint(setContractSettings)]
-    fn set_contract_settings(&self) {}
+   
 
     #[only_owner]
     #[endpoint(setEgldProcessingPercentage)]

@@ -14,11 +14,6 @@ fn t_000_deploy_rs() {
 }
 
 #[test]
-fn t_001_set_settings_rs() {
-    world().run("scenarios/t_001_set_settings.scen.json");
-}
-
-#[test]
 fn t_002_register_payment_rs() {
     world().run("scenarios/t_002_register_payment.scen.json");
 }
