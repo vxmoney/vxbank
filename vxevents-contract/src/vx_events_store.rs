@@ -7,5 +7,5 @@ pub trait EventsStore {
 
     #[view(getTokenProcessingPercentage)]
     #[storage_mapper("tokenProcessingPercentage")]
-    fn token_processing_percentage(&self, identifier: EgldOrEsdtTokenIdentifier) -> SingleValueMapper<u64>;
+    fn store_token_processing_percentage(&self, identifier: EgldOrEsdtTokenIdentifier) -> SingleValueMapper<u64>;
 }
