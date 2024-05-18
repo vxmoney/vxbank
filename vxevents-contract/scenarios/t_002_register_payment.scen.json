@@ -7,6 +7,14 @@
         "address:owner": {
           "nonce": "1",
           "balance": "0"
+        },
+        "address:manager-1": {
+            "nonce": "1",
+          "balance": "0"
+        },
+        "address:client-1":{
+            "nonce": "1",
+            "balance": "0"
         }
       },
       "newAddresses": [
@@ -39,7 +47,7 @@
       "step": "scCall",
       "txId": "call-registerPayment",
       "tx": {
-        "from": "address:owner",
+        "from": "address:client-1",
         "to": "sc:vxevents",
         "function": "registerPayment",
         "value": "0",
