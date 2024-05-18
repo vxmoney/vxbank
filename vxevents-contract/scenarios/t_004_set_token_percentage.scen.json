@@ -7,6 +7,14 @@
         "address:owner": {
           "nonce": "1",
           "balance": "0"
+        },
+        "address:manager-1": {
+          "nonce": "1",
+          "balance": "0"
+        },
+        "address:client-1": {
+          "nonce": "1",
+          "balance": "2000000"
         }
       },
       "newAddresses": [
@@ -37,15 +45,15 @@
     },
     {
       "step": "scCall",
-      "txId": "call-setContractSettings",
+      "txId": "call-setTokenProcessingPercentage",
       "tx": {
         "from": "address:owner",
         "to": "sc:vxevents",
-        "function": "setContractSettings",
+        "function": "setTokenProcessingPercentage",
         "value": "0",
         "gasLimit": "100,000,000",
         "gasPrice": "0",
-        "arguments": []
+        "arguments": ["str:ACOIN-a00000","10000"]
       },
       "expect": {
         "out": [],
@@ -53,6 +61,24 @@
         "message": "",
         "gas": "*",
         "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "0",
+          "storage": {},
+          "code": ""
+        },
+        "sc:vxevents": {
+          "nonce": "*",
+          "balance": "0",
+          "storage": {
+            "str:tokenProcessingPercentage|nested:str:ACOIN-a00000":"10000"
+          }
+        }
       }
     }
   ]
