@@ -45,15 +45,15 @@
     },
     {
       "step": "scCall",
-      "txId": "call-registerPayment",
+      "txId": "call-setEgldProcessingPercentage",
       "tx": {
-        "from": "address:client-1",
+        "from": "address:owner",
         "to": "sc:vxevents",
-        "function": "registerPayment",
-        "value": "1000000",
+        "function": "setEgldProcessingPercentage",
+        "value": "0",
         "gasLimit": "100,000,000",
         "gasPrice": "0",
-        "arguments": []
+        "arguments": ["10000"]
       },
       "expect": {
         "out": [],
@@ -61,6 +61,24 @@
         "message": "",
         "gas": "*",
         "refund": "*"
+      }
+    },
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "0",
+          "storage": {},
+          "code": ""
+        },
+        "sc:vxevents": {
+          "nonce": "*",
+          "balance": "0",
+          "storage": {
+            
+          }
+        }
       }
     }
   ]

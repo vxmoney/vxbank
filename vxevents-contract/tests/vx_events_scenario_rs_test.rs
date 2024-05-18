@@ -29,6 +29,6 @@ fn t_003_register_payment_with_token_rs() {
 }
 
 #[test]
-fn t_004_register_payment_with_egld_rs() {
-    world().run("scenarios/t_004_register_payment_with_egld.scen.json");
+fn t_004_set_egld_percentage_rs() {
+    world().run("scenarios/t_004_set_egld_percentage.scen.json");
 }

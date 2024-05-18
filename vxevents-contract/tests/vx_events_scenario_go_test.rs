@@ -25,6 +25,6 @@ fn t_003_register_payment_with_token_go() {
 }
 
 #[test]
-fn t_004_register_payment_with_egld_go() {
-    world().run("scenarios/t_004_register_payment_with_egld.scen.json");
+fn t_004_set_egld_percentage_go() {
+    world().run("scenarios/t_004_set_egld_percentage.scen.json");
 }
