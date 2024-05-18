@@ -4,6 +4,7 @@
 use multiversx_sc::imports::*;
 
 mod admin_tools;
+mod vx_events_endpoints;
 
 /// An empty contract. To be used as a template when starting a new contract from scratch.
 #[multiversx_sc::contract]
