@@ -23,3 +23,8 @@ fn t_002_register_payment_go() {
 fn t_003_register_payment_with_token_go() {
     world().run("scenarios/t_003_register_payment_with_token.scen.json");
 }
+
+#[test]
+fn t_004_register_payment_with_egld_go() {
+    world().run("scenarios/t_004_register_payment_with_egld.scen.json");
+}

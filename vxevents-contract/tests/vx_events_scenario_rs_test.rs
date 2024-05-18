@@ -27,3 +27,8 @@ fn t_002_register_payment_rs() {
 fn t_003_register_payment_with_token_rs() {
     world().run("scenarios/t_003_register_payment_with_token.scen.json");
 }
+
+#[test]
+fn t_004_register_payment_with_egld_rs() {
+    world().run("scenarios/t_004_register_payment_with_egld.scen.json");
+}
