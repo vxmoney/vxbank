@@ -1,61 +1,59 @@
 {
-    "name": "empty",
-    "steps": [
+  "name": "empty",
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0"
+        }
+      },
+      "newAddresses": [
         {
-            "step": "setState",
-            "accounts": {
-                "address:owner": {
-                    "nonce": "1",
-                    "balance": "0"
-                }
-            },
-            "newAddresses": [
-                {
-                    "creatorAddress": "address:owner",
-                    "creatorNonce": "1",
-                    "newAddress": "sc:vxevents"
-                }
-            ]
-        },
-        {
-            "step": "scDeploy",
-            "id": "deploy",
-            "tx": {
-                "from": "address:owner",
-                "contractCode": "mxsc:../output/vx-events.mxsc.json",
-                "arguments": [],
-                "gasLimit": "5,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
-                "status": "",
-                "logs": [],
-                "gas": "*",
-                "refund": "*"
-            }
-        },
-        {
-            "step": "scCall",
-            "txId": "call-setContractSettings",
-            "tx": {
-              "from": "address:owner",
-              "to": "sc:vxevents",
-              "function": "setContractSettings",
-              "value": "0",
-              "gasLimit": "100,000,000",
-              "gasPrice": "0",
-              "arguments": [
-                
-              ]
-            },
-            "expect": {
-              "out": [],
-              "status": "0",
-              "message": "",
-              "gas": "*",
-              "refund": "*"
-            }
-          }
-    ]
+          "creatorAddress": "address:owner",
+          "creatorNonce": "1",
+          "newAddress": "sc:vxevents"
+        }
+      ]
+    },
+    {
+      "step": "scDeploy",
+      "id": "deploy",
+      "tx": {
+        "from": "address:owner",
+        "contractCode": "mxsc:../output/vx-events.mxsc.json",
+        "arguments": [],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "",
+        "logs": [],
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "call-registerPayment",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:vxevents",
+        "function": "registerPayment",
+        "value": "0",
+        "gasLimit": "100,000,000",
+        "gasPrice": "0",
+        "arguments": []
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    }
+  ]
 }
