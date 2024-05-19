@@ -4,6 +4,7 @@ public class CurrencyConverter {
     // Public fields for fiat currency, crypto currency, conversion rate, and decimal places
     public String fiatCurrency;
     public String cryptoCurrency;
+    public String cryptoCurrencyTicker;
     public long conversionRate; // Conversion rate as long
     public long fiatDecimals;
     public long cryptoDecimals;
@@ -15,12 +16,14 @@ public class CurrencyConverter {
     // Constructor to initialize the model
     public CurrencyConverter(String fiatCurrency,
                              String cryptoCurrency,
+                             String cryptoCurrencyTicker,
                              long conversionRate,
                              long fiatDecimals,
                              long cryptoDecimals,
                              long conversionRateDecimals) {
         this.fiatCurrency = fiatCurrency;
         this.cryptoCurrency = cryptoCurrency;
+        this.cryptoCurrencyTicker = cryptoCurrencyTicker;
         this.conversionRate = conversionRate;
         this.fiatDecimals = fiatDecimals;
         this.cryptoDecimals = cryptoDecimals;
