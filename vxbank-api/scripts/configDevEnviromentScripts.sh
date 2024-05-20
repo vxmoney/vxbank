@@ -192,3 +192,7 @@ deployQueueProd() {
   gcloud config set project vxbank-eu-prod
   gcloud app deploy src/main/appengine/queue.yaml
 }
+
+goToMxSimulator(){
+  cd mx-simulator
+}
