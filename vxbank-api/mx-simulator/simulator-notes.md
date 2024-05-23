@@ -23,3 +23,9 @@ make run-examples
 # again python env part
 deactivate
 ```
+
+
+## my make related commands
+```bash
+make setup-env
+```
