@@ -46,3 +46,14 @@ run-repo-examples: setup-env
 	fi
 	docker stop "${IMAGE_NAME}"
 	docker rm ${IMAGE_NAME}
+
+run-adder-example:
+	$(MAKE) docker-build
+	docker stop "${IMAGE_NAME}" || true
+	docker rm "${IMAGE_NAME}" || true
+	docker run -d --name "${IMAGE_NAME}" -p 8085:8085 ${CHAIN_SIMULATOR_IMAGE_NAME}:${CHAIN_SIMULATOR_IMAGE_TAG}
+	echo "Running adder example script"
+	cd adder-example && /bin/bash script.sh
+	docker stop "${IMAGE_NAME}"
+	docker rm "${IMAGE_NAME}"
+

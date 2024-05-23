@@ -15,7 +15,7 @@ GENERATE_BLOCKS_URL = f"{SIMULATOR_URL}/simulator/generate-blocks"
 def main():
     provider = ProxyNetworkProvider(SIMULATOR_URL)
 
-    pem = UserPEM.from_file(Path("../../wallets/wallet.pem"))
+    pem = UserPEM.from_file(Path("./wallet.pem"))
 
     address = pem.public_key.to_address("erd")
     data = {"receiver": f"{address.to_bech32()}"}
