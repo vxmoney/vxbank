@@ -37,6 +37,7 @@ setup-env:
 run-examples: setup-env
 	$(MAKE) docker-build
 	docker run -d --name "${IMAGE_NAME}" -p 8085:8085 ${CHAIN_SIMULATOR_IMAGE_NAME}:${CHAIN_SIMULATOR_IMAGE_TAG}
-	cd scripts/run-examples && . ${PIP_ENV_DIR}/bin/activate && /bin/bash script.sh
+	echo "Running script in ${REPO_TEMP_DIR}/scripts/run-examples"
+	. ${PIP_ENV_DIR}/bin/activate && /bin/bash ${REPO_TEMP_DIR}/scripts/run-examples/script.sh
 	docker stop "${IMAGE_NAME}"
 	docker rm ${IMAGE_NAME}
