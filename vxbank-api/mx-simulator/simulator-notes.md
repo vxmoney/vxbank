@@ -28,5 +28,6 @@ deactivate
 ## my make related commands
 ```bash
 make setup-env
-make run-examples
+make run-repo-examples
+make run-adder-example
 ```
