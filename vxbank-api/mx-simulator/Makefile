@@ -14,3 +14,8 @@ docker-build:
 		-t ${CHAIN_SIMULATOR_IMAGE_NAME}:${CHAIN_SIMULATOR_IMAGE_TAG} \
 		-f ${DOCKER_FILE} \
 		.
+
+setup-env:
+	python3 -m venv testEnv
+	. testEnv/bin/activate && pip install -r examples/requirements.txt
+
