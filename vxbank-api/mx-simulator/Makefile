@@ -47,7 +47,7 @@ run-repo-examples: setup-env
 	docker stop "${IMAGE_NAME}"
 	docker rm ${IMAGE_NAME}
 
-run-adder-example: setup-env
+run-local-adder-example: setup-env
 	$(MAKE) docker-build
 	docker stop "${IMAGE_NAME}" || true
 	docker rm "${IMAGE_NAME}" || true
