@@ -47,13 +47,12 @@ run-repo-examples: setup-env
 	docker stop "${IMAGE_NAME}"
 	docker rm ${IMAGE_NAME}
 
-run-adder-example:
+run-adder-example: setup-env
 	$(MAKE) docker-build
 	docker stop "${IMAGE_NAME}" || true
 	docker rm "${IMAGE_NAME}" || true
 	docker run -d --name "${IMAGE_NAME}" -p 8085:8085 ${CHAIN_SIMULATOR_IMAGE_NAME}:${CHAIN_SIMULATOR_IMAGE_TAG}
 	echo "Running adder example script"
-	cd adder-example && /bin/bash script.sh
+	. ${PIP_ENV_DIR}/bin/activate && pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && cd $(CURDIR)/adder-example && /bin/bash script.sh
 	docker stop "${IMAGE_NAME}"
 	docker rm "${IMAGE_NAME}"
-

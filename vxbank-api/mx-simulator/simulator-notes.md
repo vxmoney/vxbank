@@ -29,5 +29,7 @@ deactivate
 ```bash
 make setup-env
 make run-repo-examples
+
+make setup-env
 make run-adder-example
 ```
