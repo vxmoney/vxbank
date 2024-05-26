@@ -49,17 +49,22 @@ def main():
     tx_hash = provider.send_transaction(deploy_transaction)
     print(f"Deploy transaction hash: {tx_hash}")
 
-    time.sleep(1)
+    time.sleep(0.5)
 
     provider.do_post(f"{GENERATE_BLOCKS_URL}/1", {})
 
     tx_from_network = provider.get_transaction(tx_hash, with_process_status=True)
-    print(repr(tx_from_network))
-    print(repr(tx_from_network.to_dictionary()))
+    # print(repr(tx_from_network))
+    # print(repr(tx_from_network.to_dictionary()))
     if not tx_from_network.status.is_successful():
         sys.exit(f"Transaction status is not correct, status received: {tx_from_network.status}")
 
     print("End deploy contract")
+
+    value = 10
+    contract_address = extract_contract_address(tx_from_network)
+    address_32 = contract_address.bech32()
+    print(f"contract address: {address_32}")
 
 
 def extract_contract_address(tx: TransactionOnNetwork) -> Address:
