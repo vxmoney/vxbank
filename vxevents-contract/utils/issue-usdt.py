@@ -94,5 +94,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--get-token-identifier":
         token_identifier_string = main()
         print(token_identifier_string)
+        with open("./utils/token_identifier.txt", "w") as f:
+            f.write(token_identifier_string)
     else:
         main()

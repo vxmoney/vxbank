@@ -42,10 +42,10 @@ build-and-deploy-vxevents: setup-env
 	sc-meta all build
 	. ${PIP_ENV_DIR}/bin/activate && \
         pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
-        token_identifier_string=$$(python3 ./utils/issue-usdt.py --get-token-identifier) && \
-        echo "Bash token value: $$token_identifier_string"
+        python3 ./utils/issue-usdt.py --get-token-identifier
 
-
-
-
-
+echo-token: build-and-deploy-vxevents
+	. ${PIP_ENV_DIR}/bin/activate && \
+        token_identifier_string=$$(cat ./utils/token_identifier.txt) && \
+        echo "Using token identifier: $$token_identifier_string"
+        # some other commands that use $$token_identifier_string
