@@ -43,9 +43,7 @@ build-and-deploy-vxevents: setup-env
 	. ${PIP_ENV_DIR}/bin/activate && \
         pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
         token_identifier_string=$$(python3 ./utils/issue-usdt.py --get-token-identifier) && \
-        test_value="some random value" && \
-        echo "Bash token value: $$token_identifier_string" && \
-        echo "Random echo: $$test_value $$token_identifier_string"
+        echo "Bash token value: $$token_identifier_string"
 
 
 

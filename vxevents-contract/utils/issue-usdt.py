@@ -11,7 +11,6 @@ from pathlib import Path
 SIMULATOR_URL = "http://localhost:8085"
 GENERATE_BLOCKS_URL = f"{SIMULATOR_URL}/simulator/generate-blocks"
 
-
 def main():
     # create a network provider
     provider = ProxyNetworkProvider(SIMULATOR_URL)
@@ -57,10 +56,10 @@ def main():
 
     # send transaction
     tx_hash = provider.send_transaction(tx)
-    print(f"generated tx hash: {tx_hash}")
+    # print(f"generated tx hash: {tx_hash}")
     time.sleep(1)
 
-    # execute 5 block ( transaction needs to be executed on source, block on source has to be finalized...)
+    # execute 5 blocks (transaction needs to be executed on source, block on source has to be finalized...)
     provider.do_post(f"{GENERATE_BLOCKS_URL}/5", {})
 
     # get transaction with status
@@ -77,10 +76,9 @@ def main():
         sys.exit(
             f"amount of token from balance is no equal with the initial supply: actual-{amount.balance}, expected-{initial_supply}")
 
-    print(f"transaction was executed and tokens were created: {token_identifier_string}")
+    # print(f"transaction was executed and tokens were created: {token_identifier_string}")
 
     return token_identifier_string
-
 
 def extract_token_identifier(tx: TransactionOnNetwork) -> str:
     for event in tx.logs.events:
@@ -92,11 +90,9 @@ def extract_token_identifier(tx: TransactionOnNetwork) -> str:
 
     return ""
 
-
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--get-token-identifier":
         token_identifier_string = main()
         print(token_identifier_string)
     else:
         main()
-
