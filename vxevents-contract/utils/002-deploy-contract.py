@@ -55,7 +55,7 @@ def main():
     provider.do_post(f"{GENERATE_BLOCKS_URL}/1", {})
 
     tx_from_network = provider.get_transaction(tx_hash, with_process_status=True)
-
+    print(repr(tx_from_network))
     if not tx_from_network.status.is_successful():
         sys.exit(f"Transaction status is not correct, status received: {tx_from_network.status}")
 
