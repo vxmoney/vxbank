@@ -15,6 +15,7 @@ as fast as possible. Just use the bash commands that you need and start coding.
 - [prod frontend](https://vxbank-eu-prod.ew.r.appspot.com)
 
 ## run all tests
+
 - go here and add funds: https://vxbank-eu-dev.ew.r.appspot.com/usageExamples#
 - run all datastore tests
 - run all vxbank tests
@@ -79,3 +80,29 @@ Instructions
 - DeveloperExamples/GenerateUserAndLogin
 - Copy vxToken
 - Update TestEnvValues.SPECIAL_VX_TOKEN value
+
+# percentage settings
+
+On java side the percentage is configured with 2 decimals
+Java percentage examples
+
+- integrationPercentage = 200 is equivalent with 2%
+
+## stripe flow
+
+- On stripe side the client pays using PublicEventEndpoint.clientDepositFunds
+    - this calls createStripeSessionClientDepositFunds
+    - we compute the percentage and we have this that sets the vxmoney fee and also event organizer received value
+        ```
+        paymentIntentDataBuilder.setApplicationFeeAmount(applicationFee)
+          .setTransferData(SessionCreateParams.PaymentIntentData.TransferData.builder()
+              .setDestination(vxStripeConfig.stripeAccountId)
+              .build()
+        );
+        ```
+
+- when the webhook hits to do not move stripe funds but only vxmoney funds.
+- we mark the payment intent as completed. This automaticaly render all get client report to consider also this new
+  values as part of the total debit. 
+ 
+
