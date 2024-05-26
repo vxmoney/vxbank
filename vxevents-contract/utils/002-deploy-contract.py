@@ -33,7 +33,6 @@ def main():
     deploy_transaction = sc_factory.create_transaction_for_deploy(
         sender=address,
         bytecode=bytecode,
-        arguments=[0],
         gas_limit=10000000,
         is_upgradeable=True,
         is_readable=True,
