@@ -56,6 +56,7 @@ def main():
 
     tx_from_network = provider.get_transaction(tx_hash, with_process_status=True)
     print(repr(tx_from_network))
+    print(repr(tx_from_network.to_dictionary()))
     if not tx_from_network.status.is_successful():
         sys.exit(f"Transaction status is not correct, status received: {tx_from_network.status}")
 
