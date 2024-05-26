@@ -105,4 +105,10 @@ Java percentage examples
 - we mark the payment intent as completed. This automaticaly render all get client report to consider also this new
   values as part of the total debit. 
  
+## crypto flow
+- we need to know the contract network and contract address
+- contract owner (aka bogdan) needs to 
+  - deploy contract
+  - set token fees USDT
+  - toto: continue to update this section of documentation after we have complete integration tests util this point
 
