@@ -39,7 +39,7 @@ remove:
 	docker stop "${IMAGE_NAME}" || true
 	docker rm "${IMAGE_NAME}" || true
 
-build-and-deploy-vxevents: setup-env
+build-and-deploy-vxevents: start
 	sc-meta all build
 	. ${PIP_ENV_DIR}/bin/activate && \
         pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
