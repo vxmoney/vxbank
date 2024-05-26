@@ -35,17 +35,14 @@ stop:
 	docker stop "${IMAGE_NAME}" || true
 	docker stop "${IMAGE_NAME}" || true
 
-remove:
-	docker stop "${IMAGE_NAME}" || true
-	docker rm "${IMAGE_NAME}" || true
 
-build-and-deploy-vxevents: start
+001-issue-usdt: start
 	sc-meta all build
 	. ${PIP_ENV_DIR}/bin/activate && \
         pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
-        python3 ./utils/issue-usdt.py --get-token-identifier
+        python3 ./utils/001-issue-usdt.py --get-token-identifier
 
-echo-token: build-and-deploy-vxevents
+002-deploy-contract: 001-issue-usdt
 	. ${PIP_ENV_DIR}/bin/activate && \
         token_identifier_string=$$(cat ./utils/token_identifier.txt) && \
         echo "Using token identifier: $$token_identifier_string"
