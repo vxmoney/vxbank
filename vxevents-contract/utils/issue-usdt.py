@@ -16,7 +16,7 @@ def main():
     # create a network provider
     provider = ProxyNetworkProvider(SIMULATOR_URL)
 
-    pem = UserPEM.from_file(Path("../wallets/wallet.pem"))
+    pem = UserPEM.from_file(Path("./utils/simwalets/aliceWallet.pem"))
 
     # call proxy faucet
     address = pem.public_key.to_address("erd")
