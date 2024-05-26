@@ -12,7 +12,9 @@ from multiversx_sdk_wallet import UserPEM, UserSigner
 SIMULATOR_URL = "http://localhost:8085"
 GENERATE_BLOCKS_URL = f"{SIMULATOR_URL}/simulator/generate-blocks"
 
+
 def main():
+    print("Start deploy contract")
     provider = ProxyNetworkProvider(SIMULATOR_URL)
 
     pem = UserPEM.from_file(Path("./utils/simwalets/aliceWallet.pem"))
@@ -27,7 +29,7 @@ def main():
 
     sc_factory = SmartContractTransactionsFactory(config, TokenComputer())
 
-    bytecode = Path("./adder.wasm").read_bytes()
+    bytecode = Path("output/vx-events.wasm").read_bytes()
     deploy_transaction = sc_factory.create_transaction_for_deploy(
         sender=address,
         bytecode=bytecode,
@@ -48,7 +50,7 @@ def main():
     tx_hash = provider.send_transaction(deploy_transaction)
     print(f"Deploy transaction hash: {tx_hash}")
 
-    time.sleep(0.5)
+    time.sleep(1)
 
     provider.do_post(f"{GENERATE_BLOCKS_URL}/1", {})
 
@@ -57,40 +59,8 @@ def main():
     if not tx_from_network.status.is_successful():
         sys.exit(f"Transaction status is not correct, status received: {tx_from_network.status}")
 
-    value = 10
-    contract_address = extract_contract_address(tx_from_network)
-    call_transaction = sc_factory.create_transaction_for_execute(
-        sender=address,
-        contract=contract_address,
-        function="add",
-        gas_limit=10000000,
-        arguments=[value]
-    )
+    print("End deploy contract")
 
-    call_transaction.nonce = provider.get_account(address).nonce
-    call_transaction.signature = user_signer.sign(tx_computer.compute_bytes_for_signing(call_transaction))
-
-    tx_hash = provider.send_transaction(call_transaction)
-    print(f"Smart contract call transaction hash: {tx_hash}")
-
-    time.sleep(0.5)
-
-    provider.do_post(f"{GENERATE_BLOCKS_URL}/1", {})
-
-    builder = ContractQueryBuilder(
-        contract=contract_address,
-        function="getSum",
-        call_arguments=[],
-        caller=address
-    )
-    query = builder.build()
-    response = provider.query_contract(query)
-    decoded_bytes = base64.b64decode(response.return_data[0])
-
-    result_int = int.from_bytes(decoded_bytes, byteorder='big')
-    print("Value:", result_int)
-    if value != result_int:
-        sys.exit(f"Value from VM query is wrong, expected: {value}, received: {result_int}")
 
 def extract_contract_address(tx: TransactionOnNetwork) -> Address:
     factory = AddressFactory("erd")
@@ -99,6 +69,7 @@ def extract_contract_address(tx: TransactionOnNetwork) -> Address:
             continue
 
         return factory.create_from_hex(event.topics[0].hex())
+
 
 if __name__ == "__main__":
     main()
