@@ -64,7 +64,11 @@ def main():
     value = 10
     contract_address = extract_contract_address(tx_from_network)
     address_32 = contract_address.bech32()
-    print(f"contract address: {address_32}")
+    address_B = Address.new_from_bech32(address_32)
+    address_B32 = address_B.bech32()
+    print(f"contract address_32  : {address_32}")
+    print(f"contract address_B32 : {address_B32}")
+    return address_32
 
 
 def extract_contract_address(tx: TransactionOnNetwork) -> Address:
@@ -77,4 +81,7 @@ def extract_contract_address(tx: TransactionOnNetwork) -> Address:
 
 
 if __name__ == "__main__":
-    main()
+    contract_address = main()
+    print(contract_address)
+    with open("./utils/contract_address.txt", "w") as f:
+        f.write(contract_address)
