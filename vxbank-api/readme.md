@@ -96,7 +96,7 @@ Java percentage examples
         ```
         paymentIntentDataBuilder.setApplicationFeeAmount(applicationFee)
           .setTransferData(SessionCreateParams.PaymentIntentData.TransferData.builder()
-              .setDestination(vxStripeConfig.stripeAccountId)
+              .setDestination(vxStripeConfig.stripeAccountId) // this is accout id of event organizer
               .build()
         );
         ```
