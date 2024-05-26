@@ -37,13 +37,15 @@ stop:
 
 
 001-issue-usdt: start
-	sc-meta all build
 	. ${PIP_ENV_DIR}/bin/activate && \
         pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
         python3 ./utils/001-issue-usdt.py --get-token-identifier
 
 002-deploy-contract: 001-issue-usdt
+	sc-meta all build
 	. ${PIP_ENV_DIR}/bin/activate && \
         token_identifier_string=$$(cat ./utils/token_identifier.txt) && \
-        echo "Using token identifier: $$token_identifier_string"
+        echo "Using token identifier: $$token_identifier_string" && \
+        python3 ./utils/002-deploy-contract.py && \
+        echo "contract deployed"
         # some other commands that use $$token_identifier_string
