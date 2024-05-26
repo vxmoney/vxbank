@@ -27,6 +27,8 @@ start: setup-env
 	docker stop "${IMAGE_NAME}" || true
 	docker rm "${IMAGE_NAME}" || true
 	docker run -d --name "${IMAGE_NAME}" -p 8085:8085 ${CHAIN_SIMULATOR_IMAGE_NAME}:${CHAIN_SIMULATOR_IMAGE_TAG}
+	./utils/wait-simulator-to-start.sh
+
 
 stop:
 	docker stop "${IMAGE_NAME}" || true
@@ -36,7 +38,12 @@ remove:
 	docker stop "${IMAGE_NAME}" || true
 	docker rm "${IMAGE_NAME}" || true
 
-build-vxevents:
+build-and-deploy-vxevents: setup-env
 	sc-meta all build
+	. ${PIP_ENV_DIR}/bin/activate && \
+        pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
+        python3 ./utils/issue-usdt.py
+
+
 
 
