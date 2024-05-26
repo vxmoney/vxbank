@@ -42,7 +42,11 @@ build-and-deploy-vxevents: setup-env
 	sc-meta all build
 	. ${PIP_ENV_DIR}/bin/activate && \
         pip install -r ${REPO_TEMP_DIR}/examples/requirements.txt && \
-        python3 ./utils/issue-usdt.py
+        python3 ./utils/issue-usdt.py && \
+        test_value="some random value" && \
+        echo "Bash token value: $$token_identifier_string\n" && \
+        echo "Random echo: $$test_value"
+
 
 
 

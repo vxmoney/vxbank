@@ -74,9 +74,12 @@ def main():
     token_identifier_string = extract_token_identifier(tx_from_network)
     amount = provider.get_fungible_token_of_account(address, token_identifier_string)
     if amount.balance != initial_supply:
-        sys.exit(f"amount of token from balance is no equal with the initial supply: actual-{amount.balance}, expected-{initial_supply}")
+        sys.exit(
+            f"amount of token from balance is no equal with the initial supply: actual-{amount.balance}, expected-{initial_supply}")
 
-    print("transaction was executed and tokens were created")
+    print(f"transaction was executed and tokens were created: {token_identifier_string}")
+
+    return token_identifier_string
 
 
 def extract_token_identifier(tx: TransactionOnNetwork) -> str:
@@ -91,4 +94,8 @@ def extract_token_identifier(tx: TransactionOnNetwork) -> str:
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "--get-token-identifier":
+        token_identifier_string = main()
+        print(token_identifier_string)
+    else:
+        main()
