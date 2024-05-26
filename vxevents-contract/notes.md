@@ -8,3 +8,5 @@ sc-meta test-gen
 sc-meta all build
 sc-meta test
 ```
+
+- other tools: https://utils.multiversx.com/converters#string-converters-base64-to-string
