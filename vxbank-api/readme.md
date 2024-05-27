@@ -112,3 +112,5 @@ Java percentage examples
   - set token fees USDT sc
   - toto: continue to update this section of documentation after we have complete integration tests util this point
 
+## test card
+`4000000000000077`
