@@ -110,7 +110,7 @@ Java percentage examples
 - contract owner (aka bogdan) needs to 
   - deploy contract
   - set token fees USDT sc
-  - toto: continue to update this section of documentation after we have complete integration tests util this point
+  - toto: continue to update this section of documentation after we have complete integration tests until this point
 
 ## test card
 `4000000000000077`
