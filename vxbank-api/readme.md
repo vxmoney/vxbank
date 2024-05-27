@@ -109,6 +109,6 @@ Java percentage examples
 - we need to know the contract network and contract address
 - contract owner (aka bogdan) needs to 
   - deploy contract
-  - set token fees USDT
+  - set token fees USDT sc
   - toto: continue to update this section of documentation after we have complete integration tests util this point
 
