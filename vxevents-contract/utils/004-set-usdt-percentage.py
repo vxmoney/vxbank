@@ -6,7 +6,7 @@ from pathlib import Path
 from multiversx_sdk_core import TokenComputer, TransactionComputer, AddressFactory, Address, ContractQueryBuilder
 from multiversx_sdk_core.transaction_factories import SmartContractTransactionsFactory, TransactionsFactoryConfig
 from multiversx_sdk_network_providers import ProxyNetworkProvider
-from multiversx_sdk_network_providers.transactions import TransactionOnNetwork
+from multiversx_sdk_network_providers.transactions import TransactionOnNetwork, TransactionStatus
 from multiversx_sdk_wallet import UserPEM, UserSigner
 
 SIMULATOR_URL = "http://localhost:8085"
@@ -28,14 +28,43 @@ def load_value_from_file(filename):
 
 def check_transaction_status(provider, tx_hash, expected_status):
     try:
-        transaction = provider.get_transaction(tx_hash)
+        transaction = provider.get_transaction(tx_hash, True)
         actual_status = transaction.status
+        print(f"Transaction status type: {type(actual_status)}")
         print(f"Transaction status: {actual_status}")
-        if actual_status != expected_status:
+
+        # Assuming the status is a string or has a string representation
+        if str(actual_status).strip() != expected_status.strip():
             print(f"Transaction status does not match the expected status: {expected_status}")
             sys.exit(1)
         else:
             print("Transaction status matches the expected status.")
+    except Exception as e:
+        print(f"An error occurred while fetching the transaction: {e}")
+        sys.exit(1)
+
+def check_is_failed(provider, tx_hash):
+    try:
+        transaction = provider.get_transaction(tx_hash, True)
+        actual_status = TransactionStatus(transaction.status.status)  # Adjust based on how status is accessed
+        if not actual_status.is_failed():
+            print(f"Transaction did not fail as expected. Status: {actual_status}")
+            sys.exit(1)
+        else:
+            print("Transaction failed as expected.")
+    except Exception as e:
+        print(f"An error occurred while fetching the transaction: {e}")
+        sys.exit(1)
+
+def check_is_successful(provider, tx_hash):
+    try:
+        transaction = provider.get_transaction(tx_hash, True)
+        actual_status = TransactionStatus(transaction.status.status)  # Adjust based on how status is accessed
+        if not actual_status.is_successful():
+            print(f"Transaction was not successful. Status: {actual_status}")
+            sys.exit(1)
+        else:
+            print("Transaction was successful.")
     except Exception as e:
         print(f"An error occurred while fetching the transaction: {e}")
         sys.exit(1)
@@ -80,6 +109,7 @@ def main():
 
     # Check transaction status
     check_transaction_status(provider, tx_hash, expected_status="fail")
+    check_is_failed(provider, tx_hash)
 
     print("Hello main")
 

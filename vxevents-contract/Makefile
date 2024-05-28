@@ -18,7 +18,7 @@ open-mx-chain-simulator-go:
 	cd ~/workspace/mx-chain-simulator-go && intellij-idea-community .
 
 setup-env:
-	#chmod -R u+w /home/bogdan/.simulatorPipEnv
+	chmod -R u+w /home/bogdan/.simulatorPipEnv
 	rm -rf ${REPO_TEMP_DIR}
 	git clone --branch ${SIMULATOR_REPO_BRANCH} ${SIMULATOR_REPO_URL} ${REPO_TEMP_DIR}
 	python3 -m venv ${PIP_ENV_DIR}
@@ -50,7 +50,7 @@ stop:
         echo "contract deployed"
         # some other commands that use $$token_identifier_string
 
-004-set-usdt-percentage: 002-deploy-contract
+004-set-usdt-percentage:
 	. ${PIP_ENV_DIR}/bin/activate && \
 	python3 ./utils/004-set-usdt-percentage.py && \
 	echo "end of 004-set-usdt-percentage"
