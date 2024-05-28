@@ -50,7 +50,7 @@ stop:
         echo "contract deployed"
         # some other commands that use $$token_identifier_string
 
-004-set-usdt-percentage:
+004-set-usdt-percentage: 002-deploy-contract
 	. ${PIP_ENV_DIR}/bin/activate && \
 	python3 ./utils/004-set-usdt-percentage.py && \
 	echo "end of 004-set-usdt-percentage"
