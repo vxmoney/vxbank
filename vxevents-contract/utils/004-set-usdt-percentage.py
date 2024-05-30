@@ -6,11 +6,12 @@ from pathlib import Path
 from multiversx_sdk_core import TokenComputer, TransactionComputer, AddressFactory, Address, ContractQueryBuilder
 from multiversx_sdk_core.transaction_factories import SmartContractTransactionsFactory, TransactionsFactoryConfig
 from multiversx_sdk_network_providers import ProxyNetworkProvider
-from multiversx_sdk_network_providers.transactions import TransactionOnNetwork
+from multiversx_sdk_network_providers.transactions import TransactionOnNetwork, TransactionStatus
 from multiversx_sdk_wallet import UserPEM, UserSigner
 
 SIMULATOR_URL = "http://localhost:8085"
 GENERATE_BLOCKS_URL = f"{SIMULATOR_URL}/simulator/generate-blocks"
+
 
 def load_value_from_file(filename):
     try:
@@ -24,8 +25,52 @@ def load_value_from_file(filename):
         print(f"An error occurred: {e}")
         return None
 
-def main():
 
+def check_transaction_status(provider, tx_hash, expected_status):
+    try:
+        transaction = provider.get_transaction(tx_hash, True)
+        actual_status = transaction.status
+        print(f"Transaction status type: {type(actual_status)}")
+        print(f"Transaction status: {actual_status}")
+
+        # Assuming the status is a string or has a string representation
+        if str(actual_status).strip() != expected_status.strip():
+            print(f"Transaction status does not match the expected status: {expected_status}")
+            sys.exit(1)
+        else:
+            print("Transaction status matches the expected status.")
+    except Exception as e:
+        print(f"An error occurred while fetching the transaction: {e}")
+        sys.exit(1)
+
+def check_is_failed(provider, tx_hash):
+    try:
+        transaction = provider.get_transaction(tx_hash, True)
+        actual_status = TransactionStatus(transaction.status.status)  # Adjust based on how status is accessed
+        if not actual_status.is_failed():
+            print(f"Transaction did not fail as expected. Status: {actual_status}")
+            sys.exit(1)
+        else:
+            print("Transaction failed as expected.")
+    except Exception as e:
+        print(f"An error occurred while fetching the transaction: {e}")
+        sys.exit(1)
+
+def check_is_successful(provider, tx_hash):
+    try:
+        transaction = provider.get_transaction(tx_hash, True)
+        actual_status = TransactionStatus(transaction.status.status)  # Adjust based on how status is accessed
+        if not actual_status.is_successful():
+            print(f"Transaction was not successful. Status: {actual_status}")
+            sys.exit(1)
+        else:
+            print("Transaction was successful.")
+    except Exception as e:
+        print(f"An error occurred while fetching the transaction: {e}")
+        sys.exit(1)
+
+
+def main():
     provider = ProxyNetworkProvider(SIMULATOR_URL)
     ownerPem = UserPEM.from_file(Path("./utils/simwalets/aliceWallet.pem"))
     ownerAddress = ownerPem.public_key.to_address("erd")
@@ -41,12 +86,11 @@ def main():
     print(f"loaded contract_address_B32 = {contract_address_B32}")
     print(f"loaded token_identifier = {token_identifier_B32}")
 
-
     contract_address = Address.new_from_bech32(contract_address_B32)
     bad_call_transaction = sc_factory.create_transaction_for_execute(
         sender=ownerAddress,
         contract=contract_address,
-        function="add",
+        function="badEndpoint",
         gas_limit=10000000,
         arguments=["fake-token", token_percentage]
     )
@@ -63,7 +107,12 @@ def main():
     time.sleep(0.5)
     provider.do_post(f"{GENERATE_BLOCKS_URL}/1", {})
 
+    # Check transaction status
+    check_transaction_status(provider, tx_hash, expected_status="fail")
+    check_is_failed(provider, tx_hash)
+
     print("Hello main")
+
 
 if __name__ == "__main__":
     main()
