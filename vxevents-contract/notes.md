@@ -11,5 +11,6 @@ sc-meta test
 
 - other tools: https://utils.multiversx.com/converters#string-converters-base64-to-string
 - local testnet: https://docs.multiversx.com/developers/setup-local-testnet/
+- faucet: https://r3d4.fr/faucet
 
 
