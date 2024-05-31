@@ -10,6 +10,7 @@ SIMULATOR_REPO_BRANCH=main
 CONTAINER_NAME=chainsimulator_container
 REPO_TEMP_DIR=$(HOME)/.temp_simulator_repo
 PIP_ENV_DIR=$(HOME)/.simulatorPipEnv
+DEVNET_USDT=USDT-58d5d0
 
 open-example:
 	cd ~/workspace/mx-simulator-repo && intellij-idea-community .
