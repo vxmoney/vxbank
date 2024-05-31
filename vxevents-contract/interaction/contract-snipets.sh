@@ -1,12 +1,16 @@
 PROJECT="${PWD}"
 CORE_LOGS="interaction/logs"
 MY_DECIMALS="000000000000000000"
+MY_BYTECODE="output/vx-events.wasm"
 
 
 setEnvDevnet() {
   CURRENT_ENV="devnet"
   ENV_LOGS="${CORE_LOGS}/${CURRENT_ENV}"
-  PEM_FILE="${PROJECT}/../../../wallets/devnet_owner_wallet.pem"
+  cp -f mxpy.data-storage-devnet.json mxpy.data-storage.json
+  PEM_FILE="${PROJECT}/utils/simwalets/aliceWallet.pem"
+  PROXY=https://devnet-gateway.multiversx.com
+  CHAINID=D
 }
 
 deployContract() {
