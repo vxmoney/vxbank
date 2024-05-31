@@ -1,5 +1,6 @@
 import sys
 import time
+import os
 
 from multiversx_sdk_network_providers import ProxyNetworkProvider
 from multiversx_sdk_network_providers.transactions import TransactionOnNetwork
@@ -12,6 +13,9 @@ SIMULATOR_URL = "http://localhost:8085"
 GENERATE_BLOCKS_URL = f"{SIMULATOR_URL}/simulator/generate-blocks"
 
 def main():
+    current_directory = os.getcwd()
+    print("Current working directory:", current_directory)
+
     # create a network provider
     provider = ProxyNetworkProvider(SIMULATOR_URL)
 
