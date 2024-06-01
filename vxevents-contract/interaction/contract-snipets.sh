@@ -4,6 +4,8 @@ MY_BYTECODE="output/vx-events.wasm"
 CORE_LOGS="interaction/logs"
 ENV_LOGS="${CORE_LOGS}/${CURRENT_ENV}"
 
+TOKEN_USDT_HEX=$(echo -n ${TOKEN_USDT} | xxd -p)
+
 setEnvDevnet() {
   CURRENT_ENV="devnet"
   ENV_LOGS="${CORE_LOGS}/${CURRENT_ENV}"
