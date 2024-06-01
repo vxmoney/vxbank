@@ -1,8 +1,9 @@
+use crate::vx_events_store;
 multiversx_sc::imports!();
 
 #[multiversx_sc::module]
 
-pub trait EventsEndpoints {
+pub trait EventsEndpoints: vx_events_store::EventsStore {
     #[payable("*")]
     #[endpoint(registerPayment)]
     fn register_payment(&self) {
@@ -12,6 +13,8 @@ pub trait EventsEndpoints {
     #[endpoint(createEvent)]
     fn create_event(&self, event_id: ManagedBuffer) {
         let _event_owner = self.blockchain().get_caller();
-        sc_print!("Creating event with id: {}", event_id);
+        sc_print!("debug line: Creating event with id: {}", event_id);
+        self.store_event_owner_wallet(event_id)
+            .set(_event_owner);
     }
 }
