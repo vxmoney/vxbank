@@ -25,6 +25,6 @@ fn t_004_set_token_percentage_go() {
 }
 
 #[test]
-fn t_005_get_token_percentage_go() {
-    world().run("scenarios/t_005_get_token_percentage.scen.json");
+fn t_006_create_event_go() {
+    world().run("scenarios/t_006_create_event.scen.json");
 }

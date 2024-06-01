@@ -1,10 +1,7 @@
 multiversx_sc::imports!();
 multiversx_sc::derive_imports!();
 
-use multiversx_sc::{
-    api::ManagedTypeApi,
-    types::{ManagedAddress, ManagedBuffer,EgldOrEsdtTokenIdentifier},
-};
+
 
 #[derive(TypeAbi, TopEncode, TopDecode, NestedEncode, NestedDecode)]
 pub struct Payment<M: ManagedTypeApi> {
