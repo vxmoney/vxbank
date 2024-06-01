@@ -18,6 +18,9 @@ open-example:
 open-mx-chain-simulator-go:
 	cd ~/workspace/mx-chain-simulator-go && intellij-idea-community .
 
+open-xlauncher-staking-v2:
+	cd ~/workspace/xlauncher-stage-1/xlauncher-staking-v2 && intellij-idea-community .
+
 setup-env:
 	chmod -R u+w /home/bogdan/.simulatorPipEnv
 	rm -rf ${REPO_TEMP_DIR}
