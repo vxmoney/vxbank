@@ -9,4 +9,5 @@ public class VxIntegration {
     public String vxStripeId;
     public Long integrationPercentage;
     public Long vxBankPercentage;
+    public VxContractConfig vxContractConfig;
 }
