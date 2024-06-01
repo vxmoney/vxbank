@@ -9,4 +9,6 @@ pub trait EventsEndpoints {
         let _payment = self.call_value().egld_or_single_esdt();
         
     }
+
+    
 }
