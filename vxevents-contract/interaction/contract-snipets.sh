@@ -6,6 +6,8 @@ ENV_LOGS="${CORE_LOGS}/${CURRENT_ENV}"
 
 TOKEN_USDT_HEX=$(echo -n ${TOKEN_USDT} | xxd -p)
 
+ADDRESS=$(mxpy data load --key=address-devnet)
+
 setEnvDevnet() {
   CURRENT_ENV="devnet"
   ENV_LOGS="${CORE_LOGS}/${CURRENT_ENV}"
@@ -29,4 +31,16 @@ deployContract() {
 
   echo ""
   echo "Smart contract address: ${ADDRESS}"
+}
+
+setUsdtProcessingPercentage(){
+  MY_LOGS="${ENV_LOGS}-setTokenProcessingPercentage.json"
+  mxpy --verbose contract call ${ADDRESS} --recall-nonce \
+      --pem=${PEM_FILE} \
+      --gas-limit=8000000 \
+      --proxy=${PROXY} --chain=${CHAINID} \
+      --function="setTokenProcessingPercentage" \
+      --arguments "0x${TOKEN_USDT_HEX}" ${TOKEN_USDT_PERCENTAGE} \
+      --send \
+      --outfile="${MY_LOGS}"
 }
