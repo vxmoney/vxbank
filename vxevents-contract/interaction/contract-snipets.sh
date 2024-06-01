@@ -1,8 +1,8 @@
-PROJECT="${PWD}"
-CORE_LOGS="interaction/logs"
+
 MY_DECIMALS="000000000000000000"
 MY_BYTECODE="output/vx-events.wasm"
-
+CORE_LOGS="interaction/logs"
+ENV_LOGS="${CORE_LOGS}/${CURRENT_ENV}"
 
 setEnvDevnet() {
   CURRENT_ENV="devnet"
