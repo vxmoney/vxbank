@@ -1,10 +1,14 @@
 # Makefile
 
 open-contract-intellij:
-	cd ~/workspace/vxbank/vxevents-contract/ && intellij-idea-community .
+	cd ../vxevents-contract/ && intellij-idea-community .
 
 open-contract-code:
-	cd ~/workspace/vxbank/vxevents-contract/ && code .
+	cd ../vxevents-contract/ && code .
+
+open-web-code:
+	cd ../vxevents-web-app-v1 && code .
+
 
 001-build-contract:
 	cd ../vxevents-contract/ && \
