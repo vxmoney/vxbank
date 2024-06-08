@@ -16,3 +16,13 @@ sc-meta test
 - on smart contract we use 4 decimals. integrationPercentage 35000 = 3.5%
 
 
+```rust
+
+    #[storage_mapper("lastId")]
+    fn last_id(&self) -> SingleValueMapper<u64>;
+
+    #[view(getLastId)]
+    fn get_last_id(&self) -> u64 {
+        self.last_id().get() | 0
+    }
+```
