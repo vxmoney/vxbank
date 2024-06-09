@@ -1,0 +1,86 @@
+{
+  "name": "empty",
+  "steps": [
+    {
+      "step": "setState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "1",
+          "balance": "0"
+        },
+        "address:manager-1": {
+          "nonce": "1",
+          "balance": "0"
+        },
+        "address:client-1": {
+          "nonce": "1",
+          "balance": "2000000"
+        }
+      },
+      "newAddresses": [
+        {
+          "creatorAddress": "address:owner",
+          "creatorNonce": "1",
+          "newAddress": "sc:vxevents"
+        }
+      ]
+    },
+    {
+      "step": "scDeploy",
+      "id": "deploy",
+      "tx": {
+        "from": "address:owner",
+        "contractCode": "mxsc:../output/vx-events.mxsc.json",
+        "arguments": [],
+        "gasLimit": "5,000,000",
+        "gasPrice": "0"
+      },
+      "expect": {
+        "out": [],
+        "status": "",
+        "logs": [],
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    {
+      "step": "scCall",
+      "txId": "call-setTokenProcessingPercentage",
+      "tx": {
+        "from": "address:owner",
+        "to": "sc:vxevents",
+        "function": "setTokenProcessingPercentage",
+        "value": "0",
+        "gasLimit": "100,000,000",
+        "gasPrice": "0",
+        "arguments": ["str:ACOIN-a00000", "10000"]
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
+    
+    {
+      "step": "checkState",
+      "accounts": {
+        "address:owner": {
+          "nonce": "*",
+          "balance": "0",
+          "storage": {},
+          "code": ""
+        },
+        "sc:vxevents": {
+          "nonce": "*",
+          "balance": "0",
+          "storage": {
+            "str:tokenProcessingPercentage|nested:str:ACOIN-a00000": "10000"
+          }
+        }
+      }
+    }
+  ]
+}
