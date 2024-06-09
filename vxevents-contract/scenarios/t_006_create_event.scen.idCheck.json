@@ -97,7 +97,7 @@
           "balance": "0",
           "storage": {
             "str:tokenProcessingPercentage|nested:str:ACOIN-a00000": "10000",
-            "str:eventOwnerWallet|nested:str:event-01": "address:manager-1"
+            "str:eventOwnerWalletV2|u64:1": "address:manager-1"
           }
         }
       }
