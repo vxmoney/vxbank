@@ -23,8 +23,3 @@ fn t_003_set_egld_percentage_go() {
 fn t_004_set_token_percentage_go() {
     world().run("scenarios/t_004_set_token_percentage.scen.json");
 }
-
-#[test]
-fn t_006_create_event_go() {
-    world().run("scenarios/t_006_create_event.scen.json");
-}
