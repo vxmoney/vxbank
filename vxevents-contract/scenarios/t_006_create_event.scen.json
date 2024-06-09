@@ -63,7 +63,26 @@
         "refund": "*"
       }
     },
-    
+    {
+      "step": "scCall",
+      "txId": "call-createEvent",
+      "tx": {
+        "from": "address:manager-1",
+        "to": "sc:vxevents",
+        "function": "createEvent",
+        "value": "0",
+        "gasLimit": "100,000,000",
+        "gasPrice": "0",
+        "arguments": ["str:event-01"]
+      },
+      "expect": {
+        "out": [],
+        "status": "0",
+        "message": "",
+        "gas": "*",
+        "refund": "*"
+      }
+    },
     {
       "step": "checkState",
       "accounts": {
