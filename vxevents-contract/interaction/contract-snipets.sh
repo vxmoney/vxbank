@@ -33,6 +33,13 @@ deployContract() {
   echo "Smart contract address: ${ADDRESS}"
 }
 
+updateContract() {
+  MY_LOGS="${ENV_LOGS}-updateContract.json"
+  mxpy --verbose contract upgrade ${ADDRESS} --bytecode ${MY_BYTECODE} --recall-nonce --pem=${PEM_FILE} \
+    --gas-limit=100000000 --send --outfile="${MY_LOGS}" \
+    --proxy=${PROXY} --chain=${CHAINID}
+}
+
 setUsdtProcessingPercentage(){
   MY_LOGS="${ENV_LOGS}-setTokenProcessingPercentage.json"
   mxpy --verbose contract call ${ADDRESS} --recall-nonce \
